@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastery Challenge v3.1 - Verified Edition</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a2e; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: #fff; }
+        #quiz-container { background: #16213e; padding: 2.5rem; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); width: 100%; max-width: 750px; text-align: center; border: 1px solid #0f3460; margin: 20px; }
+        .type-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: #3498db; margin-bottom: 0.5rem; font-weight: bold; }
+        .word-display { font-size: 3.5rem; margin-bottom: 2rem; color: #fff; font-weight: bold; min-height: 6rem; display: flex; align-items: center; justify-content: center; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        button { padding: 20px 12px; font-size: 1.1rem; border: 2px solid #0f3460; border-radius: 12px; background: #1a1a2e; color: #4ecca3; cursor: pointer; transition: 0.2s; font-weight: 600; }
+        button:hover:not(:disabled) { background: #0f3460; transform: translateY(-2px); border-color: #4ecca3; }
+        button.correct { background: #2ecc71 !important; border-color: #2ecc71 !important; color: white !important; }
+        button.wrong { background: #e94560 !important; border-color: #e94560 !important; color: white !important; }
+        #score-board { margin-top: 25px; font-size: 1rem; color: #95a5a6; border-top: 1px solid #0f3460; padding-top: 20px; }
+        #progress-bar { height: 8px; background: #0f3460; border-radius: 4px; margin-bottom: 25px; overflow: hidden; }
+        #progress-fill { height: 100%; background: #3498db; width: 0%; transition: 0.4s; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; color: #fff; font-size: 0.85rem; }
+        th, td { border: 1px solid #0f3460; padding: 10px; text-align: left; }
+        th { background: #0f3460; color: #3498db; }
+        .row-correct { color: #2ecc71; }
+        .row-wrong { color: #e94560; }
+        .final-results-wrap { max-height: 450px; overflow-y: auto; margin-top: 20px; border: 1px solid #0f3460; border-radius: 8px; }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+    <div id="quiz-ui">
+        <div class="type-label" id="q-type">LOADING DATA...</div>
+        <div class="word-display" id="display-text">...</div>
+        <div class="options-grid" id="options"></div>
+        <div id="score-board">Progress: <span id="current-count">0</span> / <span id="total-q">0</span> | Score: <span id="score">0</span></div>
+    </div>
+</div>
+
+<script>
+// VERIFIED DATASET
+const masteryList = [
+    {k: "出身", r: "しゅっしん", m: "Hometown", dk: ["卒業", "先生"], dr: ["しゅっぱつ", "じゅんび"], dm: ["Occupation", "Education"], isKat: false},
+    {k: "主婦", r: "しゅふ", m: "Housewife", dk: ["主人", "看護師"], dr: ["しゅじゅつ", "しゅんかん"], dm: ["Nurse", "Husband"], isKat: false},
+    {k: "夕飯", r: "ゆうはん", m: "Dinner", dk: ["朝食", "昼食"], dr: ["ゆうがた", "ばんごはん"], dm: ["Breakfast", "Lunch"], isKat: false},
+    {k: "釣り", r: "つり", m: "Fishing", dk: ["泳ぎ", "遊び"], dr: ["つくえ", "つぎ"], dm: ["Swimming", "Hiking"], isKat: false},
+    {k: "運動", r: "うんどう", m: "Exercise", dk: ["運転", "運送"], dr: ["うんど", "うんてん"], dm: ["Driving", "Luck"], isKat: false},
+    {k: "上る", r: "のぼる", m: "To climb", dk: ["下る", "入る"], dr: ["のる", "ぬる"], dm: ["To descend", "To enter"], isKat: false},
+    {k: "着物", r: "きもの", m: "Kimono", dk: ["果物", "建物"], dr: ["きもち", "きっぷ"], dm: ["Building", "Fruit"], isKat: false},
+    {k: "引き出す", r: "ひきだす", m: "To pull out", dk: ["思い出", "出す"], dr: ["ひきうける", "ひきわけ"], dm: ["To remember", "To send"], isKat: false},
+    {k: "叶う", r: "かなう", m: "To come true", dk: ["願う", "思う"], dr: ["かならず", "かない"], dm: ["To pray", "To think"], isKat: false},
+    {k: "今月", r: "こんげつ", m: "This month", dk: ["来月", "先月"], dr: ["こんしゅう", "こんばん"], dm: ["Next month", "Last month"], isKat: false},
+    {k: "ストレス", r: "ストレス", m: "Stress", dk: ["ニュース", "テニス"], dr: ["スラックス", "ストーブ"], dm: ["News", "Ice cream"], isKat: true},
+    {k: "中国", r: "ちゅうごく", m: "China", dk: ["韓国", "英国"], dr: ["ちゅうもん", "ちゅうしゃ"], dm: ["Korea", "England"], isKat: false},
+    {k: "作家", r: "さっか", m: "Author", dk: ["画家", "音楽家"], dr: ["さっき", "ざっし"], dm: ["Painter", "Musician"], isKat: false},
+    {k: "外科", r: "げか", m: "Surgery", dk: ["内科", "歯科"], dr: ["げんき", "げんかん"], dm: ["Internal Medicine", "Dentist"], isKat: false},
+    {k: "テーブル", r: "テーブル", m: "Table", dk: ["カーテン", "ノート"], dr: ["テープ", "テレビ"], dm: ["Chair", "Curtain"], isKat: true},
+    {k: "お祭り", r: "おまつり", m: "Festival", dk: ["お正月", "お祝い"], dr: ["おまわりさん", "おみやげ"], dm: ["New Year", "Wedding"], isKat: false},
+    {k: "サボる", r: "サボる", m: "To skip", dk: ["休む", "困る"], dr: ["さわる", "さけぶ"], dm: ["To rest", "To worry"], isKat: false},
+    {k: "留学", r: "りゅうがく", m: "Study abroad", dk: ["進学", "見学"], dr: ["りょうり", "りゆう"], dm: ["Graduation", "Observation"], isKat: false},
+    {k: "いい事", r: "いいこと", m: "Good thing", dk: ["悪い事", "大事"], dr: ["いいわけ", "いいえ"], dm: ["Bad thing", "Important thing"], isKat: false},
+    {k: "ポケット", r: "ポケット", m: "Pocket", dk: ["ボタン", "ベルト"], dr: ["ポスター", "ポスト"], dm: ["Button", "Wallet"], isKat: true},
+    {k: "金持ち", r: "かねもち", m: "Rich person", dk: ["気持ち", "荷物"], dr: ["かね", "かない"], dm: ["Poor person", "Feelings"], isKat: false},
+    {k: "シャワー", r: "シャワー", m: "Shower", dk: ["トイレ", "プール"], dr: ["シャツ", "シュミ"], dm: ["Bath", "Sink"], isKat: true},
+    {k: "等", r: "など", m: "Et cetera", dk: ["時", "前"], dr: ["なに", "なつ"], dm: ["Already", "Still"], isKat: false},
+    {k: "ゴロゴロ", r: "ゴロゴロ", m: "Lounging", dk: ["ピカピカ", "ニコニコ"], dr: ["ゲラゲラ", "グルグル"], dm: ["Sparkling", "Smiling"], isKat: true},
+    {k: "方面", r: "ほうめん", m: "Direction", dk: ["方法", "場所"], dr: ["ほうりつ", "ほうそう"], dm: ["Method", "Purpose"], isKat: false},
+    {k: "バンド", r: "バンド", m: "Band", dk: ["ベッド", "ハンド"], dr: ["パン", "バンゴウ"], dm: ["Piano", "Bed"], isKat: true},
+    {k: "家賃", r: "やちん", m: "Rent", dk: ["家内", "家族"], dr: ["やすみ", "やさい"], dm: ["Salary", "Price"], isKat: false},
+    {k: "蜜柑", r: "みかん", m: "Mandarin", dk: ["林檎", "葡萄"], dr: ["みち", "みず"], dm: ["Apple", "Grape"], isKat: false},
+    {k: "外国", r: "がいこく", m: "Foreign country", dk: ["国内", "地図"], dr: ["がいこう", "がいじん"], dm: ["Inland", "Island"], isKat: false},
+    {k: "政治", r: "せいじ", m: "Politics", dk: ["政府", "経済"], dr: ["せかい", "せいかつ"], dm: ["Economy", "History"], isKat: false},
+    {k: "アルバイト", r: "アルバイト", m: "Part-time job", dk: ["アンケート", "アパート"], dr: ["アルバム", "アイス"], dm: ["Apartment", "Interview"], isKat: true},
+    {k: "日記", r: "にっき", m: "Diary", dk: ["雑誌", "新聞"], dr: ["にほん", "にじ"], dm: ["Magazine", "Newspaper"], isKat: false},
+    {k: "グリーン", r: "グリーン", m: "Green", dk: ["ブルー", "イエロー"], dr: ["グラス", "クリーム"], dm: ["Blue", "Yellow"], isKat: true},
+    {k: "トマト", r: "トマト", m: "Tomato", dk: ["ポテト", "レタス"], dr: ["トランプ", "トイレ"], dm: ["Potato", "Onion"], isKat: true},
+    {k: "タバコ", r: "タバコ", m: "Cigarette", dk: ["タオル", "コップ"], dr: ["たまご", "たな"], dm: ["Pipe", "Lighter"], isKat: true},
+    {k: "意地悪", r: "いじわる", m: "Mean", dk: ["親切", "真面目"], dr: ["いみ", "いと"], dm: ["Kind", "Serious"], isKat: false},
+    {k: "今晩", r: "こんばん", m: "Tonight", dk: ["今朝", "昨日"], dr: ["こんしゅう", "こんど"], dm: ["This morning", "Yesterday"], isKat: false},
+    {k: "下着", r: "したぎ", m: "Underwear", dk: ["上着", "水着"], dr: ["した", "しお"], dm: ["Coat", "Swimsuit"], isKat: false},
+    {k: "フォーク", r: "フォーク", m: "Fork", dk: ["ナイフ", "スプーン"], dr: ["フォト", "フォーム"], dm: ["Knife", "Spoon"], isKat: true},
+    {k: "毎朝", r: "まいあさ", m: "Every morning", dk: ["毎日", "毎晩"], dr: ["まいにち", "まいばん"], dm: ["Every night", "Every week"], isKat: false},
+    {k: "語", r: "ご", m: "Language", dk: ["字", "文"], dr: ["こ", "く"], dm: ["Number", "Letter"], isKat: false},
+    {k: "食堂", r: "しょくどう", m: "Dining hall", dk: ["教室", "図書室"], dr: ["しょくじ", "しょくぱん"], dm: ["Classroom", "Library"], isKat: false},
+    {k: "キャンプ", r: "キャンプ", m: "Camp", dk: ["ダンス", "スキー"], dr: ["キャベツ", "キャンディ"], dm: ["Dance", "Skiing"], isKat: true},
+    {k: "イタリア", r: "イタリア", m: "Italy", dk: ["フランス", "イギリス"], dr: ["イラン", "インド"], dm: ["France", "England"], isKat: true},
+    {k: "コレクション", r: "コレクション", m: "Collection", dk: ["コンクール", "プレゼント"], dr: ["コネ", "コメ"], dm: ["Gift", "Competition"], isKat: true},
+    {k: "ツアー", r: "ツアー", m: "Tour", dk: ["ホテル", "タクシー"], dr: ["ツナ", "ツバメ"], dm: ["Hotel", "Ticket"], isKat: true},
+    {k: "スイカ", r: "スイカ", m: "Watermelon", dk: ["メロン", "イチゴ"], dr: ["すいようび", "すいどう"], dm: ["Melon", "Strawberry"], isKat: true},
+    {k: "くしゃみ", r: "くしゃみ", m: "Sneeze", dk: ["あくび", "せき"], dr: ["くし", "くすり"], dm: ["Yawn", "Cough"], isKat: true},
+    {k: "被る", r: "かぶる", m: "To wear (head)", dk: ["着る", "履く"], dr: ["かばん", "かざる"], dm: ["To wear (body)", "To wear (feet)"], isKat: false},
+    {k: "手袋", r: "てぶくろ", m: "Gloves", dk: ["靴下", "帽子"], dr: ["てがみ", "てんき"], dm: ["Socks", "Hat"], isKat: false}
+];
+
+let questions = [];
+masteryList.forEach(item => {
+    // Basic types for all
+    questions.push({ q: item.k, a: item.m, type: "Vocab-Meaning", dist: item.dm });
+    questions.push({ q: item.m, a: item.k, type: "Meaning-Vocab", dist: item.dk });
+    questions.push({ q: item.r, a: item.m, type: "Reading-Meaning", dist: item.dm });
+    questions.push({ q: item.m, a: item.r, type: "Meaning-Reading", dist: item.dr });
+    
+    // Only for non-katakana
+    if (!item.isKat) {
+        questions.push({ q: item.k, a: item.r, type: "Vocab-Reading", dist: item.dr });
+        questions.push({ q: item.r, a: item.k, type: "Reading-Vocab", dist: item.dk });
+    }
+});
+
+questions.sort(() => Math.random() - 0.5);
+
+let score = 0;
+let currentIdx = 0;
+let sessionLogs = [];
+
+function loadQuestion() {
+    if (currentIdx >= questions.length) {
+        showFinalResults();
+        return;
+    }
+    const currentQ = questions[currentIdx];
+    document.getElementById('q-type').innerText = currentQ.type;
+    document.getElementById('display-text').innerText = currentQ.q;
+    document.getElementById('total-q').innerText = questions.length;
+    
+    let options = [currentQ.a, ...currentQ.dist].sort(() => Math.random() - 0.5);
+    const optionsDiv = document.getElementById('options');
+    optionsDiv.innerHTML = '';
+    options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.innerText = opt;
+        btn.onclick = () => checkAnswer(opt, currentQ.a, btn);
+        optionsDiv.appendChild(btn);
+    });
+    
+    document.getElementById('current-count').innerText = currentIdx + 1;
+    document.getElementById('progress-fill').style.width = `${((currentIdx) / questions.length) * 100}%`;
+}
+
+function checkAnswer(selected, correct, btn) {
+    const allBtns = document.querySelectorAll('#options button');
+    allBtns.forEach(b => b.disabled = true);
+    
+    const isCorrect = (selected === correct);
+    sessionLogs.push({ type: questions[currentIdx].type, response: selected, answer: correct, correct: isCorrect });
+
+    if (isCorrect) {
+        score++;
+        btn.classList.add('correct');
+        document.getElementById('score').innerText = score;
+        setTimeout(() => { currentIdx++; loadQuestion(); }, 1000);
+    } else {
+        btn.classList.add('wrong');
+        allBtns.forEach(b => { if(b.innerText === correct) b.classList.add('correct'); });
+        // Error Reinforcement: 4 second pause
+        setTimeout(() => { currentIdx++; loadQuestion(); }, 4000);
+    }
+}
+
+function showFinalResults() {
+    let tableRows = sessionLogs.map(log => `
+        <tr class="${log.correct ? 'row-correct' : 'row-wrong'}">
+            <td>${log.type}</td>
+            <td>${log.response}</td>
+            <td>${log.answer}</td>
+        </tr>
+    `).join('');
+
+    document.getElementById('quiz-ui').innerHTML = `
+        <h2 style='color:#3498db'>Mastery Results</h2>
+        <p>Total Score: ${score} / ${questions.length}</p>
+        <div class="final-results-wrap">
+            <table>
+                <thead>
+                    <tr><th>Question</th><th>Response</th><th>Answer</th></tr>
+                </thead>
+                <tbody>${tableRows}</tbody>
+            </table>
+        </div>
+        <br><button onclick="location.reload()">Restart Challenge</button>
+    `;
+}
+
+loadQuestion();
+</script>
+</body>
+</html>
