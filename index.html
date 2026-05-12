@@ -100,41 +100,41 @@
 <script>
 /**
  * QUIZ LIBRARY
- * This is where you can store all your lesson data.
+ * Updated keys: 'v' for vocabulary, 'dv' for distractor vocabulary.
  */
 const quizLibrary = {
     "L17": {
         title: "Lesson 17: Career & Life",
         data: [
-            {k: "出身", r: "しゅっしん", m: "Hometown", dk: ["卒業", "先生"], dr: ["しゅっぱつ", "じゅんび"], dm: ["Occupation", "Education"], isKat: false},
-            {k: "主婦", r: "しゅふ", m: "Housewife", dk: ["主人", "看護師"], dr: ["しゅじゅつ", "しゅんかん"], dm: ["Nurse", "Husband"], isKat: false},
-            {k: "夕飯", r: "ゆうはん", m: "Dinner", dk: ["朝食", "昼食"], dr: ["ゆうがた", "ばんごはん"], dm: ["Breakfast", "Lunch"], isKat: false},
-            {k: "釣り", r: "つり", m: "Fishing", dk: ["泳ぎ", "遊び"], dr: ["つくえ", "つぎ"], dm: ["Swimming", "Hiking"], isKat: false},
-            {k: "運動", r: "うんどう", m: "Exercise", dk: ["運転", "運送"], dr: ["うんど", "うんてん"], dm: ["Driving", "Luck"], isKat: false},
-            {k: "上る", r: "のぼる", m: "To climb", dk: ["下る", "入る"], dr: ["のる", "ぬる"], dm: ["To descend", "To enter"], isKat: false},
-            {k: "着物", r: "きもの", m: "Kimono", dk: ["果物", "建物"], dr: ["きもち", "きっぷ"], dm: ["Building", "Fruit"], isKat: false},
-            {k: "引き出す", r: "ひきだす", m: "To pull out", dk: ["思い出", "出す"], dr: ["ひきうける", "ひきわけ"], dm: ["To remember", "To send"], isKat: false},
-            {k: "叶う", r: "かなう", m: "To come true", dk: ["願う", "思う"], dr: ["かならず", "かない"], dm: ["To pray", "To think"], isKat: false},
-            {k: "今月", r: "こんげつ", m: "This month", dk: ["来月", "先月"], dr: ["こんしゅう", "こんばん"], dm: ["Next month", "Last month"], isKat: false},
-            {k: "ストレス", r: "ストレス", m: "Stress", dk: ["ニュース", "テニス"], dr: ["スラックス", "ストーブ"], dm: ["News", "Ice cream"], isKat: true},
-            {k: "中国", r: "ちゅうごく", m: "China", dk: ["韓国", "英国"], dr: ["ちゅうもん", "ちゅうしゃ"], dm: ["Korea", "England"], isKat: false},
-            {k: "作家", r: "さっか", m: "Author", dk: ["画家", "音楽家"], dr: ["さっき", "ざっし"], dm: ["Painter", "Musician"], isKat: false},
-            {k: "外科", r: "げか", m: "Surgery", dk: ["内科", "歯科"], dr: ["げんき", "げんかん"], dm: ["Internal Medicine", "Dentist"], isKat: false},
-            {k: "テーブル", r: "テーブル", m: "Table", dk: ["カーテン", "ノート"], dr: ["テープ", "テレビ"], dm: ["Chair", "Curtain"], isKat: true},
-            {k: "お祭り", r: "おまつり", m: "Festival", dk: ["お正月", "お祝い"], dr: ["おまわりさん", "おみやげ"], dm: ["New Year", "Wedding"], isKat: false},
-            {k: "サボる", r: "サボる", m: "To skip", dk: ["休む", "困る"], dr: ["さわる", "さけぶ"], dm: ["To rest", "To worry"], isKat: false},
-            {k: "留学", r: "りゅうがく", m: "Study abroad", dk: ["進学", "見学"], dr: ["りょうり", "りゆう"], dm: ["Graduation", "Observation"], isKat: false},
-            {k: "いい事", r: "いいこと", m: "Good thing", dk: ["悪い事", "大事"], dr: ["いいわけ", "いいえ"], dm: ["Bad thing", "Important thing"], isKat: false},
-            {k: "ポケット", r: "ポケット", m: "Pocket", dk: ["ボタン", "ベルト"], dr: ["ポスター", "ポスト"], dm: ["Button", "Wallet"], isKat: true}
+            {v: "出身", r: "しゅっしん", m: "Hometown", dv: ["卒業", "先生"], dr: ["しゅっぱつ", "じゅんび"], dm: ["Occupation", "Education"], isKat: false},
+            {v: "主婦", r: "しゅふ", m: "Housewife", dv: ["主人", "看護師"], dr: ["しゅじゅつ", "しゅんかん"], dm: ["Nurse", "Husband"], isKat: false},
+            {v: "夕飯", r: "ゆうはん", m: "Dinner", dv: ["朝食", "昼食"], dr: ["ゆうがた", "ばんごはん"], dm: ["Breakfast", "Lunch"], isKat: false},
+            {v: "釣り", r: "つり", m: "Fishing", dv: ["泳ぎ", "遊び"], dr: ["つくえ", "つぎ"], dm: ["Swimming", "Hiking"], isKat: false},
+            {v: "運動", r: "うんどう", m: "Exercise", dv: ["運転", "運送"], dr: ["うんど", "うんてん"], dm: ["Driving", "Luck"], isKat: false},
+            {v: "上る", r: "のぼる", m: "To climb", dv: ["下る", "入る"], dr: ["のる", "ぬる"], dm: ["To descend", "To enter"], isKat: false},
+            {v: "着物", r: "きもの", m: "Kimono", dv: ["果物", "建物"], dr: ["きもち", "きっぷ"], dm: ["Building", "Fruit"], isKat: false},
+            {v: "引き出す", r: "ひきだす", m: "To pull out", dv: ["思い出", "出す"], dr: ["ひきうける", "ひきわけ"], dm: ["To remember", "To send"], isKat: false},
+            {v: "叶う", r: "かなう", m: "To come true", dv: ["願う", "思う"], dr: ["かならず", "かない"], dm: ["To pray", "To think"], isKat: false},
+            {v: "今月", r: "こんげつ", m: "This month", dv: ["来月", "先月"], dr: ["こんしゅう", "こんばん"], dm: ["Next month", "Last month"], isKat: false},
+            {v: "ストレス", r: "ストレス", m: "Stress", dv: ["ニュース", "テニス"], dr: ["スラックス", "ストーブ"], dm: ["News", "Ice cream"], isKat: true},
+            {v: "中国", r: "ちゅうごく", m: "China", dv: ["韓国", "英国"], dr: ["ちゅうもん", "ちゅうしゃ"], dm: ["Korea", "England"], isKat: false},
+            {v: "作家", r: "さっか", m: "Author", dv: ["画家", "音楽家"], dr: ["さっき", "ざっし"], dm: ["Painter", "Musician"], isKat: false},
+            {v: "外科", r: "げか", m: "Surgery", dv: ["内科", "歯科"], dr: ["げんき", "げんかん"], dm: ["Internal Medicine", "Dentist"], isKat: false},
+            {v: "テーブル", r: "テーブル", m: "Table", dv: ["カーテン", "ノート"], dr: ["テープ", "テレビ"], dm: ["Chair", "Curtain"], isKat: true},
+            {v: "お祭り", r: "おまつり", m: "Festival", dv: ["お正月", "お祝い"], dr: ["おまわりさん", "おみやげ"], dm: ["New Year", "Wedding"], isKat: false},
+            {v: "サボる", r: "サボる", m: "To skip", dv: ["休む", "困る"], dr: ["さわる", "さけぶ"], dm: ["To rest", "To worry"], isKat: false},
+            {v: "留学", r: "りゅうがく", m: "Study abroad", dv: ["進学", "見学"], dr: ["りょうり", "りゆう"], dm: ["Graduation", "Observation"], isKat: false},
+            {v: "いい事", r: "いいこと", m: "Good thing", dv: ["悪い事", "大事"], dr: ["いいわけ", "いいえ"], dm: ["Bad thing", "Important thing"], isKat: false},
+            {v: "ポケット", r: "ポケット", m: "Pocket", dv: ["ボタン", "ベルト"], dr: ["ポスター", "ポスト"], dm: ["Button", "Wallet"], isKat: true}
         ]
     },
     "L18": {
         title: "Lesson 18: Travel & Experiences",
         data: [
-            {k: "予約", r: "よやく", m: "Reservation", dk: ["約束", "切符"], dr: ["よる", "ようやく"], dm: ["Promise", "Ticket"], isKat: false},
-            {k: "景色", r: "けしき", m: "Scenery", dk: ["場所", "世界"], dr: ["けいしき", "けさ"], dm: ["Location", "World"], isKat: false},
-            {k: "温泉", r: "おんせん", m: "Hot spring", dk: ["お風呂", "水道"], dr: ["おんぜん", "うんてん"], dm: ["Bath", "Water supply"], isKat: false},
-            {k: "予定", r: "よてい", m: "Schedule", dk: ["天気", "計画"], dr: ["よやく", "よてん"], dm: ["Weather", "Plan"], isKat: false}
+            {v: "予約", r: "よやく", m: "Reservation", dv: ["約束", "切符"], dr: ["よる", "ようやく"], dm: ["Promise", "Ticket"], isKat: false},
+            {v: "景色", r: "けしき", m: "Scenery", dv: ["場所", "世界"], dr: ["けいしき", "けさ"], dm: ["Location", "World"], isKat: false},
+            {v: "温泉", r: "おんせん", m: "Hot spring", dv: ["お風呂", "水道"], dr: ["おんぜん", "うんてん"], dm: ["Bath", "Water supply"], isKat: false},
+            {v: "予定", r: "よてい", m: "Schedule", dv: ["天気", "計画"], dr: ["よやく", "よてん"], dm: ["Weather", "Plan"], isKat: false}
         ]
     }
 };
@@ -187,13 +187,13 @@ document.getElementById('start-btn').onclick = () => {
     questions = []; score = 0; currentIdx = 0; sessionLogs = [];
     
     quizLibrary[activeLessonKey].data.forEach(item => {
-        if (selectedStyles.has("Vocab-Meaning")) questions.push({ q: item.k, a: item.m, type: "Vocab-Meaning", dist: item.dm });
-        if (selectedStyles.has("Meaning-Vocab")) questions.push({ q: item.m, a: item.k, type: "Meaning-Vocab", dist: item.dk });
+        if (selectedStyles.has("Vocab-Meaning")) questions.push({ q: item.v, a: item.m, type: "Vocab-Meaning", dist: item.dm });
+        if (selectedStyles.has("Meaning-Vocab")) questions.push({ q: item.m, a: item.v, type: "Meaning-Vocab", dist: item.dv });
         if (selectedStyles.has("Reading-Meaning")) questions.push({ q: item.r, a: item.m, type: "Reading-Meaning", dist: item.dm });
         if (selectedStyles.has("Meaning-Reading")) questions.push({ q: item.m, a: item.r, type: "Meaning-Reading", dist: item.dr });
         if (!item.isKat) {
-            if (selectedStyles.has("Vocab-Reading")) questions.push({ q: item.k, a: item.r, type: "Vocab-Reading", dist: item.dr });
-            if (selectedStyles.has("Reading-Vocab")) questions.push({ q: item.r, a: item.k, type: "Reading-Vocab", dist: item.dk });
+            if (selectedStyles.has("Vocab-Reading")) questions.push({ q: item.v, a: item.r, type: "Vocab-Reading", dist: item.dr });
+            if (selectedStyles.has("Reading-Vocab")) questions.push({ q: item.r, a: item.v, type: "Reading-Vocab", dist: item.dv });
         }
     });
     
