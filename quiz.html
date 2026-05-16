@@ -3,311 +3,444 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mastery Challenge v5.1 - Clean Architecture</title>
+    <title>Japanese Reader Professional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #1a1a2e;
-            --card-bg: #16213e;
-            --border-color: #0f3460;
-            --accent-blue: #3498db;
-            --accent-green: #4ecca3;
-            --error-red: #e94560;
-            --text-dim: #95a5a6;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent: #2563eb;
+            --border: #e2e8f0;
+            --btn-secondary: #e2e8f0;
+            --btn-secondary-hover: #cbd5e1;
         }
 
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-dark); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: #fff; }
-        #quiz-container { background: var(--card-bg); padding: 2.5rem; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); width: 100%; max-width: 750px; text-align: center; border: 1px solid var(--border-color); margin: 20px; min-height: 400px; display: flex; flex-direction: column; justify-content: center; }
-        
-        .hidden { display: none !important; }
+        [data-theme="sepia"] {
+            --bg-main: #f4ecd8;
+            --bg-card: #fdf6e3;
+            --text-main: #5b4636;
+            --text-muted: #8c786a;
+            --accent: #a0522d;
+            --border: #e6dfcc;
+            --btn-secondary: #e6dfcc;
+            --btn-secondary-hover: #d9cfb8;
+        }
 
-        /* Spinner */
-        .spinner { border: 4px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; border-left-color: var(--accent-green); animation: spin 1s linear infinite; margin: 0 auto 1.5rem; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        [data-theme="dark"] {
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --border: #334155;
+            --btn-secondary: #334155;
+            --btn-secondary-hover: #475569;
+        }
 
-        /* Landing Page */
-        .header-title { color: var(--accent-green); margin-bottom: 0.5rem; font-size: 2.2rem; }
-        .sub-text { color: var(--text-dim); margin-bottom: 2rem; }
-        .lesson-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; width: 100%; }
-        .lesson-btn { padding: 25px; background: var(--bg-dark); border: 2px solid var(--border-color); border-radius: 12px; color: #fff; cursor: pointer; transition: 0.3s; font-weight: bold; text-align: center; font-size: 1.2rem; }
-        .lesson-btn:hover { border-color: var(--accent-blue); background: var(--border-color); transform: translateY(-3px); }
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            transition: background-color 0.3s, color 0.3s;
+        }
 
-        /* Selection Screen */
-        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 2rem 0; }
-        .style-btn { padding: 15px; background: var(--bg-dark); border: 2px solid var(--border-color); border-radius: 10px; color: var(--text-dim); cursor: pointer; transition: 0.2s; font-weight: 600; font-size: 0.9rem; }
-        .style-btn.selected { border-color: var(--accent-blue); background: var(--border-color); color: #fff; box-shadow: 0 0 10px rgba(52, 152, 219, 0.3); }
-        .action-btns { display: flex; gap: 12px; justify-content: center; margin-top: 1rem; }
-        .back-btn { padding: 15px 25px; border-radius: 50px; border: 1px solid var(--text-dim); background: transparent; color: var(--text-dim); cursor: pointer; }
+        .app-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+        }
 
-        /* Quiz UI */
-        .type-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-blue); margin-bottom: 0.8rem; font-weight: bold; }
-        .word-display { font-size: 3.5rem; margin-bottom: 2.5rem; color: #fff; font-weight: bold; min-height: 6rem; display: flex; align-items: center; justify-content: center; }
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .option-btn { padding: 22px 15px; font-size: 1.1rem; border: 2px solid var(--border-color); border-radius: 12px; background: var(--bg-dark); color: var(--accent-green); cursor: pointer; transition: 0.2s; font-weight: 600; }
-        .option-btn:hover:not(:disabled) { background: var(--border-color); border-color: var(--accent-green); }
-        .option-btn.correct { background: #2ecc71 !important; border-color: #2ecc71 !important; color: white !important; }
-        .option-btn.wrong { background: var(--error-red) !important; border-color: var(--error-red) !important; color: white !important; }
-        
-        .progress-bar { height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden; margin-bottom: 25px; }
-        .progress-fill { height: 100%; background: var(--accent-blue); width: 0%; transition: 0.4s; }
-        #score-board { margin-top: 25px; font-size: 0.9rem; color: var(--text-dim); border-top: 1px solid var(--border-color); padding-top: 20px; }
-        
-        .final-results-wrap { max-height: 400px; overflow-y: auto; margin: 20px 0; border: 1px solid var(--border-color); border-radius: 8px; }
-        table { width: 100%; border-collapse: collapse; color: #fff; font-size: 0.85rem; }
-        th, td { border: 1px solid var(--border-color); padding: 12px; text-align: left; }
-        th { background: var(--border-color); color: var(--accent-blue); position: sticky; top: 0; }
-        .row-correct { color: #2ecc71; }
-        .row-wrong { color: var(--error-red); }
+        .passage-container {
+            transition: font-size 0.2s, line-height 0.2s;
+        }
 
-        .start-btn { padding: 15px 45px; font-size: 1.2rem; background: var(--accent-green); color: var(--bg-dark); border: none; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .start-btn:disabled { background: #2c3e50; color: #7f8c8d; cursor: not-allowed; opacity: 0.5; }
-        
-        .error-msg { color: var(--error-red); background: rgba(233, 69, 96, 0.1); padding: 20px; border-radius: 12px; border: 1px solid var(--error-red); }
+        .target-vocab {
+            color: var(--accent);
+            font-weight: 700;
+            border-bottom: 2px solid var(--accent);
+            cursor: pointer;
+            padding: 0 2px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .target-vocab:hover {
+            background-color: rgba(37, 99, 235, 0.1);
+        }
+
+        .sentence-node {
+            cursor: pointer;
+            transition: background 0.2s;
+            border-radius: 4px;
+            padding: 2px 0;
+        }
+
+        .sentence-node:hover {
+            background-color: rgba(100, 116, 139, 0.05);
+        }
+
+        .sentence-node.active {
+            background-color: rgba(37, 99, 235, 0.1);
+        }
+
+        .vocab-tooltip {
+            position: absolute;
+            z-index: 100;
+            background: var(--bg-card);
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            min-width: 200px;
+            transform: translate(-50%, -100%);
+            margin-top: -10px;
+        }
+
+        .vocab-tooltip::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 8px 8px 0 8px;
+            border-style: solid;
+            border-color: var(--bg-card) transparent transparent transparent;
+        }
+
+        #settings-drawer {
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #settings-drawer.open {
+            transform: translateX(0);
+        }
+
+        .btn-back {
+            background-color: var(--btn-secondary);
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            background-color: var(--btn-secondary-hover);
+            transform: translateY(-1px);
+        }
     </style>
 </head>
-<body>
+<body class="min-h-screen pb-20 overflow-x-hidden">
 
-<div id="quiz-container">
-    <!-- Status (Loading/Error) -->
-    <div id="status-view" class="hidden">
-        <div id="loader" class="hidden">
-            <div class="spinner"></div>
-            <p id="loader-text">Loading...</p>
+    <nav class="sticky top-0 z-40 app-card px-4 py-3 mb-6 shadow-sm flex items-center justify-between">
+        <div class="flex items-center gap-3 w-full max-w-xs">
+            <select id="passage-selector" class="w-full bg-transparent font-semibold focus:outline-none cursor-pointer text-lg">
+                <option value="">Loading...</option>
+            </select>
         </div>
-        <div id="error-container" class="hidden">
-            <div class="error-msg" id="error-text">An error occurred.</div>
-            <button class="back-btn" style="margin-top: 20px" onclick="location.reload()">Retry</button>
-        </div>
-    </div>
-
-    <!-- 1. Landing Page -->
-    <div id="landing-page">
-        <h1 class="header-title">Mastery Challenge</h1>
-        <p class="sub-text">Select a practice module.</p>
-        <div id="lesson-list" class="lesson-grid"></div>
-    </div>
-
-    <!-- 2. Style Selection -->
-    <div id="selection-screen" class="hidden">
-        <h2 id="selected-lesson-title" style="color: var(--accent-blue);">Loading Title...</h2>
-        <p class="sub-text">Select the challenge types for this session:</p>
-        <div class="selection-grid">
-            <button class="style-btn" data-type="Vocab-Reading">Vocabulary - Reading</button>
-            <button class="style-btn" data-type="Vocab-Meaning">Vocabulary - Meaning</button>
-            <button class="style-btn" data-type="Reading-Vocab">Reading - Vocabulary</button>
-            <button class="style-btn" data-type="Reading-Meaning">Reading - Meaning</button>
-            <button class="style-btn" data-type="Meaning-Vocab">Meaning - Vocabulary</button>
-            <button class="style-btn" data-type="Meaning-Reading">Meaning - Reading</button>
-        </div>
-        <div class="action-btns">
-            <button class="back-btn" onclick="showState('landing-page')">← Back</button>
-            <button id="start-btn" class="start-btn" disabled>Start Session</button>
-        </div>
-    </div>
-
-    <!-- 3. Quiz Gameplay -->
-    <div id="quiz-ui" class="hidden">
-        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
-        <div class="type-label" id="q-type">TYPE</div>
-        <div class="word-display" id="display-text">...</div>
-        <div class="options-grid" id="options"></div>
-        <div id="score-board">Progression: <span id="current-count">0</span> / <span id="total-q">0</span> | Mastery: <span id="score">0</span></div>
-    </div>
-</div>
-
-<script>
-/**
- * APP ENGINE CONFIG
- */
-const MANIFEST_PATH = 'quizdata/manifest.json';
-let currentLessonFullObject = null;
-let currentLessonID = "";
-let questions = [];
-let score = 0;
-let currentIdx = 0;
-let sessionLogs = [];
-let selectedStyles = new Set();
-
-/**
- * UI State Controller
- */
-function showState(stateId) {
-    ['landing-page', 'selection-screen', 'quiz-ui', 'status-view'].forEach(id => {
-        document.getElementById(id).classList.add('hidden');
-    });
-    document.getElementById(stateId).classList.remove('hidden');
-}
-
-function showLoading(text) {
-    showState('status-view');
-    document.getElementById('loader').classList.remove('hidden');
-    document.getElementById('error-container').classList.add('hidden');
-    document.getElementById('loader-text').innerText = text;
-}
-
-function showError(msg) {
-    showState('status-view');
-    document.getElementById('loader').classList.add('hidden');
-    document.getElementById('error-container').classList.remove('hidden');
-    document.getElementById('error-text').innerText = msg;
-}
-
-/**
- * Data Fetching (Manifest & Lesson Data)
- */
-async function loadRepository() {
-    showLoading('Initializing...');
-    try {
-        const response = await fetch(MANIFEST_PATH);
-        if (!response.ok) throw new Error('Manifest not found.');
-        const manifest = await response.json();
-        renderSelector(manifest.lessons);
-        showState('landing-page');
-    } catch (err) {
-        showError(`Init Error: ${err.message}`);
-    }
-}
-
-async function loadLesson(lessonMeta) {
-    showLoading(`Fetching ${lessonMeta.id}...`);
-    try {
-        const response = await fetch(lessonMeta.file);
-        if (!response.ok) throw new Error(`File missing: ${lessonMeta.file}`);
-        const fullData = await response.json();
         
-        // Data format: { title: "...", vocabulary: [...] }
-        currentLessonFullObject = fullData;
-        currentLessonID = lessonMeta.id;
-        
-        document.getElementById('selected-lesson-title').innerText = fullData.title || lessonMeta.id;
-        showState('selection-screen');
-    } catch (err) {
-        showError(`Load Error: ${err.message}`);
-    }
-}
+        <div class="flex items-center gap-2">
+            <button onclick="speakText()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Listen">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+            </button>
+            <button onclick="toggleSettings(true)" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            </button>
+        </div>
+    </nav>
 
-function renderSelector(lessons) {
-    const grid = document.getElementById('lesson-list');
-    grid.innerHTML = '';
-    lessons.forEach(lesson => {
-        const btn = document.createElement('button');
-        btn.className = 'lesson-btn';
-        btn.innerText = lesson.id;
-        btn.onclick = () => loadLesson(lesson);
-        grid.appendChild(btn);
-    });
-}
+    <main class="max-w-2xl mx-auto px-5">
+        <div id="loading-overlay" class="fixed inset-0 bg-white/80 z-50 flex items-center justify-center hidden">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+        </div>
 
-/**
- * Selection Screen Logic
- */
-document.querySelectorAll('.style-btn').forEach(btn => {
-    btn.onclick = () => {
-        const type = btn.dataset.type;
-        selectedStyles.has(type) ? selectedStyles.delete(type) : selectedStyles.add(type);
-        btn.classList.toggle('selected');
-        document.getElementById('start-btn').disabled = (selectedStyles.size === 0);
-    };
-});
+        <div id="content-area" class="app-card rounded-[2rem] p-8 md:p-12 shadow-sm min-h-[60vh] mb-8">
+            <h1 id="passage-title" class="text-3xl font-bold mb-8 pb-4 border-b border-border"></h1>
+            <article id="passage-body" class="passage-container text-2xl leading-[2.2]">
+                <!-- Interactive text will be rendered here -->
+            </article>
+        </div>
 
-document.getElementById('start-btn').onclick = () => {
-    prepareQuestions();
-    showState('quiz-ui');
-    loadQuestion();
-};
+        <div class="flex justify-center pb-10">
+            <a href="index.html" class="btn-back px-8 py-3 rounded-full font-semibold shadow-sm flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back
+            </a>
+        </div>
+    </main>
 
-/**
- * Quiz Processing Logic
- */
-function prepareQuestions() {
-    questions = [];
-    score = 0;
-    currentIdx = 0;
-    sessionLogs = [];
-    
-    const vocabulary = currentLessonFullObject.vocabulary || [];
-    
-    vocabulary.forEach(item => {
-        // v = Vocabulary, r = Reading, m = Meaning
-        // dv = Distractor Vocab, dr = Distractor Reading, dm = Distractor Meaning
-        if (selectedStyles.has("Vocab-Meaning")) questions.push({ q: item.v, a: item.m, type: "Vocab-Meaning", dist: item.dm });
-        if (selectedStyles.has("Meaning-Vocab")) questions.push({ q: item.m, a: item.v, type: "Meaning-Vocab", dist: item.dv });
-        if (selectedStyles.has("Reading-Meaning")) questions.push({ q: item.r, a: item.m, type: "Reading-Meaning", dist: item.dm });
-        if (selectedStyles.has("Meaning-Reading")) questions.push({ q: item.m, a: item.r, type: "Meaning-Reading", dist: item.dr });
-        
-        if (!item.isKat) {
-            if (selectedStyles.has("Vocab-Reading")) questions.push({ q: item.v, a: item.r, type: "Vocab-Reading", dist: item.dr });
-            if (selectedStyles.has("Reading-Vocab")) questions.push({ q: item.r, a: item.v, type: "Reading-Vocab", dist: item.dv });
-        }
-    });
+    <div id="tooltip" class="vocab-tooltip" onclick="hideTooltip()">
+        <div id="tooltip-reading" class="font-bold text-blue-500 leading-tight"></div>
+        <div id="tooltip-meaning" class="text-muted italic mt-1 text-center"></div>
+    </div>
 
-    questions.sort(() => Math.random() - 0.5);
-}
+    <div id="settings-overlay" onclick="toggleSettings(false)" class="fixed inset-0 bg-black/20 z-40 hidden"></div>
+    <aside id="settings-drawer" class="fixed top-0 right-0 h-full w-80 app-card z-50 p-8 shadow-2xl overflow-y-auto">
+        <div class="flex justify-between items-center mb-10">
+            <h2 class="text-xl font-bold">Reading Settings</h2>
+            <button onclick="toggleSettings(false)" class="p-1 hover:bg-slate-100 rounded-lg">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
 
-function loadQuestion() {
-    if (currentIdx >= questions.length) {
-        showFinalResults();
-        return;
-    }
-    const q = questions[currentIdx];
-    document.getElementById('q-type').innerText = q.type;
-    document.getElementById('display-text').innerText = q.q;
-    document.getElementById('total-q').innerText = questions.length;
-    document.getElementById('score').innerText = score;
-    document.getElementById('current-count').innerText = currentIdx + 1;
-    document.getElementById('progress-fill').style.width = `${(currentIdx / questions.length) * 100}%`;
-    
-    const opts = [q.a, ...q.dist].sort(() => Math.random() - 0.5);
-    const div = document.getElementById('options');
-    div.innerHTML = '';
-    
-    opts.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'option-btn';
-        btn.innerText = opt;
-        btn.onclick = () => {
-            document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
-            const isCorrect = (opt === q.a);
-            sessionLogs.push({ type: q.type, word: q.q, response: opt, answer: q.a, correct: isCorrect });
-            
-            if (isCorrect) {
-                score++; btn.classList.add('correct');
-                setTimeout(() => { currentIdx++; loadQuestion(); }, 800);
-            } else {
-                btn.classList.add('wrong');
-                document.querySelectorAll('.option-btn').forEach(b => {
-                    if (b.innerText === q.a) b.classList.add('correct');
-                });
-                setTimeout(() => { currentIdx++; loadQuestion(); }, 3500);
-            }
+        <section class="space-y-8">
+            <div>
+                <label class="block text-sm font-semibold mb-3 uppercase tracking-wider text-muted">Theme</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="setTheme('light')" class="py-2 border rounded-lg bg-white text-slate-900 text-sm font-medium border-slate-200">Light</button>
+                    <button onclick="setTheme('sepia')" class="py-2 border rounded-lg bg-[#f4ecd8] text-[#5b4636] text-sm font-medium border-[#e6dfcc]">Sepia</button>
+                    <button onclick="setTheme('dark')" class="py-2 border rounded-lg bg-[#0f172a] text-white text-sm font-medium border-slate-700">Dark</button>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold mb-3 uppercase tracking-wider text-muted">Text Size</label>
+                <input id="font-slider" type="range" min="16" max="40" value="24" oninput="updateFontSize(this.value)" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                <div class="flex justify-between text-xs mt-2 text-muted">
+                    <span>Small</span>
+                    <span>Large</span>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold mb-3 uppercase tracking-wider text-muted">Spacing</label>
+                <div class="flex gap-2">
+                    <button onclick="updateLineHeight(1.8)" class="flex-1 py-2 border rounded-lg text-sm font-medium">Tight</button>
+                    <button onclick="updateLineHeight(2.2)" class="flex-1 py-2 border rounded-lg text-sm font-medium">Classic</button>
+                    <button onclick="updateLineHeight(2.8)" class="flex-1 py-2 border rounded-lg text-sm font-medium">Wide</button>
+                </div>
+            </div>
+        </section>
+    </aside>
+
+    <script>
+        const state = {
+            currentPassage: null,
+            theme: 'light',
+            fontSize: 24,
+            lineHeight: 2.2,
+            activeWord: null,
+            manifest: null
         };
-        div.appendChild(btn);
-    });
-}
 
-function showFinalResults() {
-    let rows = sessionLogs.map(l => `
-        <tr class="${l.correct ? 'row-correct' : 'row-wrong'}">
-            <td>${l.type} (${l.word})</td>
-            <td>${l.response}</td>
-            <td>${l.answer}</td>
-        </tr>`).join('');
-        
-    document.getElementById('quiz-ui').innerHTML = `
-        <h2 style='color:var(--accent-blue)'>Session Results</h2>
-        <p>${currentLessonID}: ${currentLessonFullObject.title}</p>
-        <p>Mastery: ${score} / ${questions.length}</p>
-        <div class="final-results-wrap">
-            <table>
-                <thead><tr><th>Question</th><th>Selection</th><th>Answer</th></tr></thead>
-                <tbody>${rows}</tbody>
-            </table>
-        </div>
-        <button class="start-btn" onclick="location.reload()">Return to Menu</button>
-    `;
-}
+        const STORAGE_KEY = 'jp_reader_prefs_v3';
+        const DATA_DIR = 'readerdata';
 
-// Bootstrap Application
-loadRepository();
-</script>
+        const elements = {
+            body: document.getElementById('passage-body'),
+            title: document.getElementById('passage-title'),
+            selector: document.getElementById('passage-selector'),
+            tooltip: document.getElementById('tooltip'),
+            tReading: document.getElementById('tooltip-reading'),
+            tMeaning: document.getElementById('tooltip-meaning'),
+            drawer: document.getElementById('settings-drawer'),
+            overlay: document.getElementById('settings-overlay'),
+            loader: document.getElementById('loading-overlay'),
+            fontSlider: document.getElementById('font-slider')
+        };
+
+        function saveSettings() {
+            const prefs = {
+                theme: state.theme,
+                fontSize: state.fontSize,
+                lineHeight: state.lineHeight
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+        }
+
+        function loadSettings() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const prefs = JSON.parse(saved);
+                state.theme = prefs.theme || state.theme;
+                state.fontSize = prefs.fontSize || state.fontSize;
+                state.lineHeight = prefs.lineHeight || state.lineHeight;
+                
+                elements.fontSlider.value = state.fontSize;
+                document.body.setAttribute('data-theme', state.theme);
+            }
+        }
+
+        async function startApp() {
+            loadSettings();
+            updateUISettings(); 
+            
+            setLoader(true);
+            try {
+                const response = await fetch(`${DATA_DIR}/manifest.json`);
+                if (!response.ok) throw new Error("Manifest not found.");
+                state.manifest = await response.json();
+
+                const passagePromises = state.manifest.passages.map(async (p) => {
+                    try {
+                        const res = await fetch(`${DATA_DIR}/${encodeURIComponent(p.file)}`);
+                        if (!res.ok) return null;
+                        const data = await res.json();
+                        return { id: p.id, file: p.file, title: data.title };
+                    } catch (e) {
+                        console.error("Error fetching passage:", p.file, e);
+                        return null;
+                    }
+                });
+
+                const loadedPassages = (await Promise.all(passagePromises)).filter(p => p !== null);
+                renderDropdown(loadedPassages);
+
+                if (loadedPassages.length > 0) {
+                    await loadPassage(loadedPassages[0].file);
+                }
+            } catch (err) {
+                elements.body.innerHTML = `<div class="text-red-500 p-4">Error loading library. Check ${DATA_DIR} folder and manifest.</div>`;
+                console.error(err);
+            } finally {
+                setLoader(false);
+            }
+        }
+
+        function renderDropdown(passages) {
+            elements.selector.innerHTML = passages.map(p => 
+                `<option value="${p.file}">${p.title}</option>`
+            ).join('');
+
+            elements.selector.addEventListener('change', (e) => {
+                if (e.target.value) loadPassage(e.target.value);
+            });
+        }
+
+        async function loadPassage(filename) {
+            setLoader(true);
+            hideTooltip();
+            try {
+                const res = await fetch(`${DATA_DIR}/${encodeURIComponent(filename)}`);
+                state.currentPassage = await res.json();
+                renderPassage();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (err) {
+                elements.title.textContent = "Error";
+                elements.body.textContent = "Could not load file.";
+            } finally {
+                setLoader(false);
+            }
+        }
+
+        function renderPassage() {
+            elements.title.textContent = state.currentPassage.title;
+            
+            const rawContent = state.currentPassage.content;
+            const sentences = rawContent.match(/[^。？！]+[。？！]?/g) || [rawContent];
+
+            const html = sentences.map(sentence => {
+                let processed = sentence;
+                const vocabKeys = Object.keys(state.currentPassage.vocabulary || {})
+                    .sort((a, b) => b.length - a.length);
+
+                vocabKeys.forEach(word => {
+                    const regex = new RegExp(`\\*\\*${word}\\*\\*`, 'g');
+                    processed = processed.replace(regex, 
+                        `<span class="target-vocab" onclick="showTooltip(event, '${word}')">${word}</span>`
+                    );
+                });
+
+                return `<span class="sentence-node" onclick="highlightSentence(this)">${processed}</span>`;
+            }).join('');
+
+            elements.body.innerHTML = html;
+            updateUISettings();
+        }
+
+        function showTooltip(event, word) {
+            event.stopPropagation();
+            if (state.activeWord === word) {
+                hideTooltip();
+                return;
+            }
+
+            state.activeWord = word;
+            const data = state.currentPassage.vocabulary[word];
+            const rect = event.target.getBoundingClientRect();
+
+            elements.tReading.textContent = `[ ${data.reading} ]`;
+            elements.tMeaning.textContent = data.meaning;
+            
+            elements.tReading.style.fontSize = `${state.fontSize}px`;
+            elements.tMeaning.style.fontSize = `${Math.max(16, state.fontSize * 0.8)}px`;
+
+            elements.tooltip.style.display = 'flex';
+            const scrollY = window.scrollY || window.pageYOffset;
+            
+            let leftPos = rect.left + (rect.width / 2);
+            const tWidth = elements.tooltip.offsetWidth;
+            
+            if (leftPos < tWidth/2) leftPos = tWidth/2 + 10;
+            if (leftPos > window.innerWidth - tWidth/2) leftPos = window.innerWidth - tWidth/2 - 10;
+
+            elements.tooltip.style.left = `${leftPos}px`;
+            elements.tooltip.style.top = `${rect.top + scrollY}px`;
+        }
+
+        function hideTooltip() {
+            elements.tooltip.style.display = 'none';
+            state.activeWord = null;
+        }
+
+        function setTheme(t) {
+            state.theme = t;
+            document.body.setAttribute('data-theme', t);
+            saveSettings();
+            toggleSettings(false);
+        }
+
+        function updateFontSize(val) {
+            state.fontSize = parseInt(val);
+            elements.body.style.fontSize = `${val}px`;
+            saveSettings();
+        }
+
+        function updateLineHeight(val) {
+            state.lineHeight = val;
+            elements.body.style.lineHeight = val;
+            saveSettings();
+        }
+
+        function updateUISettings() {
+            elements.body.style.fontSize = `${state.fontSize}px`;
+            elements.body.style.lineHeight = state.lineHeight;
+            document.body.setAttribute('data-theme', state.theme);
+        }
+
+        function highlightSentence(el) {
+            document.querySelectorAll('.sentence-node').forEach(s => s.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function toggleSettings(show) {
+            elements.drawer.classList.toggle('open', show);
+            elements.overlay.classList.toggle('hidden', !show);
+        }
+
+        function setLoader(val) {
+            elements.loader.classList.toggle('hidden', !val);
+        }
+
+        function speakText() {
+            if (!state.currentPassage) return;
+            window.speechSynthesis.cancel();
+            
+            const cleanText = state.currentPassage.content.replace(/\*\*/g, '');
+            const msg = new SpeechSynthesisUtterance(cleanText);
+            msg.lang = 'ja-JP';
+            msg.rate = 0.9;
+            window.speechSynthesis.speak(msg);
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.target-vocab')) hideTooltip();
+        });
+
+        window.onload = startApp;
+    </script>
 </body>
 </html>
