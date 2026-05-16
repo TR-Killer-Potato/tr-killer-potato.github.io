@@ -1,6 +1,6 @@
 {
 "passages": [
-{ "id": "p1", "title": "日本の四季 (Four Seasons of Japan)", "file": "p1.json" },
-{ "id": "p2", "title": "週末の予定 (Weekend Plans)", "file": "p2.json" }
+{ "id": "p1", "title": "日本の四季 (Four Seasons of Japan)", "file": "日本の四季.json" },
+{ "id": "p2", "title": "週末の予定 (Weekend Plans)", "file": "朝の習慣.json" }
 ]
 }
