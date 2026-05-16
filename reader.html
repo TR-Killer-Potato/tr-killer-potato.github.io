@@ -14,6 +14,8 @@
             --text-muted: #64748b;
             --accent: #2563eb;
             --border: #e2e8f0;
+            --btn-secondary: #e2e8f0;
+            --btn-secondary-hover: #cbd5e1;
         }
 
         [data-theme="sepia"] {
@@ -23,6 +25,8 @@
             --text-muted: #8c786a;
             --accent: #a0522d;
             --border: #e6dfcc;
+            --btn-secondary: #e6dfcc;
+            --btn-secondary-hover: #d9cfb8;
         }
 
         [data-theme="dark"] {
@@ -32,6 +36,8 @@
             --text-muted: #94a3b8;
             --accent: #38bdf8;
             --border: #334155;
+            --btn-secondary: #334155;
+            --btn-secondary-hover: #475569;
         }
 
         body {
@@ -50,7 +56,6 @@
             transition: font-size 0.2s, line-height 0.2s;
         }
 
-        /* Target Vocabulary Styling */
         .target-vocab {
             color: var(--accent);
             font-weight: 700;
@@ -65,7 +70,6 @@
             background-color: rgba(37, 99, 235, 0.1);
         }
 
-        /* Sentence Highlighting */
         .sentence-node {
             cursor: pointer;
             transition: background 0.2s;
@@ -80,7 +84,6 @@
             background-color: rgba(37, 99, 235, 0.1);
         }
 
-        /* Floating Window (Tooltip) */
         .vocab-tooltip {
             position: absolute;
             z-index: 100;
@@ -108,7 +111,6 @@
             border-color: var(--bg-card) transparent transparent transparent;
         }
 
-        /* Settings Drawer */
         #settings-drawer {
             transform: translateX(100%);
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -116,6 +118,17 @@
 
         #settings-drawer.open {
             transform: translateX(0);
+        }
+
+        .btn-back {
+            background-color: var(--btn-secondary);
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            background-color: var(--btn-secondary-hover);
+            transform: translateY(-1px);
         }
     </style>
 </head>
@@ -143,11 +156,18 @@
             <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
         </div>
 
-        <div id="content-area" class="app-card rounded-[2rem] p-8 md:p-12 shadow-sm min-h-[60vh]">
+        <div id="content-area" class="app-card rounded-[2rem] p-8 md:p-12 shadow-sm min-h-[60vh] mb-8">
             <h1 id="passage-title" class="text-3xl font-bold mb-8 pb-4 border-b border-border"></h1>
             <article id="passage-body" class="passage-container text-2xl leading-[2.2]">
                 <!-- Interactive text will be rendered here -->
             </article>
+        </div>
+
+        <div class="flex justify-center pb-10">
+            <a href="index.html" class="btn-back px-8 py-3 rounded-full font-semibold shadow-sm flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back
+            </a>
         </div>
     </main>
 
@@ -166,7 +186,7 @@
         </div>
 
         <section class="space-y-8">
-            <!-- Theme -->
+            <!-- Theme Selection -->
             <div>
                 <label class="block text-sm font-semibold mb-3 uppercase tracking-wider text-muted">Theme</label>
                 <div class="grid grid-cols-3 gap-2">
@@ -176,17 +196,17 @@
                 </div>
             </div>
 
-            <!-- Font Size -->
+            <!-- Font Size Control -->
             <div>
                 <label class="block text-sm font-semibold mb-3 uppercase tracking-wider text-muted">Text Size</label>
-                <input type="range" min="16" max="40" value="24" oninput="updateFontSize(this.value)" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                <input id="font-slider" type="range" min="16" max="40" value="24" oninput="updateFontSize(this.value)" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
                 <div class="flex justify-between text-xs mt-2 text-muted">
                     <span>Small</span>
                     <span>Large</span>
                 </div>
             </div>
 
-            <!-- Line Height -->
+            <!-- Spacing Control -->
             <div>
                 <label class="block text-sm font-semibold mb-3 uppercase tracking-wider text-muted">Spacing</label>
                 <div class="flex gap-2">
@@ -208,22 +228,47 @@
             manifest: null
         };
 
+        const STORAGE_KEY = 'jp_reader_prefs_v2';
+
         const elements = {
-            selector: document.getElementById('passage-selector'),
-            title: document.getElementById('passage-title'),
             body: document.getElementById('passage-body'),
+            title: document.getElementById('passage-title'),
+            selector: document.getElementById('passage-selector'),
             tooltip: document.getElementById('tooltip'),
             tReading: document.getElementById('tooltip-reading'),
             tMeaning: document.getElementById('tooltip-meaning'),
             drawer: document.getElementById('settings-drawer'),
             overlay: document.getElementById('settings-overlay'),
-            loader: document.getElementById('loading-overlay')
+            loader: document.getElementById('loading-overlay'),
+            fontSlider: document.getElementById('font-slider')
         };
 
-        /**
-         * Initialize App: Load manifest and set defaults
-         */
+        function saveSettings() {
+            const prefs = {
+                theme: state.theme,
+                fontSize: state.fontSize,
+                lineHeight: state.lineHeight
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+        }
+
+        function loadSettings() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const prefs = JSON.parse(saved);
+                state.theme = prefs.theme || state.theme;
+                state.fontSize = prefs.fontSize || state.fontSize;
+                state.lineHeight = prefs.lineHeight || state.lineHeight;
+                
+                elements.fontSlider.value = state.fontSize;
+                document.body.setAttribute('data-theme', state.theme);
+            }
+        }
+
         async function startApp() {
+            loadSettings();
+            updateUISettings(); 
+            
             setLoader(true);
             try {
                 const response = await fetch('data/manifest.json');
@@ -234,17 +279,18 @@
                 const passagePromises = state.manifest.passages.map(async (p) => {
                     try {
                         const res = await fetch(`data/${encodeURIComponent(p.file)}`);
+                        if (!res.ok) return null;
                         const data = await res.json();
                         return { id: p.id, file: p.file, title: data.title };
-                    } catch {
-                        return { id: p.id, file: p.file, title: `Error: ${p.file}` };
+                    } catch (e) {
+                        console.error("Error fetching passage:", p.file, e);
+                        return null;
                     }
                 });
 
-                const loadedPassages = await Promise.all(passagePromises);
+                const loadedPassages = (await Promise.all(passagePromises)).filter(p => p !== null);
                 renderDropdown(loadedPassages);
 
-                // Initial Load
                 if (loadedPassages.length > 0) {
                     await loadPassage(loadedPassages[0].file);
                 }
@@ -266,9 +312,6 @@
             });
         }
 
-        /**
-         * Core Loading Logic
-         */
         async function loadPassage(filename) {
             setLoader(true);
             hideTooltip();
@@ -276,6 +319,7 @@
                 const res = await fetch(`data/${encodeURIComponent(filename)}`);
                 state.currentPassage = await res.json();
                 renderPassage();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (err) {
                 elements.title.textContent = "Error";
                 elements.body.textContent = "Could not load file.";
@@ -284,21 +328,15 @@
             }
         }
 
-        /**
-         * Render content with sentence tracking and vocab spans
-         */
         function renderPassage() {
             elements.title.textContent = state.currentPassage.title;
             
-            // 1. Break content into sentences for highlighting (splitting by Japanese period)
             const rawContent = state.currentPassage.content;
             const sentences = rawContent.match(/[^。]+。?/g) || [rawContent];
 
             const html = sentences.map(sentence => {
                 let processed = sentence;
-                
-                // 2. Sort vocab by length descending for greedy matching
-                const vocabKeys = Object.keys(state.currentPassage.vocabulary)
+                const vocabKeys = Object.keys(state.currentPassage.vocabulary || {})
                     .sort((a, b) => b.length - a.length);
 
                 vocabKeys.forEach(word => {
@@ -315,9 +353,6 @@
             updateUISettings();
         }
 
-        /**
-         * Tooltip Management
-         */
         function showTooltip(event, word) {
             event.stopPropagation();
             if (state.activeWord === word) {
@@ -332,16 +367,15 @@
             elements.tReading.textContent = `[ ${data.reading} ]`;
             elements.tMeaning.textContent = data.meaning;
             
-            // Set tooltip font size to match passage
             elements.tReading.style.fontSize = `${state.fontSize}px`;
-            elements.tMeaning.style.fontSize = `${state.fontSize * 0.85}px`;
+            elements.tMeaning.style.fontSize = `${Math.max(16, state.fontSize * 0.8)}px`;
 
             elements.tooltip.style.display = 'flex';
             const scrollY = window.scrollY || window.pageYOffset;
-            let leftPos = rect.left + (rect.width / 2);
             
-            // Constraint check for screen edges
+            let leftPos = rect.left + (rect.width / 2);
             const tWidth = elements.tooltip.offsetWidth;
+            
             if (leftPos < tWidth/2) leftPos = tWidth/2 + 10;
             if (leftPos > window.innerWidth - tWidth/2) leftPos = window.innerWidth - tWidth/2 - 10;
 
@@ -354,28 +388,29 @@
             state.activeWord = null;
         }
 
-        /**
-         * UI State Adjustments
-         */
         function setTheme(t) {
             state.theme = t;
             document.body.setAttribute('data-theme', t);
+            saveSettings();
             toggleSettings(false);
         }
 
         function updateFontSize(val) {
-            state.fontSize = val;
+            state.fontSize = parseInt(val);
             elements.body.style.fontSize = `${val}px`;
+            saveSettings();
         }
 
         function updateLineHeight(val) {
             state.lineHeight = val;
             elements.body.style.lineHeight = val;
+            saveSettings();
         }
 
         function updateUISettings() {
             elements.body.style.fontSize = `${state.fontSize}px`;
             elements.body.style.lineHeight = state.lineHeight;
+            document.body.setAttribute('data-theme', state.theme);
         }
 
         function highlightSentence(el) {
@@ -392,14 +427,10 @@
             elements.loader.classList.toggle('hidden', !val);
         }
 
-        /**
-         * Text-to-Speech
-         */
         function speakText() {
             if (!state.currentPassage) return;
             window.speechSynthesis.cancel();
             
-            // Strip the ** markers for speaking
             const cleanText = state.currentPassage.content.replace(/\*\*/g, '');
             const msg = new SpeechSynthesisUtterance(cleanText);
             msg.lang = 'ja-JP';
@@ -407,7 +438,6 @@
             window.speechSynthesis.speak(msg);
         }
 
-        // Global Event Listeners
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.target-vocab')) hideTooltip();
         });
