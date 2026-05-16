@@ -74,6 +74,7 @@
             cursor: pointer;
             transition: background 0.2s;
             border-radius: 4px;
+            padding: 2px 0;
         }
 
         .sentence-node:hover {
@@ -186,7 +187,6 @@
         </div>
 
         <section class="space-y-8">
-            <!-- Theme Selection -->
             <div>
                 <label class="block text-sm font-semibold mb-3 uppercase tracking-wider text-muted">Theme</label>
                 <div class="grid grid-cols-3 gap-2">
@@ -196,7 +196,6 @@
                 </div>
             </div>
 
-            <!-- Font Size Control -->
             <div>
                 <label class="block text-sm font-semibold mb-3 uppercase tracking-wider text-muted">Text Size</label>
                 <input id="font-slider" type="range" min="16" max="40" value="24" oninput="updateFontSize(this.value)" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
@@ -206,7 +205,6 @@
                 </div>
             </div>
 
-            <!-- Spacing Control -->
             <div>
                 <label class="block text-sm font-semibold mb-3 uppercase tracking-wider text-muted">Spacing</label>
                 <div class="flex gap-2">
@@ -228,7 +226,8 @@
             manifest: null
         };
 
-        const STORAGE_KEY = 'jp_reader_prefs_v2';
+        const STORAGE_KEY = 'jp_reader_prefs_v3';
+        const DATA_DIR = 'readerdata';
 
         const elements = {
             body: document.getElementById('passage-body'),
@@ -271,14 +270,13 @@
             
             setLoader(true);
             try {
-                const response = await fetch('data/manifest.json');
+                const response = await fetch(`${DATA_DIR}/manifest.json`);
                 if (!response.ok) throw new Error("Manifest not found.");
                 state.manifest = await response.json();
 
-                // Fetch titles from every file to build the dropdown
                 const passagePromises = state.manifest.passages.map(async (p) => {
                     try {
-                        const res = await fetch(`data/${encodeURIComponent(p.file)}`);
+                        const res = await fetch(`${DATA_DIR}/${encodeURIComponent(p.file)}`);
                         if (!res.ok) return null;
                         const data = await res.json();
                         return { id: p.id, file: p.file, title: data.title };
@@ -295,7 +293,7 @@
                     await loadPassage(loadedPassages[0].file);
                 }
             } catch (err) {
-                elements.body.innerHTML = `<div class="text-red-500 p-4">Error loading library. Check data folder.</div>`;
+                elements.body.innerHTML = `<div class="text-red-500 p-4">Error loading library. Check ${DATA_DIR} folder and manifest.</div>`;
                 console.error(err);
             } finally {
                 setLoader(false);
@@ -316,7 +314,7 @@
             setLoader(true);
             hideTooltip();
             try {
-                const res = await fetch(`data/${encodeURIComponent(filename)}`);
+                const res = await fetch(`${DATA_DIR}/${encodeURIComponent(filename)}`);
                 state.currentPassage = await res.json();
                 renderPassage();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -332,7 +330,7 @@
             elements.title.textContent = state.currentPassage.title;
             
             const rawContent = state.currentPassage.content;
-            const sentences = rawContent.match(/[^。]+。?/g) || [rawContent];
+            const sentences = rawContent.match(/[^。？！]+[。？！]?/g) || [rawContent];
 
             const html = sentences.map(sentence => {
                 let processed = sentence;
