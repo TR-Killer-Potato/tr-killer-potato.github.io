@@ -3,221 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Japanese Vocabulary Reader</title>
+    <title>Japanese Reader App</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-blue: #2563eb;
+            --bg-slate: #f8fafc;
+        }
         body {
             font-family: 'Inter', 'Noto Sans JP', sans-serif;
-            background-color: #f8fafc;
+            background-color: var(--bg-slate);
+            -webkit-tap-highlight-color: transparent;
         }
-        .passage-text {
-            line-height: 2.2;
-            letter-spacing: 0.05em;
+        .passage-container {
+            line-height: 2.4;
+            letter-spacing: 0.03em;
         }
         .target-vocab {
+            color: var(--primary-blue);
+            font-weight: 700;
+            border-bottom: 2px solid #93c5fd;
             cursor: pointer;
-            border-bottom: 2px solid #3b82f6;
-            transition: background-color 0.2s;
             padding: 0 2px;
             border-radius: 4px;
+            transition: all 0.2s ease;
         }
-        .target-vocab:hover {
+        .target-vocab:active {
             background-color: #dbeafe;
         }
         .vocab-tooltip {
             position: absolute;
-            z-index: 50;
+            z-index: 100;
             background: white;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 12px 16px;
-            pointer-events: auto;
             display: none;
-            transform: translateY(-10px);
-            animation: fadeIn 0.2s ease-out forwards;
+            flex-direction: column;
+            align-items: center;
+            min-width: 180px;
+            pointer-events: auto;
+            transform: translate(-50%, -100%);
+            margin-top: -10px;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(-10px); }
+        .vocab-tooltip::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 8px 8px 0 8px;
+            border-style: solid;
+            border-color: white transparent transparent transparent;
         }
-        /* Loading Spinner */
-        .loader {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3b82f6;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
+        .animate-pop {
+            animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes popIn {
+            from { opacity: 0; transform: translate(-50%, -90%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -100%) scale(1); }
         }
     </style>
 </head>
-<body class="min-h-screen text-slate-800">
+<body class="min-h-screen text-slate-900 pb-20">
 
-    <script>
-        let currentPassage = null;
-        let activeTooltip = null;
-        let manifest = null;
-
-        /**
-         * Initialization: Fetch the manifest and load the first passage.
-         */
-        async function initApp() {
-            try {
-                // 1. Fetch the manifest list
-                const response = await fetch('data/manifest.json');
-                if (!response.ok) throw new Error('Could not load manifest');
-                manifest = await response.json();
-                
-                renderSelector(manifest.passages);
-
-                // 2. Load the first passage by default
-                if (manifest.passages.length > 0) {
-                    await loadPassage(manifest.passages[0]);
-                }
-            } catch (err) {
-                document.getElementById('display-title').textContent = "Error loading data.";
-                document.getElementById('passage-container').innerHTML = `<p class="text-red-500 text-lg">Make sure the 'data' folder and 'manifest.json' exist in the same directory.</p>`;
-            }
+    <div class="max-w-2xl mx-auto px-5 py-8 md:py-12">
+        <header class="mb-8">
+            <h1 class="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-4 text-center">Japanese Reading Practice</h1>
             
-            // Global click listener to close tooltip
-            document.addEventListener('click', (e) => {
-                if (activeTooltip && !e.target.closest('.target-vocab') && !e.target.closest('.vocab-tooltip')) {
-                    hideTooltip();
-                }
-            });
-        }
-
-        function renderSelector(passages) {
-            const selector = document.getElementById('passage-selector');
-            selector.innerHTML = passages.map(p => 
-                `<option value="${p.id}">${p.title}</option>`
-            ).join('');
-            
-            selector.addEventListener('change', async (e) => {
-                const selected = passages.find(p => p.id === e.target.value);
-                await loadPassage(selected);
-            });
-        }
-
-        /**
-         * Fetches a specific JSON file based on selection.
-         */
-        async function loadPassage(passageMeta) {
-            hideTooltip();
-            const container = document.getElementById('passage-container');
-            const titleEl = document.getElementById('display-title');
-            
-            titleEl.innerHTML = `<span class="loader mr-2"></span> Loading...`;
-            container.innerHTML = "";
-
-            try {
-                const response = await fetch(`data/${passageMeta.file}`);
-                if (!response.ok) throw new Error('File not found');
-                currentPassage = await response.json();
-
-                titleEl.textContent = currentPassage.title;
-                
-                // Process the content string
-                let formattedText = currentPassage.content;
-                Object.keys(currentPassage.vocabulary).forEach(word => {
-                    const regex = new RegExp(`\\*\\*${word}\\*\\*`, 'g');
-                    formattedText = formattedText.replace(regex, 
-                        `<span class="target-vocab font-bold text-blue-700" onclick="handleVocabClick(event, '${word}')">${word}</span>`
-                    );
-                });
-
-                container.innerHTML = formattedText;
-            } catch (err) {
-                titleEl.textContent = "Error";
-                container.innerHTML = "Could not load the passage file.";
-            }
-        }
-
-        function handleVocabClick(event, word) {
-            event.stopPropagation();
-            
-            if (activeTooltip && activeTooltip.trigger === event.target) {
-                hideTooltip();
-                return;
-            }
-
-            const info = currentPassage.vocabulary[word];
-            const rect = event.target.getBoundingClientRect();
-            showTooltip(rect, info, event.target);
-        }
-
-        function showTooltip(rect, info, triggerElement) {
-            const tooltip = document.getElementById('tooltip');
-            const readingEl = document.getElementById('tooltip-reading');
-            const meaningEl = document.getElementById('tooltip-meaning');
-
-            readingEl.textContent = `[${info.reading}]`;
-            meaningEl.textContent = info.meaning;
-
-            tooltip.style.display = 'block';
-            
-            const scrollY = window.scrollY || window.pageYOffset;
-            const tooltipWidth = tooltip.offsetWidth;
-            const left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
-            const top = rect.top + scrollY - tooltip.offsetHeight;
-
-            tooltip.style.left = `${Math.max(10, Math.min(left, window.innerWidth - tooltipWidth - 10))}px`;
-            tooltip.style.top = `${top}px`;
-
-            activeTooltip = { element: tooltip, trigger: triggerElement };
-        }
-
-        function hideTooltip() {
-            const tooltip = document.getElementById('tooltip');
-            tooltip.style.display = 'none';
-            activeTooltip = null;
-        }
-
-        window.onload = initApp;
-    </script>
-
-    <div class="max-w-2xl mx-auto px-4 py-8 md:py-12">
-        
-        <header class="mb-10 text-center">
-            <h1 class="text-3xl font-bold text-slate-900 mb-6">Japanese Reader</h1>
-            <div class="inline-block relative w-full max-w-xs">
-                <label class="block text-sm font-medium text-slate-500 mb-2 text-left">Select Passage:</label>
-                <select id="passage-selector" class="block appearance-none w-full bg-white border border-slate-200 text-slate-700 py-3 px-4 pr-8 rounded-xl leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm cursor-pointer">
-                    <option>Loading passages...</option>
+            <div class="relative max-w-xs mx-auto">
+                <select id="passage-selector" class="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm text-lg cursor-pointer">
+                    <option value="">Loading passages...</option>
                 </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 pt-6 text-slate-700">
-                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
             </div>
         </header>
 
-        <main class="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-slate-100 relative">
-            <h2 id="display-title" class="text-xl font-bold text-blue-600 mb-8 border-b border-slate-50 pb-4">Initializing...</h2>
+        <main id="app-content" class="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-sm border border-slate-100 relative min-h-[300px]">
+            <div id="loading-state" class="absolute inset-0 flex items-center justify-center bg-white rounded-[2.5rem] z-10">
+                <div class="flex flex-col items-center">
+                    <div class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            </div>
+
+            <h2 id="passage-title" class="text-2xl font-bold text-slate-900 mb-8 pb-4 border-b border-slate-50"></h2>
             
-            <article id="passage-container" class="passage-text text-2xl text-slate-800 leading-relaxed">
-                <!-- Content injected by JS -->
+            <article id="passage-body" class="passage-container text-2xl text-slate-800">
+                <!-- Content injected here -->
             </article>
         </main>
 
         <footer class="mt-8 text-center text-slate-400 text-sm">
-            Tap on <span class="font-bold text-blue-600">bolded words</span> to see their meaning.
+            Tap on <span class="text-blue-500 font-bold">blue underlined words</span> for readings.
         </footer>
     </div>
 
     <div id="tooltip" class="vocab-tooltip" onclick="hideTooltip()">
-        <div class="flex flex-col items-center">
-            <div id="tooltip-reading" class="text-2xl text-blue-600 font-bold mb-1"></div>
-            <div id="tooltip-meaning" class="text-2xl text-slate-600 italic"></div>
-            <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-r border-b border-slate-200 rotate-45"></div>
-        </div>
+        <div id="tooltip-reading" class="text-2xl font-bold text-blue-600 leading-tight"></div>
+        <div id="tooltip-meaning" class="text-2xl text-slate-500 italic mt-1 text-center"></div>
     </div>
 
+    <script>
+        let manifestData = null;
+        let currentPassageData = null;
+        let activeWord = null;
+
+        const elements = {
+            selector: document.getElementById('passage-selector'),
+            title: document.getElementById('passage-title'),
+            body: document.getElementById('passage-body'),
+            loader: document.getElementById('loading-state'),
+            tooltip: document.getElementById('tooltip'),
+            tReading: document.getElementById('tooltip-reading'),
+            tMeaning: document.getElementById('tooltip-meaning')
+        };
+
+        /**
+         * Loads the manifest and then pre-fetches all JSON files 
+         * to use their internal titles for the selector.
+         */
+        async function startApp() {
+            try {
+                const response = await fetch('data/manifest.json');
+                if (!response.ok) throw new Error('Manifest not found');
+                manifestData = await response.json();
+
+                // Fetch each JSON file to get the internal titles exclusively
+                const fetchPassages = manifestData.passages.map(async (p) => {
+                    const res = await fetch(`data/${p.file}`);
+                    const data = await res.json();
+                    return { ...p, title: data.title }; // Merge title from JSON into manifest meta
+                });
+
+                const passagesWithTitles = await Promise.all(fetchPassages);
+                populateSelector(passagesWithTitles);
+
+                if (passagesWithTitles.length > 0) {
+                    await loadPassage(passagesWithTitles[0].file);
+                }
+            } catch (err) {
+                elements.body.innerHTML = `<p class="text-red-500">Error: Could not load data. Ensure the 'data' folder and 'manifest.json' are present.</p>`;
+                elements.loader.style.display = 'none';
+            }
+        }
+
+        function populateSelector(passages) {
+            elements.selector.innerHTML = passages.map(p => 
+                `<option value="${p.file}">${p.title}</option>`
+            ).join('');
+
+            elements.selector.addEventListener('change', (e) => {
+                if (e.target.value) loadPassage(e.target.value);
+            });
+        }
+
+        async function loadPassage(filename) {
+            elements.loader.style.display = 'flex';
+            hideTooltip();
+
+            try {
+                const response = await fetch(`data/${filename}`);
+                currentPassageData = await response.json();
+                renderPassage();
+            } catch (err) {
+                elements.title.textContent = "Error";
+                elements.body.textContent = "Failed to fetch passage data.";
+            } finally {
+                elements.loader.style.display = 'none';
+            }
+        }
+
+        function renderPassage() {
+            elements.title.textContent = currentPassageData.title;
+            let html = currentPassageData.content;
+
+            // Sort vocabulary keys by length (longest first) to prevent partial replacement bugs
+            const keys = Object.keys(currentPassageData.vocabulary).sort((a, b) => b.length - a.length);
+
+            keys.forEach(word => {
+                // Regex looks for literal double asterisks around the word
+                const regex = new RegExp(`\\*\\*${word}\\*\\*`, 'g');
+                html = html.replace(regex, 
+                    `<span class="target-vocab" onclick="showTooltip(event, '${word}')">${word}</span>`
+                );
+            });
+
+            elements.body.innerHTML = html;
+        }
+
+        function showTooltip(event, word) {
+            event.stopPropagation();
+            
+            if (activeWord === word) {
+                hideTooltip();
+                return;
+            }
+
+            activeWord = word;
+            const data = currentPassageData.vocabulary[word];
+            const rect = event.target.getBoundingClientRect();
+
+            elements.tReading.textContent = `[ ${data.reading} ]`;
+            elements.tMeaning.textContent = data.meaning;
+
+            elements.tooltip.style.display = 'flex';
+            elements.tooltip.classList.remove('animate-pop');
+            void elements.tooltip.offsetWidth; // Trigger reflow
+            elements.tooltip.classList.add('animate-pop');
+
+            const scrollY = window.scrollY || window.pageYOffset;
+            let leftPos = rect.left + (rect.width / 2);
+            
+            elements.tooltip.style.left = `${leftPos}px`;
+            elements.tooltip.style.top = `${rect.top + scrollY}px`;
+        }
+
+        function hideTooltip() {
+            elements.tooltip.style.display = 'none';
+            activeWord = null;
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.target-vocab')) hideTooltip();
+        });
+
+        window.onload = startApp;
+    </script>
 </body>
 </html>
