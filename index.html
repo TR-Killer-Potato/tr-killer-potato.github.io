@@ -70,8 +70,8 @@
 <body class="min-h-screen text-slate-900 pb-20">
 
     <div class="max-w-2xl mx-auto px-5 py-8 md:py-12">
-        <header class="mb-8">
-            <h1 class="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-4 text-center">Japanese Reading Practice</h1>
+        <header class="mb-8 text-center">
+            <h1 class="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-4">Japanese Reading Practice</h1>
             
             <div class="relative max-w-xs mx-auto">
                 <select id="passage-selector" class="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm text-lg cursor-pointer">
@@ -84,7 +84,7 @@
         </header>
 
         <main id="app-content" class="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-sm border border-slate-100 relative min-h-[300px]">
-            <div id="loading-state" class="absolute inset-0 flex items-center justify-center bg-white rounded-[2.5rem] z-10">
+            <div id="loading-state" class="absolute inset-0 flex items-center justify-center bg-white rounded-[2.5rem] z-10" style="display: none;">
                 <div class="flex flex-col items-center">
                     <div class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                 </div>
@@ -93,7 +93,7 @@
             <h2 id="passage-title" class="text-2xl font-bold text-slate-900 mb-8 pb-4 border-b border-slate-50"></h2>
             
             <article id="passage-body" class="passage-container text-2xl text-slate-800">
-                <!-- Content injected here -->
+                <!-- Content will be injected here -->
             </article>
         </main>
 
@@ -102,6 +102,7 @@
         </footer>
     </div>
 
+    <!-- Tooltip Element -->
     <div id="tooltip" class="vocab-tooltip" onclick="hideTooltip()">
         <div id="tooltip-reading" class="text-2xl font-bold text-blue-600 leading-tight"></div>
         <div id="tooltip-meaning" class="text-2xl text-slate-500 italic mt-1 text-center"></div>
@@ -123,31 +124,45 @@
         };
 
         /**
-         * Initialization logic
+         * Main start function with Japanese filename support
          */
         async function startApp() {
+            elements.loader.style.display = 'flex';
             try {
-                // Fetch the manifest which holds the 'id' and 'file' mapping
+                // Fetch the manifest
                 const response = await fetch('data/manifest.json');
-                if (!response.ok) throw new Error('Manifest not found');
+                if (!response.ok) throw new Error(`Manifest not found (Status: ${response.status})`);
                 manifestData = await response.json();
 
-                // Fetch each JSON file to get the internal titles for the UI selector
+                // Fetch titles from each passage file
                 const fetchPassages = manifestData.passages.map(async (p) => {
-                    const res = await fetch(`data/${p.file}`);
+                    // CRITICAL: encodeURIComponent handles Japanese characters in the filename
+                    const encodedFile = encodeURIComponent(p.file);
+                    const res = await fetch(`data/${encodedFile}`);
+                    if (!res.ok) {
+                        console.error(`Failed to load file: data/${p.file}`);
+                        return { id: p.id, file: p.file, title: `Error: ${p.file}` };
+                    }
                     const data = await res.json();
-                    // Merge manifest 'id' with the 'title' from the passage file
                     return { id: p.id, file: p.file, title: data.title };
                 });
 
                 const passagesWithTitles = await Promise.all(fetchPassages);
                 populateSelector(passagesWithTitles);
 
+                // Load initial passage
                 if (passagesWithTitles.length > 0) {
                     await loadPassage(passagesWithTitles[0].file);
                 }
             } catch (err) {
-                elements.body.innerHTML = `<p class="text-red-500">Error: Could not load data. Ensure the 'data' folder and 'manifest.json' are correctly placed.</p>`;
+                console.error(err);
+                elements.body.innerHTML = `
+                    <div class="text-red-500 p-4 bg-red-50 rounded-xl">
+                        <p class="font-bold">Error Loading App</p>
+                        <p class="text-sm mt-2">${err.message}</p>
+                        <p class="text-xs mt-4 text-slate-500 italic">Check console for details. Ensure you are using a local server (like Live Server) or GitHub Pages.</p>
+                    </div>`;
+            } finally {
                 elements.loader.style.display = 'none';
             }
         }
@@ -167,13 +182,16 @@
             hideTooltip();
 
             try {
-                const response = await fetch(`data/${filename}`);
-                // The passage data here is now "pure": { title, content, vocabulary }
+                const encodedFile = encodeURIComponent(filename);
+                const response = await fetch(`data/${encodedFile}`);
+                if (!response.ok) throw new Error(`Passage file not found: ${filename}`);
+                
                 currentPassageData = await response.json();
                 renderPassage();
             } catch (err) {
-                elements.title.textContent = "Error";
-                elements.body.textContent = "Failed to fetch passage data.";
+                elements.title.textContent = "Load Error";
+                elements.body.textContent = `Could not load "${filename}". Check if the file exists in the /data folder.`;
+                console.error(err);
             } finally {
                 elements.loader.style.display = 'none';
             }
@@ -183,9 +201,11 @@
             elements.title.textContent = currentPassageData.title;
             let html = currentPassageData.content;
 
+            // Sort vocabulary by length descending to handle nested words properly
             const keys = Object.keys(currentPassageData.vocabulary).sort((a, b) => b.length - a.length);
 
             keys.forEach(word => {
+                // Find **word** and replace with span
                 const regex = new RegExp(`\\*\\*${word}\\*\\*`, 'g');
                 html = html.replace(regex, 
                     `<span class="target-vocab" onclick="showTooltip(event, '${word}')">${word}</span>`
@@ -212,12 +232,17 @@
 
             elements.tooltip.style.display = 'flex';
             elements.tooltip.classList.remove('animate-pop');
-            void elements.tooltip.offsetWidth; 
+            void elements.tooltip.offsetWidth; // Trigger reflow
             elements.tooltip.classList.add('animate-pop');
 
             const scrollY = window.scrollY || window.pageYOffset;
             let leftPos = rect.left + (rect.width / 2);
             
+            // Boundary checks for screen edges
+            const tooltipWidth = 200; // estimated
+            if (leftPos < tooltipWidth/2) leftPos = tooltipWidth/2 + 10;
+            if (leftPos > window.innerWidth - tooltipWidth/2) leftPos = window.innerWidth - tooltipWidth/2 - 10;
+
             elements.tooltip.style.left = `${leftPos}px`;
             elements.tooltip.style.top = `${rect.top + scrollY}px`;
         }
@@ -227,6 +252,7 @@
             activeWord = null;
         }
 
+        // Global listeners
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.target-vocab')) hideTooltip();
         });
