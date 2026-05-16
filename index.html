@@ -1,110 +1,322 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NihongoQuest - Japanese Language Quiz App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <title>Mastery Challenge v5.1 - Clean Architecture</title>
     <style>
-        body {
-            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+        :root {
+            --bg-dark: #1a1a2e;
+            --card-bg: #16213e;
+            --border-color: #0f3460;
+            --accent-blue: #3498db;
+            --accent-green: #4ecca3;
+            --error-red: #e94560;
+            --text-dim: #95a5a6;
         }
-        .japanese-pattern {
-            background-color: #ffffff;
-            background-image: radial-gradient(#fee2e2 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-        .hero-gradient {
-            background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
-        }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-dark); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: #fff; }
+        #quiz-container { background: var(--card-bg); padding: 2.5rem; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); width: 100%; max-width: 750px; text-align: center; border: 1px solid var(--border-color); margin: 20px; min-height: 400px; display: flex; flex-direction: column; justify-content: center; }
+        
+        .hidden { display: none !important; }
+
+        /* Spinner */
+        .spinner { border: 4px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; border-left-color: var(--accent-green); animation: spin 1s linear infinite; margin: 0 auto 1.5rem; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Landing Page */
+        .header-title { color: var(--accent-green); margin-bottom: 0.5rem; font-size: 2.2rem; }
+        .sub-text { color: var(--text-dim); margin-bottom: 2rem; }
+        .lesson-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; width: 100%; }
+        .lesson-btn { padding: 25px; background: var(--bg-dark); border: 2px solid var(--border-color); border-radius: 12px; color: #fff; cursor: pointer; transition: 0.3s; font-weight: bold; text-align: center; font-size: 1.2rem; }
+        .lesson-btn:hover { border-color: var(--accent-blue); background: var(--border-color); transform: translateY(-3px); }
+
+        /* Selection Screen */
+        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 2rem 0; }
+        .style-btn { padding: 15px; background: var(--bg-dark); border: 2px solid var(--border-color); border-radius: 10px; color: var(--text-dim); cursor: pointer; transition: 0.2s; font-weight: 600; font-size: 0.9rem; }
+        .style-btn.selected { border-color: var(--accent-blue); background: var(--border-color); color: #fff; box-shadow: 0 0 10px rgba(52, 152, 219, 0.3); }
+        .action-btns { display: flex; gap: 12px; justify-content: center; margin-top: 1rem; }
+        .back-btn { padding: 15px 25px; border-radius: 50px; border: 1px solid var(--text-dim); background: transparent; color: var(--text-dim); cursor: pointer; }
+
+        /* Quiz UI */
+        .type-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-blue); margin-bottom: 0.8rem; font-weight: bold; }
+        .word-display { font-size: 3.5rem; margin-bottom: 2.5rem; color: #fff; font-weight: bold; min-height: 6rem; display: flex; align-items: center; justify-content: center; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .option-btn { padding: 22px 15px; font-size: 1.1rem; border: 2px solid var(--border-color); border-radius: 12px; background: var(--bg-dark); color: var(--accent-green); cursor: pointer; transition: 0.2s; font-weight: 600; }
+        .option-btn:hover:not(:disabled) { background: var(--border-color); border-color: var(--accent-green); }
+        .option-btn.correct { background: #2ecc71 !important; border-color: #2ecc71 !important; color: white !important; }
+        .option-btn.wrong { background: var(--error-red) !important; border-color: var(--error-red) !important; color: white !important; }
+        
+        .progress-bar { height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden; margin-bottom: 25px; }
+        .progress-fill { height: 100%; background: var(--accent-blue); width: 0%; transition: 0.4s; }
+        #score-board { margin-top: 25px; font-size: 0.9rem; color: var(--text-dim); border-top: 1px solid var(--border-color); padding-top: 20px; }
+        
+        .final-results-wrap { max-height: 400px; overflow-y: auto; margin: 20px 0; border: 1px solid var(--border-color); border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; color: #fff; font-size: 0.85rem; }
+        th, td { border: 1px solid var(--border-color); padding: 12px; text-align: left; }
+        th { background: var(--border-color); color: var(--accent-blue); position: sticky; top: 0; }
+        .row-correct { color: #2ecc71; }
+        .row-wrong { color: var(--error-red); }
+
+        .start-btn { padding: 15px 45px; font-size: 1.2rem; background: var(--accent-green); color: var(--bg-dark); border: none; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .start-btn:disabled { background: #2c3e50; color: #7f8c8d; cursor: not-allowed; opacity: 0.5; }
+        
+        .error-msg { color: var(--error-red); background: rgba(233, 69, 96, 0.1); padding: 20px; border-radius: 12px; border: 1px solid var(--error-red); }
+
+        /* Persistent Navigation */
+        .persistent-nav { margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem; }
     </style>
 </head>
-<body class="japanese-pattern min-h-screen flex flex-col">
+<body>
 
-    <!-- Navigation -->
-    <nav class="p-6 flex justify-between items-center max-w-7xl mx-auto w-full">
-        <div class="flex items-center space-x-2">
-            <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
-                語
-            </div>
-            <span class="text-2xl font-bold tracking-tight text-gray-800">NihongoQuest</span>
+<div id="quiz-container">
+    <!-- Status (Loading/Error) -->
+    <div id="status-view" class="hidden">
+        <div id="loader" class="hidden">
+            <div class="spinner"></div>
+            <p id="loader-text">Loading...</p>
         </div>
-        <div class="hidden md:flex space-x-8 text-gray-600 font-medium">
-            <a href="#" class="hover:text-red-500 transition-colors">About</a>
-            <a href="#" class="hover:text-red-500 transition-colors">Leaderboard</a>
-            <a href="#" class="hover:text-red-500 transition-colors">Settings</a>
+        <div id="error-container" class="hidden">
+            <div class="error-msg" id="error-text">An error occurred.</div>
+            <button class="back-btn" style="margin-top: 20px" onclick="location.reload()">Retry</button>
         </div>
-    </nav>
+    </div>
 
-    <!-- Main Hero Content -->
-    <main class="flex-grow flex items-center justify-center px-4 py-12">
-        <div class="max-w-4xl w-full text-center">
-            <div class="inline-block px-4 py-1.5 mb-6 text-sm font-semibold tracking-wide text-red-600 uppercase bg-red-100 rounded-full">
-                Master Japanese Daily
-            </div>
-            <h1 class="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-                Perfect Your <span class="text-red-600">Fluency</span> <br> Through Practice.
-            </h1>
-            <p class="text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
-                Unlock the beauty of the Japanese language with interactive quizzes designed to sharpen your grammar and expand your vocabulary.
-            </p>
+    <!-- 1. Landing Page -->
+    <div id="landing-page">
+        <h1 class="header-title">Mastery Challenge</h1>
+        <p class="sub-text">Select a practice module.</p>
+        <div id="lesson-list" class="lesson-grid"></div>
+    </div>
 
-            <div class="flex flex-col md:flex-row items-center justify-center gap-6">
-                
-                <!-- 
-                  Vocabulary Quizzes Button 
-                  To link to the page, swap href="#" with: href="./[placeholder-vocabulary-filename].html"
-                -->
-                <a href = "./quiz.html" class="group relative w-full md:w-72">
-                    <div class="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-blue-400 rounded-2xl blur opacity-30 group-hover:opacity-100 transition duration-300"></div>
-                    <div class="relative flex flex-col items-center bg-white border border-gray-100 p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                        <div class="w-16 h-16 bg-blue-50 rounded-xl flex items-center justify-center mb-4">
-                            <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">Vocabulary Quizzes</h3>
-                        <p class="text-sm text-gray-500 text-center">Build your lexicon with spaced-repetition testing.</p>
-                        <div class="mt-6 text-blue-500 font-semibold group-hover:translate-x-1 transition-transform">Explore Words →</div>
-                    </div>
-                </a>
-
-                <!-- 
-                  Reading Passages Button 
-                  To link to the page, swap href="#" with: href="./[placeholder-reading-filename].html"
-                -->
-                <a href= "./reader.html" class="group relative w-full md:w-72">
-                    <div class="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-2xl blur opacity-30 group-hover:opacity-100 transition duration-300"></div>
-                    <div class="relative flex flex-col items-center bg-white border border-gray-100 p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                        <div class="w-16 h-16 bg-emerald-50 rounded-xl flex items-center justify-center mb-4">
-                            <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">Reading Passages</h3>
-                        <p class="text-sm text-gray-500 text-center">Improve comprehension with context-rich short stories.</p>
-                        <div class="mt-6 text-emerald-500 font-semibold group-hover:translate-x-1 transition-transform">Read Stories →</div>
-                    </div>
-                </a>
-            </div>
+    <!-- 2. Style Selection -->
+    <div id="selection-screen" class="hidden">
+        <h2 id="selected-lesson-title" style="color: var(--accent-blue);">Loading Title...</h2>
+        <p class="sub-text">Select the challenge types for this session:</p>
+        <div class="selection-grid">
+            <button class="style-btn" data-type="Vocab-Reading">Vocabulary - Reading</button>
+            <button class="style-btn" data-type="Vocab-Meaning">Vocabulary - Meaning</button>
+            <button class="style-btn" data-type="Reading-Vocab">Reading - Vocabulary</button>
+            <button class="style-btn" data-type="Reading-Meaning">Reading - Meaning</button>
+            <button class="style-btn" data-type="Meaning-Vocab">Meaning - Vocabulary</button>
+            <button class="style-btn" data-type="Meaning-Reading">Meaning - Reading</button>
         </div>
-    </main>
+        <div class="action-btns">
+            <button class="back-btn" onclick="showState('landing-page')">← Back</button>
+            <button id="start-btn" class="start-btn" disabled>Start Session</button>
+        </div>
+    </div>
 
-    <!-- Footer -->
-    <footer class="p-8 text-center border-t border-gray-100">
-        <p class="text-gray-400 text-sm">© 2026 NihongoQuest. Start your journey today.</p>
-    </footer>
+    <!-- 3. Quiz Gameplay -->
+    <div id="quiz-ui" class="hidden">
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+        <div class="type-label" id="q-type">TYPE</div>
+        <div class="word-display" id="display-text">...</div>
+        <div class="options-grid" id="options"></div>
+        <div id="score-board">Progression: <span id="current-count">0</span> / <span id="total-q">0</span> | Mastery: <span id="score">0</span></div>
+    </div>
 
-    <!-- Interactive Scripts -->
-    <script>
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                if (this.getAttribute('href').startsWith('#')) {
-                    console.log('Navigating to placeholder link: ' + this.getAttribute('href'));
-                }
-            });
-        });
-    </script>
+    <!-- Persistent Global Footer -->
+    <div class="persistent-nav">
+        <a href="index.html" style="text-decoration: none;">
+            <button class="back-btn" style="font-size: 0.9rem; padding: 10px 25px;">Main Menu</button>
+        </a>
+    </div>
+</div>
+
+<script>
+/**
+ * APP ENGINE CONFIG
+ */
+const MANIFEST_PATH = 'quizdata/manifest.json';
+let currentLessonFullObject = null;
+let currentLessonID = "";
+let questions = [];
+let score = 0;
+let currentIdx = 0;
+let sessionLogs = [];
+let selectedStyles = new Set();
+
+/**
+ * UI State Controller
+ */
+function showState(stateId) {
+    ['landing-page', 'selection-screen', 'quiz-ui', 'status-view'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+    });
+    document.getElementById(stateId).classList.remove('hidden');
+}
+
+function showLoading(text) {
+    showState('status-view');
+    document.getElementById('loader').classList.remove('hidden');
+    document.getElementById('error-container').classList.add('hidden');
+    document.getElementById('loader-text').innerText = text;
+}
+
+function showError(msg) {
+    showState('status-view');
+    document.getElementById('loader').classList.add('hidden');
+    document.getElementById('error-container').classList.remove('hidden');
+    document.getElementById('error-text').innerText = msg;
+}
+
+/**
+ * Data Fetching (Manifest & Lesson Data)
+ */
+async function loadRepository() {
+    showLoading('Initializing...');
+    try {
+        const response = await fetch(MANIFEST_PATH);
+        if (!response.ok) throw new Error('Manifest not found.');
+        const manifest = await response.json();
+        renderSelector(manifest.lessons);
+        showState('landing-page');
+    } catch (err) {
+        showError(`Init Error: ${err.message}`);
+    }
+}
+
+async function loadLesson(lessonMeta) {
+    showLoading(`Fetching ${lessonMeta.id}...`);
+    try {
+        const response = await fetch(lessonMeta.file);
+        if (!response.ok) throw new Error(`File missing: ${lessonMeta.file}`);
+        const fullData = await response.json();
+        
+        // Data format: { title: "...", vocabulary: [...] }
+        currentLessonFullObject = fullData;
+        currentLessonID = lessonMeta.id;
+        
+        document.getElementById('selected-lesson-title').innerText = fullData.title || lessonMeta.id;
+        showState('selection-screen');
+    } catch (err) {
+        showError(`Load Error: ${err.message}`);
+    }
+}
+
+function renderSelector(lessons) {
+    const grid = document.getElementById('lesson-list');
+    grid.innerHTML = '';
+    lessons.forEach(lesson => {
+        const btn = document.createElement('button');
+        btn.className = 'lesson-btn';
+        btn.innerText = lesson.id;
+        btn.onclick = () => loadLesson(lesson);
+        grid.appendChild(btn);
+    });
+}
+
+/**
+ * Selection Screen Logic
+ */
+document.querySelectorAll('.style-btn').forEach(btn => {
+    btn.onclick = () => {
+        const type = btn.dataset.type;
+        selectedStyles.has(type) ? selectedStyles.delete(type) : selectedStyles.add(type);
+        btn.classList.toggle('selected');
+        document.getElementById('start-btn').disabled = (selectedStyles.size === 0);
+    };
+});
+
+document.getElementById('start-btn').onclick = () => {
+    prepareQuestions();
+    showState('quiz-ui');
+    loadQuestion();
+};
+
+/**
+ * Quiz Processing Logic
+ */
+function prepareQuestions() {
+    questions = [];
+    score = 0;
+    currentIdx = 0;
+    sessionLogs = [];
+    
+    const vocabulary = currentLessonFullObject.vocabulary || [];
+    
+    vocabulary.forEach(item => {
+        // v = Vocabulary, r = Reading, m = Meaning
+        // dv = Distractor Vocab, dr = Distractor Reading, dm = Distractor Meaning
+        if (selectedStyles.has("Vocab-Meaning")) questions.push({ q: item.v, a: item.m, type: "Vocab-Meaning", dist: item.dm });
+        if (selectedStyles.has("Meaning-Vocab")) questions.push({ q: item.m, a: item.v, type: "Meaning-Vocab", dist: item.dv });
+        if (selectedStyles.has("Reading-Meaning")) questions.push({ q: item.r, a: item.m, type: "Reading-Meaning", dist: item.dm });
+        if (selectedStyles.has("Meaning-Reading")) questions.push({ q: item.m, a: item.r, type: "Meaning-Reading", dist: item.dr });
+        
+        if (!item.isKat) {
+            if (selectedStyles.has("Vocab-Reading")) questions.push({ q: item.v, a: item.r, type: "Vocab-Reading", dist: item.dr });
+            if (selectedStyles.has("Reading-Vocab")) questions.push({ q: item.r, a: item.v, type: "Reading-Vocab", dist: item.dv });
+        }
+    });
+
+    questions.sort(() => Math.random() - 0.5);
+}
+
+function loadQuestion() {
+    if (currentIdx >= questions.length) {
+        showFinalResults();
+        return;
+    }
+    const q = questions[currentIdx];
+    document.getElementById('q-type').innerText = q.type;
+    document.getElementById('display-text').innerText = q.q;
+    document.getElementById('total-q').innerText = questions.length;
+    document.getElementById('score').innerText = score;
+    document.getElementById('current-count').innerText = currentIdx + 1;
+    document.getElementById('progress-fill').style.width = `${(currentIdx / questions.length) * 100}%`;
+    
+    const opts = [q.a, ...q.dist].sort(() => Math.random() - 0.5);
+    const div = document.getElementById('options');
+    div.innerHTML = '';
+    
+    opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = opt;
+        btn.onclick = () => {
+            document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+            const isCorrect = (opt === q.a);
+            sessionLogs.push({ type: q.type, word: q.q, response: opt, answer: q.a, correct: isCorrect });
+            
+            if (isCorrect) {
+                score++; btn.classList.add('correct');
+                setTimeout(() => { currentIdx++; loadQuestion(); }, 800);
+            } else {
+                btn.classList.add('wrong');
+                document.querySelectorAll('.option-btn').forEach(b => {
+                    if (b.innerText === q.a) b.classList.add('correct');
+                });
+                setTimeout(() => { currentIdx++; loadQuestion(); }, 3500);
+            }
+        };
+        div.appendChild(btn);
+    });
+}
+
+function showFinalResults() {
+    let rows = sessionLogs.map(l => `
+        <tr class="${l.correct ? 'row-correct' : 'row-wrong'}">
+            <td>${l.type} (${l.word})</td>
+            <td>${l.response}</td>
+            <td>${l.answer}</td>
+        </tr>`).join('');
+        
+    document.getElementById('quiz-ui').innerHTML = `
+        <h2 style='color:var(--accent-blue)'>Session Results</h2>
+        <p>${currentLessonID}: ${currentLessonFullObject.title}</p>
+        <p>Mastery: ${score} / ${questions.length}</p>
+        <div class="final-results-wrap">
+            <table>
+                <thead><tr><th>Question</th><th>Selection</th><th>Answer</th></tr></thead>
+                <tbody>${rows}</tbody>
+            </table>
+        </div>
+        <button class="start-btn" onclick="location.reload()">Restart Quiz</button>
+    `;
+}
+
+loadRepository();
+</script>
 </body>
 </html>
