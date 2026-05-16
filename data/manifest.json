@@ -2,12 +2,14 @@
     "passages": [
         {
             "id": "p1",
-            "title": "日本の四季 (Four Seasons of Japan)",
-            "file": "日本の四季.json"
+            "file": "L20-忙しい会社員.json"
         },
         {
             "id": "p2",
-            "title": "週末の予定 (Weekend Plans)",
+            "file": "日本の四季.json"
+        },
+        {
+            "id": "p3",
             "file": "朝の習慣.json"
         }
     ]
