@@ -42,50 +42,51 @@
             from { opacity: 0; transform: translateY(-5px); }
             to { opacity: 1; transform: translateY(-10px); }
         }
+        /* Loading Spinner */
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="min-h-screen text-slate-800">
 
     <script>
-        /* 
-           DATA SEPARATION: 
-           In a real-world scenario, each of these objects would be in its own .json file.
-           The app logic remains identical regardless of how many passages you add.
-        */
-        const PASSAGE_DATA = [
-            {
-                id: "p1",
-                title: "日本の四季 (Four Seasons of Japan)",
-                content: "日本には**四季**があります。春には**桜**が咲きます。夏はとても**暑い**ですが、海に行くのは楽しいです。秋は木が**赤色**になります。冬は雪が降って、とても**綺麗**です。",
-                vocabulary: {
-                    "四季": { reading: "しき", meaning: "Four seasons" },
-                    "桜": { reading: "さくら", meaning: "Cherry blossoms" },
-                    "暑い": { reading: "あつい", meaning: "Hot (weather)" },
-                    "赤色": { reading: "あかいろ", meaning: "Red color" },
-                    "綺麗": { reading: "きれい", meaning: "Beautiful / Clean" }
-                }
-            },
-            {
-                id: "p2",
-                title: "週末の予定 (Weekend Plans)",
-                content: "私は今週の**週末**に友達と**映画**を見に行きます。その後で、**図書館**で勉強をします。夜は**料理**を作って、家族と一緒に食べます。**明日**が楽しみです。",
-                vocabulary: {
-                    "週末": { reading: "しゅうまつ", meaning: "Weekend" },
-                    "映画": { reading: "えいが", meaning: "Movie" },
-                    "図書館": { reading: "としょかん", meaning: "Library" },
-                    "料理": { reading: "りょうり", meaning: "Cooking / Cuisine" },
-                    "明日": { reading: "あした", meaning: "Tomorrow" }
-                }
-            }
-        ];
-
+        let currentPassage = null;
         let activeTooltip = null;
+        let manifest = null;
 
-        function initApp() {
-            renderSelector();
-            loadPassage(PASSAGE_DATA[0].id);
+        /**
+         * Initialization: Fetch the manifest and load the first passage.
+         */
+        async function initApp() {
+            try {
+                // 1. Fetch the manifest list
+                const response = await fetch('data/manifest.json');
+                if (!response.ok) throw new Error('Could not load manifest');
+                manifest = await response.json();
+                
+                renderSelector(manifest.passages);
+
+                // 2. Load the first passage by default
+                if (manifest.passages.length > 0) {
+                    await loadPassage(manifest.passages[0]);
+                }
+            } catch (err) {
+                document.getElementById('display-title').textContent = "Error loading data.";
+                document.getElementById('passage-container').innerHTML = `<p class="text-red-500 text-lg">Make sure the 'data' folder and 'manifest.json' exist in the same directory.</p>`;
+            }
             
-            // Global click listener to close tooltip when clicking outside
+            // Global click listener to close tooltip
             document.addEventListener('click', (e) => {
                 if (activeTooltip && !e.target.closest('.target-vocab') && !e.target.closest('.vocab-tooltip')) {
                     hideTooltip();
@@ -93,49 +94,62 @@
             });
         }
 
-        function renderSelector() {
+        function renderSelector(passages) {
             const selector = document.getElementById('passage-selector');
-            selector.innerHTML = PASSAGE_DATA.map(p => 
+            selector.innerHTML = passages.map(p => 
                 `<option value="${p.id}">${p.title}</option>`
             ).join('');
             
-            selector.addEventListener('change', (e) => {
-                loadPassage(e.target.value);
+            selector.addEventListener('change', async (e) => {
+                const selected = passages.find(p => p.id === e.target.value);
+                await loadPassage(selected);
             });
         }
 
-        function loadPassage(id) {
-            const passage = PASSAGE_DATA.find(p => p.id === id);
-            if (!passage) return;
-
+        /**
+         * Fetches a specific JSON file based on selection.
+         */
+        async function loadPassage(passageMeta) {
             hideTooltip();
-            document.getElementById('display-title').textContent = passage.title;
+            const container = document.getElementById('passage-container');
+            const titleEl = document.getElementById('display-title');
             
-            // Parsing the content: converting **word** to interactive spans
-            let formattedText = passage.content;
-            Object.keys(passage.vocabulary).forEach(word => {
-                const regex = new RegExp(`\\*\\*${word}\\*\\*`, 'g');
-                formattedText = formattedText.replace(regex, 
-                    `<span class="target-vocab font-bold text-blue-700" onclick="handleVocabClick(event, '${word}', '${id}')">${word}</span>`
-                );
-            });
+            titleEl.innerHTML = `<span class="loader mr-2"></span> Loading...`;
+            container.innerHTML = "";
 
-            document.getElementById('passage-container').innerHTML = formattedText;
+            try {
+                const response = await fetch(`data/${passageMeta.file}`);
+                if (!response.ok) throw new Error('File not found');
+                currentPassage = await response.json();
+
+                titleEl.textContent = currentPassage.title;
+                
+                // Process the content string
+                let formattedText = currentPassage.content;
+                Object.keys(currentPassage.vocabulary).forEach(word => {
+                    const regex = new RegExp(`\\*\\*${word}\\*\\*`, 'g');
+                    formattedText = formattedText.replace(regex, 
+                        `<span class="target-vocab font-bold text-blue-700" onclick="handleVocabClick(event, '${word}')">${word}</span>`
+                    );
+                });
+
+                container.innerHTML = formattedText;
+            } catch (err) {
+                titleEl.textContent = "Error";
+                container.innerHTML = "Could not load the passage file.";
+            }
         }
 
-        function handleVocabClick(event, word, passageId) {
+        function handleVocabClick(event, word) {
             event.stopPropagation();
             
-            // If the same word is clicked again, toggle it off
             if (activeTooltip && activeTooltip.trigger === event.target) {
                 hideTooltip();
                 return;
             }
 
-            const passage = PASSAGE_DATA.find(p => p.id === passageId);
-            const info = passage.vocabulary[word];
+            const info = currentPassage.vocabulary[word];
             const rect = event.target.getBoundingClientRect();
-            
             showTooltip(rect, info, event.target);
         }
 
@@ -147,10 +161,8 @@
             readingEl.textContent = `[${info.reading}]`;
             meaningEl.textContent = info.meaning;
 
-            // Positioning
             tooltip.style.display = 'block';
             
-            // Calculate position (centered above the word)
             const scrollY = window.scrollY || window.pageYOffset;
             const tooltipWidth = tooltip.offsetWidth;
             const left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
@@ -173,13 +185,12 @@
 
     <div class="max-w-2xl mx-auto px-4 py-8 md:py-12">
         
-        <!-- Header & Selector -->
         <header class="mb-10 text-center">
             <h1 class="text-3xl font-bold text-slate-900 mb-6">Japanese Reader</h1>
             <div class="inline-block relative w-full max-w-xs">
                 <label class="block text-sm font-medium text-slate-500 mb-2 text-left">Select Passage:</label>
                 <select id="passage-selector" class="block appearance-none w-full bg-white border border-slate-200 text-slate-700 py-3 px-4 pr-8 rounded-xl leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm cursor-pointer">
-                    <!-- Options populated by JS -->
+                    <option>Loading passages...</option>
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 pt-6 text-slate-700">
                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
@@ -187,28 +198,23 @@
             </div>
         </header>
 
-        <!-- Reading Area -->
         <main class="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-slate-100 relative">
-            <h2 id="display-title" class="text-xl font-bold text-blue-600 mb-8 border-b border-slate-50 pb-4">Loading...</h2>
+            <h2 id="display-title" class="text-xl font-bold text-blue-600 mb-8 border-b border-slate-50 pb-4">Initializing...</h2>
             
             <article id="passage-container" class="passage-text text-2xl text-slate-800 leading-relaxed">
                 <!-- Content injected by JS -->
             </article>
         </main>
 
-        <!-- Footer Info -->
         <footer class="mt-8 text-center text-slate-400 text-sm">
             Tap on <span class="font-bold text-blue-600">bolded words</span> to see their meaning.
         </footer>
     </div>
 
-    <!-- Floating Window (Hidden by default) -->
     <div id="tooltip" class="vocab-tooltip" onclick="hideTooltip()">
         <div class="flex flex-col items-center">
-            <!-- Requirement: Font size same as passage (text-2xl) -->
             <div id="tooltip-reading" class="text-2xl text-blue-600 font-bold mb-1"></div>
             <div id="tooltip-meaning" class="text-2xl text-slate-600 italic"></div>
-            <!-- Small arrow -->
             <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-r border-b border-slate-200 rotate-45"></div>
         </div>
     </div>
