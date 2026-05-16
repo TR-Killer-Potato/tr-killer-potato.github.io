@@ -123,20 +123,21 @@
         };
 
         /**
-         * Loads the manifest and then pre-fetches all JSON files 
-         * to use their internal titles for the selector.
+         * Initialization logic
          */
         async function startApp() {
             try {
+                // Fetch the manifest which holds the 'id' and 'file' mapping
                 const response = await fetch('data/manifest.json');
                 if (!response.ok) throw new Error('Manifest not found');
                 manifestData = await response.json();
 
-                // Fetch each JSON file to get the internal titles exclusively
+                // Fetch each JSON file to get the internal titles for the UI selector
                 const fetchPassages = manifestData.passages.map(async (p) => {
                     const res = await fetch(`data/${p.file}`);
                     const data = await res.json();
-                    return { ...p, title: data.title }; // Merge title from JSON into manifest meta
+                    // Merge manifest 'id' with the 'title' from the passage file
+                    return { id: p.id, file: p.file, title: data.title };
                 });
 
                 const passagesWithTitles = await Promise.all(fetchPassages);
@@ -146,7 +147,7 @@
                     await loadPassage(passagesWithTitles[0].file);
                 }
             } catch (err) {
-                elements.body.innerHTML = `<p class="text-red-500">Error: Could not load data. Ensure the 'data' folder and 'manifest.json' are present.</p>`;
+                elements.body.innerHTML = `<p class="text-red-500">Error: Could not load data. Ensure the 'data' folder and 'manifest.json' are correctly placed.</p>`;
                 elements.loader.style.display = 'none';
             }
         }
@@ -167,6 +168,7 @@
 
             try {
                 const response = await fetch(`data/${filename}`);
+                // The passage data here is now "pure": { title, content, vocabulary }
                 currentPassageData = await response.json();
                 renderPassage();
             } catch (err) {
@@ -181,11 +183,9 @@
             elements.title.textContent = currentPassageData.title;
             let html = currentPassageData.content;
 
-            // Sort vocabulary keys by length (longest first) to prevent partial replacement bugs
             const keys = Object.keys(currentPassageData.vocabulary).sort((a, b) => b.length - a.length);
 
             keys.forEach(word => {
-                // Regex looks for literal double asterisks around the word
                 const regex = new RegExp(`\\*\\*${word}\\*\\*`, 'g');
                 html = html.replace(regex, 
                     `<span class="target-vocab" onclick="showTooltip(event, '${word}')">${word}</span>`
@@ -212,7 +212,7 @@
 
             elements.tooltip.style.display = 'flex';
             elements.tooltip.classList.remove('animate-pop');
-            void elements.tooltip.offsetWidth; // Trigger reflow
+            void elements.tooltip.offsetWidth; 
             elements.tooltip.classList.add('animate-pop');
 
             const scrollY = window.scrollY || window.pageYOffset;
