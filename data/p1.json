@@ -1,12 +1,27 @@
 {
-"id": "p1",
-"title": "日本の四季 (Four Seasons of Japan)",
-"content": "日本には**四季**があります。春には**桜**が咲きます。夏はとても暑いですが、海に行くのは楽しいです。秋は木が赤色になります。冬は雪が降って、とても綺麗です。",
-"vocabulary": {
-"四季": { "reading": "しき", "meaning": "Four seasons" },
-"桜": { "reading": "さくら", "meaning": "Cherry blossoms" },
-"暑い": { "reading": "あつい", "meaning": "Hot (weather)" },
-"赤色": { "reading": "あかいろ", "meaning": "Red color" },
-"綺麗": { "reading": "きれい", "meaning": "Beautiful / Clean" }
-}
+    "id": "p1",
+    "title": "日本の四季 (Four Seasons of Japan)",
+    "content": "日本には**四季**があります。春には**桜**が咲きます。夏はとても**暑い**ですが、海に行くのは楽しいです。秋は木が**赤色**になります。冬は雪が降って、とても**綺麗**です。",
+    "vocabulary": {
+        "四季": {
+            "reading": "しき",
+            "meaning": "Four seasons"
+        },
+        "桜": {
+            "reading": "さくら",
+            "meaning": "Cherry blossoms"
+        },
+        "暑い": {
+            "reading": "あつい",
+            "meaning": "Hot (weather)"
+        },
+        "赤色": {
+            "reading": "あかいろ",
+            "meaning": "Red color"
+        },
+        "綺麗": {
+            "reading": "きれい",
+            "meaning": "Beautiful / Clean"
+        }
+    }
 }
