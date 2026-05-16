@@ -3,51 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Japanese Reader App</title>
+    <title>Japanese Reader Professional</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-blue: #2563eb;
-            --bg-slate: #f8fafc;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent: #2563eb;
+            --border: #e2e8f0;
         }
+
+        [data-theme="sepia"] {
+            --bg-main: #f4ecd8;
+            --bg-card: #fdf6e3;
+            --text-main: #5b4636;
+            --text-muted: #8c786a;
+            --accent: #a0522d;
+            --border: #e6dfcc;
+        }
+
+        [data-theme="dark"] {
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --border: #334155;
+        }
+
         body {
             font-family: 'Inter', 'Noto Sans JP', sans-serif;
-            background-color: var(--bg-slate);
-            -webkit-tap-highlight-color: transparent;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            transition: background-color 0.3s, color 0.3s;
         }
+
+        .app-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+        }
+
         .passage-container {
-            line-height: 2.4;
-            letter-spacing: 0.03em;
+            transition: font-size 0.2s, line-height 0.2s;
         }
+
+        /* Target Vocabulary Styling */
         .target-vocab {
-            color: var(--primary-blue);
+            color: var(--accent);
             font-weight: 700;
-            border-bottom: 2px solid #93c5fd;
+            border-bottom: 2px solid var(--accent);
             cursor: pointer;
             padding: 0 2px;
             border-radius: 4px;
-            transition: all 0.2s ease;
+            transition: background 0.2s;
         }
-        .target-vocab:active {
-            background-color: #dbeafe;
+
+        .target-vocab:hover {
+            background-color: rgba(37, 99, 235, 0.1);
         }
+
+        /* Sentence Highlighting */
+        .sentence-node {
+            cursor: pointer;
+            transition: background 0.2s;
+            border-radius: 4px;
+        }
+
+        .sentence-node:hover {
+            background-color: rgba(100, 116, 139, 0.05);
+        }
+
+        .sentence-node.active {
+            background-color: rgba(37, 99, 235, 0.1);
+        }
+
+        /* Floating Window (Tooltip) */
         .vocab-tooltip {
             position: absolute;
             z-index: 100;
-            background: white;
+            background: var(--bg-card);
             padding: 1rem 1.5rem;
             border-radius: 1rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            border: 1px solid #e2e8f0;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
             display: none;
             flex-direction: column;
             align-items: center;
-            min-width: 180px;
-            pointer-events: auto;
+            min-width: 200px;
             transform: translate(-50%, -100%);
             margin-top: -10px;
         }
+
         .vocab-tooltip::after {
             content: "";
             position: absolute;
@@ -56,118 +105,158 @@
             transform: translateX(-50%);
             border-width: 8px 8px 0 8px;
             border-style: solid;
-            border-color: white transparent transparent transparent;
+            border-color: var(--bg-card) transparent transparent transparent;
         }
-        .animate-pop {
-            animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+
+        /* Settings Drawer */
+        #settings-drawer {
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        @keyframes popIn {
-            from { opacity: 0; transform: translate(-50%, -90%) scale(0.9); }
-            to { opacity: 1; transform: translate(-50%, -100%) scale(1); }
+
+        #settings-drawer.open {
+            transform: translateX(0);
         }
     </style>
 </head>
-<body class="min-h-screen text-slate-900 pb-20">
+<body class="min-h-screen pb-20 overflow-x-hidden">
 
-    <div class="max-w-2xl mx-auto px-5 py-8 md:py-12">
-        <header class="mb-8 text-center">
-            <h1 class="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-4">Japanese Reading Practice</h1>
-            
-            <div class="relative max-w-xs mx-auto">
-                <select id="passage-selector" class="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm text-lg cursor-pointer">
-                    <option value="">Loading passages...</option>
-                </select>
-                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                </div>
-            </div>
-        </header>
+    <nav class="sticky top-0 z-40 app-card px-4 py-3 mb-6 shadow-sm flex items-center justify-between">
+        <div class="flex items-center gap-3 w-full max-w-xs">
+            <select id="passage-selector" class="w-full bg-transparent font-semibold focus:outline-none cursor-pointer text-lg">
+                <option value="">Loading...</option>
+            </select>
+        </div>
+        
+        <div class="flex items-center gap-2">
+            <button onclick="speakText()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Listen">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+            </button>
+            <button onclick="toggleSettings(true)" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            </button>
+        </div>
+    </nav>
 
-        <main id="app-content" class="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-sm border border-slate-100 relative min-h-[300px]">
-            <div id="loading-state" class="absolute inset-0 flex items-center justify-center bg-white rounded-[2.5rem] z-10" style="display: none;">
-                <div class="flex flex-col items-center">
-                    <div class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                </div>
-            </div>
+    <main class="max-w-2xl mx-auto px-5">
+        <div id="loading-overlay" class="fixed inset-0 bg-white/80 z-50 flex items-center justify-center hidden">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+        </div>
 
-            <h2 id="passage-title" class="text-2xl font-bold text-slate-900 mb-8 pb-4 border-b border-slate-50"></h2>
-            
-            <article id="passage-body" class="passage-container text-2xl text-slate-800">
-                <!-- Content will be injected here -->
+        <div id="content-area" class="app-card rounded-[2rem] p-8 md:p-12 shadow-sm min-h-[60vh]">
+            <h1 id="passage-title" class="text-3xl font-bold mb-8 pb-4 border-b border-border"></h1>
+            <article id="passage-body" class="passage-container text-2xl leading-[2.2]">
+                <!-- Interactive text will be rendered here -->
             </article>
-        </main>
+        </div>
+    </main>
 
-        <footer class="mt-8 text-center text-slate-400 text-sm">
-            Tap on <span class="text-blue-500 font-bold">blue underlined words</span> for readings.
-        </footer>
-    </div>
-
-    <!-- Tooltip Element -->
     <div id="tooltip" class="vocab-tooltip" onclick="hideTooltip()">
-        <div id="tooltip-reading" class="text-2xl font-bold text-blue-600 leading-tight"></div>
-        <div id="tooltip-meaning" class="text-2xl text-slate-500 italic mt-1 text-center"></div>
+        <div id="tooltip-reading" class="font-bold text-blue-500 leading-tight"></div>
+        <div id="tooltip-meaning" class="text-muted italic mt-1 text-center"></div>
     </div>
+
+    <div id="settings-overlay" onclick="toggleSettings(false)" class="fixed inset-0 bg-black/20 z-40 hidden"></div>
+    <aside id="settings-drawer" class="fixed top-0 right-0 h-full w-80 app-card z-50 p-8 shadow-2xl overflow-y-auto">
+        <div class="flex justify-between items-center mb-10">
+            <h2 class="text-xl font-bold">Reading Settings</h2>
+            <button onclick="toggleSettings(false)" class="p-1 hover:bg-slate-100 rounded-lg">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <section class="space-y-8">
+            <!-- Theme -->
+            <div>
+                <label class="block text-sm font-semibold mb-3 uppercase tracking-wider text-muted">Theme</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="setTheme('light')" class="py-2 border rounded-lg bg-white text-slate-900 text-sm font-medium border-slate-200">Light</button>
+                    <button onclick="setTheme('sepia')" class="py-2 border rounded-lg bg-[#f4ecd8] text-[#5b4636] text-sm font-medium border-[#e6dfcc]">Sepia</button>
+                    <button onclick="setTheme('dark')" class="py-2 border rounded-lg bg-[#0f172a] text-white text-sm font-medium border-slate-700">Dark</button>
+                </div>
+            </div>
+
+            <!-- Font Size -->
+            <div>
+                <label class="block text-sm font-semibold mb-3 uppercase tracking-wider text-muted">Text Size</label>
+                <input type="range" min="16" max="40" value="24" oninput="updateFontSize(this.value)" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                <div class="flex justify-between text-xs mt-2 text-muted">
+                    <span>Small</span>
+                    <span>Large</span>
+                </div>
+            </div>
+
+            <!-- Line Height -->
+            <div>
+                <label class="block text-sm font-semibold mb-3 uppercase tracking-wider text-muted">Spacing</label>
+                <div class="flex gap-2">
+                    <button onclick="updateLineHeight(1.8)" class="flex-1 py-2 border rounded-lg text-sm font-medium">Tight</button>
+                    <button onclick="updateLineHeight(2.2)" class="flex-1 py-2 border rounded-lg text-sm font-medium">Classic</button>
+                    <button onclick="updateLineHeight(2.8)" class="flex-1 py-2 border rounded-lg text-sm font-medium">Wide</button>
+                </div>
+            </div>
+        </section>
+    </aside>
 
     <script>
-        let manifestData = null;
-        let currentPassageData = null;
-        let activeWord = null;
+        const state = {
+            currentPassage: null,
+            theme: 'light',
+            fontSize: 24,
+            lineHeight: 2.2,
+            activeWord: null,
+            manifest: null
+        };
 
         const elements = {
             selector: document.getElementById('passage-selector'),
             title: document.getElementById('passage-title'),
             body: document.getElementById('passage-body'),
-            loader: document.getElementById('loading-state'),
             tooltip: document.getElementById('tooltip'),
             tReading: document.getElementById('tooltip-reading'),
-            tMeaning: document.getElementById('tooltip-meaning')
+            tMeaning: document.getElementById('tooltip-meaning'),
+            drawer: document.getElementById('settings-drawer'),
+            overlay: document.getElementById('settings-overlay'),
+            loader: document.getElementById('loading-overlay')
         };
 
         /**
-         * Main start function with Japanese filename support
+         * Initialize App: Load manifest and set defaults
          */
         async function startApp() {
-            elements.loader.style.display = 'flex';
+            setLoader(true);
             try {
-                // Fetch the manifest
                 const response = await fetch('data/manifest.json');
-                if (!response.ok) throw new Error(`Manifest not found (Status: ${response.status})`);
-                manifestData = await response.json();
+                if (!response.ok) throw new Error("Manifest not found.");
+                state.manifest = await response.json();
 
-                // Fetch titles from each passage file
-                const fetchPassages = manifestData.passages.map(async (p) => {
-                    // CRITICAL: encodeURIComponent handles Japanese characters in the filename
-                    const encodedFile = encodeURIComponent(p.file);
-                    const res = await fetch(`data/${encodedFile}`);
-                    if (!res.ok) {
-                        console.error(`Failed to load file: data/${p.file}`);
+                // Fetch titles from every file to build the dropdown
+                const passagePromises = state.manifest.passages.map(async (p) => {
+                    try {
+                        const res = await fetch(`data/${encodeURIComponent(p.file)}`);
+                        const data = await res.json();
+                        return { id: p.id, file: p.file, title: data.title };
+                    } catch {
                         return { id: p.id, file: p.file, title: `Error: ${p.file}` };
                     }
-                    const data = await res.json();
-                    return { id: p.id, file: p.file, title: data.title };
                 });
 
-                const passagesWithTitles = await Promise.all(fetchPassages);
-                populateSelector(passagesWithTitles);
+                const loadedPassages = await Promise.all(passagePromises);
+                renderDropdown(loadedPassages);
 
-                // Load initial passage
-                if (passagesWithTitles.length > 0) {
-                    await loadPassage(passagesWithTitles[0].file);
+                // Initial Load
+                if (loadedPassages.length > 0) {
+                    await loadPassage(loadedPassages[0].file);
                 }
             } catch (err) {
+                elements.body.innerHTML = `<div class="text-red-500 p-4">Error loading library. Check data folder.</div>`;
                 console.error(err);
-                elements.body.innerHTML = `
-                    <div class="text-red-500 p-4 bg-red-50 rounded-xl">
-                        <p class="font-bold">Error Loading App</p>
-                        <p class="text-sm mt-2">${err.message}</p>
-                        <p class="text-xs mt-4 text-slate-500 italic">Check console for details. Ensure you are using a local server (like Live Server) or GitHub Pages.</p>
-                    </div>`;
             } finally {
-                elements.loader.style.display = 'none';
+                setLoader(false);
             }
         }
 
-        function populateSelector(passages) {
+        function renderDropdown(passages) {
             elements.selector.innerHTML = passages.map(p => 
                 `<option value="${p.file}">${p.title}</option>`
             ).join('');
@@ -177,71 +266,84 @@
             });
         }
 
+        /**
+         * Core Loading Logic
+         */
         async function loadPassage(filename) {
-            elements.loader.style.display = 'flex';
+            setLoader(true);
             hideTooltip();
-
             try {
-                const encodedFile = encodeURIComponent(filename);
-                const response = await fetch(`data/${encodedFile}`);
-                if (!response.ok) throw new Error(`Passage file not found: ${filename}`);
-                
-                currentPassageData = await response.json();
+                const res = await fetch(`data/${encodeURIComponent(filename)}`);
+                state.currentPassage = await res.json();
                 renderPassage();
             } catch (err) {
-                elements.title.textContent = "Load Error";
-                elements.body.textContent = `Could not load "${filename}". Check if the file exists in the /data folder.`;
-                console.error(err);
+                elements.title.textContent = "Error";
+                elements.body.textContent = "Could not load file.";
             } finally {
-                elements.loader.style.display = 'none';
+                setLoader(false);
             }
         }
 
+        /**
+         * Render content with sentence tracking and vocab spans
+         */
         function renderPassage() {
-            elements.title.textContent = currentPassageData.title;
-            let html = currentPassageData.content;
+            elements.title.textContent = state.currentPassage.title;
+            
+            // 1. Break content into sentences for highlighting (splitting by Japanese period)
+            const rawContent = state.currentPassage.content;
+            const sentences = rawContent.match(/[^。]+。?/g) || [rawContent];
 
-            // Sort vocabulary by length descending to handle nested words properly
-            const keys = Object.keys(currentPassageData.vocabulary).sort((a, b) => b.length - a.length);
+            const html = sentences.map(sentence => {
+                let processed = sentence;
+                
+                // 2. Sort vocab by length descending for greedy matching
+                const vocabKeys = Object.keys(state.currentPassage.vocabulary)
+                    .sort((a, b) => b.length - a.length);
 
-            keys.forEach(word => {
-                // Find **word** and replace with span
-                const regex = new RegExp(`\\*\\*${word}\\*\\*`, 'g');
-                html = html.replace(regex, 
-                    `<span class="target-vocab" onclick="showTooltip(event, '${word}')">${word}</span>`
-                );
-            });
+                vocabKeys.forEach(word => {
+                    const regex = new RegExp(`\\*\\*${word}\\*\\*`, 'g');
+                    processed = processed.replace(regex, 
+                        `<span class="target-vocab" onclick="showTooltip(event, '${word}')">${word}</span>`
+                    );
+                });
+
+                return `<span class="sentence-node" onclick="highlightSentence(this)">${processed}</span>`;
+            }).join('');
 
             elements.body.innerHTML = html;
+            updateUISettings();
         }
 
+        /**
+         * Tooltip Management
+         */
         function showTooltip(event, word) {
             event.stopPropagation();
-            
-            if (activeWord === word) {
+            if (state.activeWord === word) {
                 hideTooltip();
                 return;
             }
 
-            activeWord = word;
-            const data = currentPassageData.vocabulary[word];
+            state.activeWord = word;
+            const data = state.currentPassage.vocabulary[word];
             const rect = event.target.getBoundingClientRect();
 
             elements.tReading.textContent = `[ ${data.reading} ]`;
             elements.tMeaning.textContent = data.meaning;
+            
+            // Set tooltip font size to match passage
+            elements.tReading.style.fontSize = `${state.fontSize}px`;
+            elements.tMeaning.style.fontSize = `${state.fontSize * 0.85}px`;
 
             elements.tooltip.style.display = 'flex';
-            elements.tooltip.classList.remove('animate-pop');
-            void elements.tooltip.offsetWidth; // Trigger reflow
-            elements.tooltip.classList.add('animate-pop');
-
             const scrollY = window.scrollY || window.pageYOffset;
             let leftPos = rect.left + (rect.width / 2);
             
-            // Boundary checks for screen edges
-            const tooltipWidth = 200; // estimated
-            if (leftPos < tooltipWidth/2) leftPos = tooltipWidth/2 + 10;
-            if (leftPos > window.innerWidth - tooltipWidth/2) leftPos = window.innerWidth - tooltipWidth/2 - 10;
+            // Constraint check for screen edges
+            const tWidth = elements.tooltip.offsetWidth;
+            if (leftPos < tWidth/2) leftPos = tWidth/2 + 10;
+            if (leftPos > window.innerWidth - tWidth/2) leftPos = window.innerWidth - tWidth/2 - 10;
 
             elements.tooltip.style.left = `${leftPos}px`;
             elements.tooltip.style.top = `${rect.top + scrollY}px`;
@@ -249,10 +351,63 @@
 
         function hideTooltip() {
             elements.tooltip.style.display = 'none';
-            activeWord = null;
+            state.activeWord = null;
         }
 
-        // Global listeners
+        /**
+         * UI State Adjustments
+         */
+        function setTheme(t) {
+            state.theme = t;
+            document.body.setAttribute('data-theme', t);
+            toggleSettings(false);
+        }
+
+        function updateFontSize(val) {
+            state.fontSize = val;
+            elements.body.style.fontSize = `${val}px`;
+        }
+
+        function updateLineHeight(val) {
+            state.lineHeight = val;
+            elements.body.style.lineHeight = val;
+        }
+
+        function updateUISettings() {
+            elements.body.style.fontSize = `${state.fontSize}px`;
+            elements.body.style.lineHeight = state.lineHeight;
+        }
+
+        function highlightSentence(el) {
+            document.querySelectorAll('.sentence-node').forEach(s => s.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function toggleSettings(show) {
+            elements.drawer.classList.toggle('open', show);
+            elements.overlay.classList.toggle('hidden', !show);
+        }
+
+        function setLoader(val) {
+            elements.loader.classList.toggle('hidden', !val);
+        }
+
+        /**
+         * Text-to-Speech
+         */
+        function speakText() {
+            if (!state.currentPassage) return;
+            window.speechSynthesis.cancel();
+            
+            // Strip the ** markers for speaking
+            const cleanText = state.currentPassage.content.replace(/\*\*/g, '');
+            const msg = new SpeechSynthesisUtterance(cleanText);
+            msg.lang = 'ja-JP';
+            msg.rate = 0.9;
+            window.speechSynthesis.speak(msg);
+        }
+
+        // Global Event Listeners
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.target-vocab')) hideTooltip();
         });
