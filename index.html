@@ -1,418 +1,110 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Japanese Reader Professional</title>
+    <title>NihongoQuest - Japanese Language Quiz App</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-main: #f8fafc;
-            --bg-card: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --accent: #2563eb;
-            --border: #e2e8f0;
-        }
-
-        [data-theme="sepia"] {
-            --bg-main: #f4ecd8;
-            --bg-card: #fdf6e3;
-            --text-main: #5b4636;
-            --text-muted: #8c786a;
-            --accent: #a0522d;
-            --border: #e6dfcc;
-        }
-
-        [data-theme="dark"] {
-            --bg-main: #0f172a;
-            --bg-card: #1e293b;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --accent: #38bdf8;
-            --border: #334155;
-        }
-
         body {
             font-family: 'Inter', 'Noto Sans JP', sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            transition: background-color 0.3s, color 0.3s;
         }
-
-        .app-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border);
+        .japanese-pattern {
+            background-color: #ffffff;
+            background-image: radial-gradient(#fee2e2 1px, transparent 1px);
+            background-size: 20px 20px;
         }
-
-        .passage-container {
-            transition: font-size 0.2s, line-height 0.2s;
-        }
-
-        /* Target Vocabulary Styling */
-        .target-vocab {
-            color: var(--accent);
-            font-weight: 700;
-            border-bottom: 2px solid var(--accent);
-            cursor: pointer;
-            padding: 0 2px;
-            border-radius: 4px;
-            transition: background 0.2s;
-        }
-
-        .target-vocab:hover {
-            background-color: rgba(37, 99, 235, 0.1);
-        }
-
-        /* Sentence Highlighting */
-        .sentence-node {
-            cursor: pointer;
-            transition: background 0.2s;
-            border-radius: 4px;
-        }
-
-        .sentence-node:hover {
-            background-color: rgba(100, 116, 139, 0.05);
-        }
-
-        .sentence-node.active {
-            background-color: rgba(37, 99, 235, 0.1);
-        }
-
-        /* Floating Window (Tooltip) */
-        .vocab-tooltip {
-            position: absolute;
-            z-index: 100;
-            background: var(--bg-card);
-            padding: 1rem 1.5rem;
-            border-radius: 1rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            border: 1px solid var(--border);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            min-width: 200px;
-            transform: translate(-50%, -100%);
-            margin-top: -10px;
-        }
-
-        .vocab-tooltip::after {
-            content: "";
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-width: 8px 8px 0 8px;
-            border-style: solid;
-            border-color: var(--bg-card) transparent transparent transparent;
-        }
-
-        /* Settings Drawer */
-        #settings-drawer {
-            transform: translateX(100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        #settings-drawer.open {
-            transform: translateX(0);
+        .hero-gradient {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
         }
     </style>
 </head>
-<body class="min-h-screen pb-20 overflow-x-hidden">
+<body class="japanese-pattern min-h-screen flex flex-col">
 
-    <nav class="sticky top-0 z-40 app-card px-4 py-3 mb-6 shadow-sm flex items-center justify-between">
-        <div class="flex items-center gap-3 w-full max-w-xs">
-            <select id="passage-selector" class="w-full bg-transparent font-semibold focus:outline-none cursor-pointer text-lg">
-                <option value="">Loading...</option>
-            </select>
+    <!-- Navigation -->
+    <nav class="p-6 flex justify-between items-center max-w-7xl mx-auto w-full">
+        <div class="flex items-center space-x-2">
+            <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                語
+            </div>
+            <span class="text-2xl font-bold tracking-tight text-gray-800">NihongoQuest</span>
         </div>
-        
-        <div class="flex items-center gap-2">
-            <button onclick="speakText()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Listen">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
-            </button>
-            <button onclick="toggleSettings(true)" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-            </button>
+        <div class="hidden md:flex space-x-8 text-gray-600 font-medium">
+            <a href="#" class="hover:text-red-500 transition-colors">About</a>
+            <a href="#" class="hover:text-red-500 transition-colors">Leaderboard</a>
+            <a href="#" class="hover:text-red-500 transition-colors">Settings</a>
         </div>
     </nav>
 
-    <main class="max-w-2xl mx-auto px-5">
-        <div id="loading-overlay" class="fixed inset-0 bg-white/80 z-50 flex items-center justify-center hidden">
-            <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
-        </div>
+    <!-- Main Hero Content -->
+    <main class="flex-grow flex items-center justify-center px-4 py-12">
+        <div class="max-w-4xl w-full text-center">
+            <div class="inline-block px-4 py-1.5 mb-6 text-sm font-semibold tracking-wide text-red-600 uppercase bg-red-100 rounded-full">
+                Master Japanese Daily
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
+                Perfect Your <span class="text-red-600">Fluency</span> <br> Through Practice.
+            </h1>
+            <p class="text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
+                Unlock the beauty of the Japanese language with interactive quizzes designed to sharpen your grammar and expand your vocabulary.
+            </p>
 
-        <div id="content-area" class="app-card rounded-[2rem] p-8 md:p-12 shadow-sm min-h-[60vh]">
-            <h1 id="passage-title" class="text-3xl font-bold mb-8 pb-4 border-b border-border"></h1>
-            <article id="passage-body" class="passage-container text-2xl leading-[2.2]">
-                <!-- Interactive text will be rendered here -->
-            </article>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+                
+                <!-- 
+                  Vocabulary Quizzes Button 
+                  To link to the page, swap href="#" with: href="./[placeholder-vocabulary-filename].html"
+                -->
+                <a href = "./quizz.html" class="group relative w-full md:w-72">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-blue-400 rounded-2xl blur opacity-30 group-hover:opacity-100 transition duration-300"></div>
+                    <div class="relative flex flex-col items-center bg-white border border-gray-100 p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="w-16 h-16 bg-blue-50 rounded-xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Vocabulary Quizzes</h3>
+                        <p class="text-sm text-gray-500 text-center">Build your lexicon with spaced-repetition testing.</p>
+                        <div class="mt-6 text-blue-500 font-semibold group-hover:translate-x-1 transition-transform">Explore Words →</div>
+                    </div>
+                </a>
+
+                <!-- 
+                  Reading Passages Button 
+                  To link to the page, swap href="#" with: href="./[placeholder-reading-filename].html"
+                -->
+                <a href= "./reader.html" class="group relative w-full md:w-72">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-2xl blur opacity-30 group-hover:opacity-100 transition duration-300"></div>
+                    <div class="relative flex flex-col items-center bg-white border border-gray-100 p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="w-16 h-16 bg-emerald-50 rounded-xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Reading Passages</h3>
+                        <p class="text-sm text-gray-500 text-center">Improve comprehension with context-rich short stories.</p>
+                        <div class="mt-6 text-emerald-500 font-semibold group-hover:translate-x-1 transition-transform">Read Stories →</div>
+                    </div>
+                </a>
+            </div>
         </div>
     </main>
 
-    <div id="tooltip" class="vocab-tooltip" onclick="hideTooltip()">
-        <div id="tooltip-reading" class="font-bold text-blue-500 leading-tight"></div>
-        <div id="tooltip-meaning" class="text-muted italic mt-1 text-center"></div>
-    </div>
+    <!-- Footer -->
+    <footer class="p-8 text-center border-t border-gray-100">
+        <p class="text-gray-400 text-sm">© 2026 NihongoQuest. Start your journey today.</p>
+    </footer>
 
-    <div id="settings-overlay" onclick="toggleSettings(false)" class="fixed inset-0 bg-black/20 z-40 hidden"></div>
-    <aside id="settings-drawer" class="fixed top-0 right-0 h-full w-80 app-card z-50 p-8 shadow-2xl overflow-y-auto">
-        <div class="flex justify-between items-center mb-10">
-            <h2 class="text-xl font-bold">Reading Settings</h2>
-            <button onclick="toggleSettings(false)" class="p-1 hover:bg-slate-100 rounded-lg">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-        </div>
-
-        <section class="space-y-8">
-            <!-- Theme -->
-            <div>
-                <label class="block text-sm font-semibold mb-3 uppercase tracking-wider text-muted">Theme</label>
-                <div class="grid grid-cols-3 gap-2">
-                    <button onclick="setTheme('light')" class="py-2 border rounded-lg bg-white text-slate-900 text-sm font-medium border-slate-200">Light</button>
-                    <button onclick="setTheme('sepia')" class="py-2 border rounded-lg bg-[#f4ecd8] text-[#5b4636] text-sm font-medium border-[#e6dfcc]">Sepia</button>
-                    <button onclick="setTheme('dark')" class="py-2 border rounded-lg bg-[#0f172a] text-white text-sm font-medium border-slate-700">Dark</button>
-                </div>
-            </div>
-
-            <!-- Font Size -->
-            <div>
-                <label class="block text-sm font-semibold mb-3 uppercase tracking-wider text-muted">Text Size</label>
-                <input type="range" min="16" max="40" value="24" oninput="updateFontSize(this.value)" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
-                <div class="flex justify-between text-xs mt-2 text-muted">
-                    <span>Small</span>
-                    <span>Large</span>
-                </div>
-            </div>
-
-            <!-- Line Height -->
-            <div>
-                <label class="block text-sm font-semibold mb-3 uppercase tracking-wider text-muted">Spacing</label>
-                <div class="flex gap-2">
-                    <button onclick="updateLineHeight(1.8)" class="flex-1 py-2 border rounded-lg text-sm font-medium">Tight</button>
-                    <button onclick="updateLineHeight(2.2)" class="flex-1 py-2 border rounded-lg text-sm font-medium">Classic</button>
-                    <button onclick="updateLineHeight(2.8)" class="flex-1 py-2 border rounded-lg text-sm font-medium">Wide</button>
-                </div>
-            </div>
-        </section>
-    </aside>
-
+    <!-- Interactive Scripts -->
     <script>
-        const state = {
-            currentPassage: null,
-            theme: 'light',
-            fontSize: 24,
-            lineHeight: 2.2,
-            activeWord: null,
-            manifest: null
-        };
-
-        const elements = {
-            selector: document.getElementById('passage-selector'),
-            title: document.getElementById('passage-title'),
-            body: document.getElementById('passage-body'),
-            tooltip: document.getElementById('tooltip'),
-            tReading: document.getElementById('tooltip-reading'),
-            tMeaning: document.getElementById('tooltip-meaning'),
-            drawer: document.getElementById('settings-drawer'),
-            overlay: document.getElementById('settings-overlay'),
-            loader: document.getElementById('loading-overlay')
-        };
-
-        /**
-         * Initialize App: Load manifest and set defaults
-         */
-        async function startApp() {
-            setLoader(true);
-            try {
-                const response = await fetch('data/manifest.json');
-                if (!response.ok) throw new Error("Manifest not found.");
-                state.manifest = await response.json();
-
-                // Fetch titles from every file to build the dropdown
-                const passagePromises = state.manifest.passages.map(async (p) => {
-                    try {
-                        const res = await fetch(`data/${encodeURIComponent(p.file)}`);
-                        const data = await res.json();
-                        return { id: p.id, file: p.file, title: data.title };
-                    } catch {
-                        return { id: p.id, file: p.file, title: `Error: ${p.file}` };
-                    }
-                });
-
-                const loadedPassages = await Promise.all(passagePromises);
-                renderDropdown(loadedPassages);
-
-                // Initial Load
-                if (loadedPassages.length > 0) {
-                    await loadPassage(loadedPassages[0].file);
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                if (this.getAttribute('href').startsWith('#')) {
+                    console.log('Navigating to placeholder link: ' + this.getAttribute('href'));
                 }
-            } catch (err) {
-                elements.body.innerHTML = `<div class="text-red-500 p-4">Error loading library. Check data folder.</div>`;
-                console.error(err);
-            } finally {
-                setLoader(false);
-            }
-        }
-
-        function renderDropdown(passages) {
-            elements.selector.innerHTML = passages.map(p => 
-                `<option value="${p.file}">${p.title}</option>`
-            ).join('');
-
-            elements.selector.addEventListener('change', (e) => {
-                if (e.target.value) loadPassage(e.target.value);
             });
-        }
-
-        /**
-         * Core Loading Logic
-         */
-        async function loadPassage(filename) {
-            setLoader(true);
-            hideTooltip();
-            try {
-                const res = await fetch(`data/${encodeURIComponent(filename)}`);
-                state.currentPassage = await res.json();
-                renderPassage();
-            } catch (err) {
-                elements.title.textContent = "Error";
-                elements.body.textContent = "Could not load file.";
-            } finally {
-                setLoader(false);
-            }
-        }
-
-        /**
-         * Render content with sentence tracking and vocab spans
-         */
-        function renderPassage() {
-            elements.title.textContent = state.currentPassage.title;
-            
-            // 1. Break content into sentences for highlighting (splitting by Japanese period)
-            const rawContent = state.currentPassage.content;
-            const sentences = rawContent.match(/[^。]+。?/g) || [rawContent];
-
-            const html = sentences.map(sentence => {
-                let processed = sentence;
-                
-                // 2. Sort vocab by length descending for greedy matching
-                const vocabKeys = Object.keys(state.currentPassage.vocabulary)
-                    .sort((a, b) => b.length - a.length);
-
-                vocabKeys.forEach(word => {
-                    const regex = new RegExp(`\\*\\*${word}\\*\\*`, 'g');
-                    processed = processed.replace(regex, 
-                        `<span class="target-vocab" onclick="showTooltip(event, '${word}')">${word}</span>`
-                    );
-                });
-
-                return `<span class="sentence-node" onclick="highlightSentence(this)">${processed}</span>`;
-            }).join('');
-
-            elements.body.innerHTML = html;
-            updateUISettings();
-        }
-
-        /**
-         * Tooltip Management
-         */
-        function showTooltip(event, word) {
-            event.stopPropagation();
-            if (state.activeWord === word) {
-                hideTooltip();
-                return;
-            }
-
-            state.activeWord = word;
-            const data = state.currentPassage.vocabulary[word];
-            const rect = event.target.getBoundingClientRect();
-
-            elements.tReading.textContent = `[ ${data.reading} ]`;
-            elements.tMeaning.textContent = data.meaning;
-            
-            // Set tooltip font size to match passage
-            elements.tReading.style.fontSize = `${state.fontSize}px`;
-            elements.tMeaning.style.fontSize = `${state.fontSize * 0.85}px`;
-
-            elements.tooltip.style.display = 'flex';
-            const scrollY = window.scrollY || window.pageYOffset;
-            let leftPos = rect.left + (rect.width / 2);
-            
-            // Constraint check for screen edges
-            const tWidth = elements.tooltip.offsetWidth;
-            if (leftPos < tWidth/2) leftPos = tWidth/2 + 10;
-            if (leftPos > window.innerWidth - tWidth/2) leftPos = window.innerWidth - tWidth/2 - 10;
-
-            elements.tooltip.style.left = `${leftPos}px`;
-            elements.tooltip.style.top = `${rect.top + scrollY}px`;
-        }
-
-        function hideTooltip() {
-            elements.tooltip.style.display = 'none';
-            state.activeWord = null;
-        }
-
-        /**
-         * UI State Adjustments
-         */
-        function setTheme(t) {
-            state.theme = t;
-            document.body.setAttribute('data-theme', t);
-            toggleSettings(false);
-        }
-
-        function updateFontSize(val) {
-            state.fontSize = val;
-            elements.body.style.fontSize = `${val}px`;
-        }
-
-        function updateLineHeight(val) {
-            state.lineHeight = val;
-            elements.body.style.lineHeight = val;
-        }
-
-        function updateUISettings() {
-            elements.body.style.fontSize = `${state.fontSize}px`;
-            elements.body.style.lineHeight = state.lineHeight;
-        }
-
-        function highlightSentence(el) {
-            document.querySelectorAll('.sentence-node').forEach(s => s.classList.remove('active'));
-            el.classList.add('active');
-        }
-
-        function toggleSettings(show) {
-            elements.drawer.classList.toggle('open', show);
-            elements.overlay.classList.toggle('hidden', !show);
-        }
-
-        function setLoader(val) {
-            elements.loader.classList.toggle('hidden', !val);
-        }
-
-        /**
-         * Text-to-Speech
-         */
-        function speakText() {
-            if (!state.currentPassage) return;
-            window.speechSynthesis.cancel();
-            
-            // Strip the ** markers for speaking
-            const cleanText = state.currentPassage.content.replace(/\*\*/g, '');
-            const msg = new SpeechSynthesisUtterance(cleanText);
-            msg.lang = 'ja-JP';
-            msg.rate = 0.9;
-            window.speechSynthesis.speak(msg);
-        }
-
-        // Global Event Listeners
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.target-vocab')) hideTooltip();
         });
-
-        window.onload = startApp;
     </script>
 </body>
 </html>
