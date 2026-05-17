@@ -6,9 +6,9 @@
             "title": "今週の仕事"
         },
         {
-            "lesson": "2",
-            "file": "L02-朝の習慣.json",
-            "title": "朝の習慣"
+            "lesson": "19",
+            "file": "L19-ジャーナリストの忙しい月.json",
+            "title": "ジャーナリストの忙しい月"
         },
         {
             "lesson": "20",
@@ -26,13 +26,13 @@
             "title": "朝の習慣"
         },
         {
-            "lesson": "5",
-            "file": "朝の習慣.json",
-            "title": "朝の習慣"
+            "lesson": "4",
+            "file": "L04-大学生の一日.json",
+            "title": "大学生の一日"
         },
         {
-            "lesson": "4",
-            "file": "l04-僕たちの夏休みと町への旅行.json",
+            "lesson": "5",
+            "file": "L05-僕たちの夏休みと町への旅行.json",
             "title": "僕たちの夏休みと町への旅行"
         }
     ]
