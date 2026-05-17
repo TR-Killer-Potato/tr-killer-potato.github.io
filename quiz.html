@@ -246,6 +246,7 @@ function prepareQuestions() {
         if (selectedStyles.has("Reading-Meaning")) questions.push({ q: item.r, a: item.m, type: "Reading-Meaning", dist: item.dm });
         if (selectedStyles.has("Meaning-Reading")) questions.push({ q: item.m, a: item.r, type: "Meaning-Reading", dist: item.dr });
         
+        // Rule: Do NOT include Katakana vocabulary in Vocabulary-Reading or Reading-Vocabulary quizzes
         if (!item.isKat) {
             if (selectedStyles.has("Vocab-Reading")) questions.push({ q: item.v, a: item.r, type: "Vocab-Reading", dist: item.dr });
             if (selectedStyles.has("Reading-Vocab")) questions.push({ q: item.r, a: item.v, type: "Reading-Vocab", dist: item.dv });
