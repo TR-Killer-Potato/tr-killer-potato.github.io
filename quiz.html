@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mastery Challenge - Reader</title>
+    <title>Mastery Challenge - Quiz App</title>
     <style>
         :root {
             --bg-dark: #1a1a2e;
@@ -87,7 +87,7 @@
     <!-- 1. Landing Page -->
     <div id="landing-page">
         <h1 class="header-title">Mastery Challenge</h1>
-        <p class="sub-text">Select a module to begin.</p>
+        <p class="sub-text">Select a practice module to begin.</p>
         <div id="lesson-list" class="lesson-grid"></div>
     </div>
 
@@ -120,7 +120,7 @@
 
     <!-- Global Footer -->
     <div class="persistent-nav">
-        <a href="reader.html" class="menu-link">
+        <a href="index.html" class="menu-link">
             <button class="back-btn" style="font-size: 0.9rem; padding: 10px 25px;">Main Menu</button>
         </a>
     </div>
@@ -128,9 +128,9 @@
 
 <script>
 /**
- * APP ENGINE CONFIG
+ * QUIZ APP ENGINE CONFIG
  */
-const MANIFEST_PATH = 'readerdata/manifest.json';
+const MANIFEST_PATH = 'quizdata/manifest.json';
 let currentLessonFullObject = null;
 let currentLessonID = "";
 let questions = [];
@@ -170,7 +170,7 @@ async function loadRepository() {
     showLoading('Initializing repository...');
     try {
         const response = await fetch(MANIFEST_PATH);
-        if (!response.ok) throw new Error('Manifest not found in readerdata/');
+        if (!response.ok) throw new Error('Manifest not found in quizdata/');
         const manifest = await response.json();
         renderSelector(manifest.lessons);
         showState('landing-page');
@@ -210,7 +210,7 @@ function renderSelector(lessons) {
 }
 
 /**
- * Selection Logic
+ * Selection Screen Logic
  */
 document.querySelectorAll('.style-btn').forEach(btn => {
     btn.onclick = () => {
