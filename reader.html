@@ -3,444 +3,599 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Japanese Reader Professional</title>
+    <title>Japanese Vocabulary Reader</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-main: #f8fafc;
+            --bg-primary: #f8fafc;
             --bg-card: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --accent: #2563eb;
-            --border: #e2e8f0;
-            --btn-secondary: #e2e8f0;
-            --btn-secondary-hover: #cbd5e1;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --btn-secondary: #f1f5f9;
+            --btn-secondary-hover: #e2e8f0;
         }
 
-        [data-theme="sepia"] {
-            --bg-main: #f4ecd8;
+        body.theme-sepia {
+            --bg-primary: #f4ecd8;
             --bg-card: #fdf6e3;
-            --text-main: #5b4636;
-            --text-muted: #8c786a;
-            --accent: #a0522d;
-            --border: #e6dfcc;
-            --btn-secondary: #e6dfcc;
-            --btn-secondary-hover: #d9cfb8;
+            --text-primary: #5c4a3c;
+            --text-secondary: #8c7662;
+            --border-color: #e6dac3;
+            --btn-secondary: #ebdcb9;
+            --btn-secondary-hover: #decb9e;
         }
 
-        [data-theme="dark"] {
-            --bg-main: #0f172a;
+        body.theme-dark {
+            --bg-primary: #0f172a;
             --bg-card: #1e293b;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --accent: #38bdf8;
-            --border: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
             --btn-secondary: #334155;
             --btn-secondary-hover: #475569;
         }
 
         body {
             font-family: 'Inter', 'Noto Sans JP', sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-main);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             transition: background-color 0.3s, color 0.3s;
         }
 
-        .app-card {
+        .custom-card {
             background-color: var(--bg-card);
-            border: 1px solid var(--border);
+            border-color: var(--border-color);
         }
 
-        .passage-container {
-            transition: font-size 0.2s, line-height 0.2s;
+        .custom-button-secondary {
+            background-color: var(--btn-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        .custom-button-secondary:hover {
+            background-color: var(--btn-secondary-hover);
         }
 
+        .passage-text {
+            letter-spacing: 0.05em;
+        }
+
+        /* Highlight entire sentence */
+        .reader-sentence {
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .reader-sentence:hover {
+            background-color: rgba(59, 130, 246, 0.08);
+        }
+        .reader-sentence.active-sentence {
+            background-color: rgba(59, 130, 246, 0.15);
+        }
+
+        /* Highlight interactive target vocabulary */
         .target-vocab {
-            color: var(--accent);
-            font-weight: 700;
-            border-bottom: 2px solid var(--accent);
             cursor: pointer;
+            border-bottom: 2px solid #3b82f6;
+            transition: background-color 0.2s;
             padding: 0 2px;
-            border-radius: 4px;
-            transition: background 0.2s;
+            border-radius: 2px;
+            display: inline-block;
         }
-
         .target-vocab:hover {
-            background-color: rgba(37, 99, 235, 0.1);
+            background-color: rgba(59, 130, 246, 0.25) !important;
         }
 
-        .sentence-node {
-            cursor: pointer;
-            transition: background 0.2s;
-            border-radius: 4px;
-            padding: 2px 0;
-        }
-
-        .sentence-node:hover {
-            background-color: rgba(100, 116, 139, 0.05);
-        }
-
-        .sentence-node.active {
-            background-color: rgba(37, 99, 235, 0.1);
-        }
-
+        /* Tooltip style */
         .vocab-tooltip {
             position: absolute;
-            z-index: 100;
+            z-index: 50;
             background: var(--bg-card);
-            padding: 1rem 1.5rem;
-            border-radius: 1rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            border: 1px solid var(--border);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+            pointer-events: auto;
             display: none;
-            flex-direction: column;
-            align-items: center;
-            min-width: 200px;
-            transform: translate(-50%, -100%);
-            margin-top: -10px;
+            transform: translateY(-10px);
+            animation: fadeIn 0.2s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(-10px); }
         }
 
-        .vocab-tooltip::after {
-            content: "";
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-width: 8px 8px 0 8px;
-            border-style: solid;
-            border-color: var(--bg-card) transparent transparent transparent;
+        /* Utility classes */
+        .loader {
+            border: 3px solid rgba(0,0,0,0.1);
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
         }
-
-        #settings-drawer {
-            transform: translateX(100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        #settings-drawer.open {
-            transform: translateX(0);
-        }
-
-        .btn-back {
-            background-color: var(--btn-secondary);
-            color: var(--text-main);
-            transition: all 0.2s;
-        }
-
-        .btn-back:hover {
-            background-color: var(--btn-secondary-hover);
-            transform: translateY(-1px);
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body class="min-h-screen pb-20 overflow-x-hidden">
-
-    <nav class="sticky top-0 z-40 app-card px-4 py-3 mb-6 shadow-sm flex items-center justify-between">
-        <div class="flex items-center gap-3 w-full max-w-xs">
-            <select id="passage-selector" class="w-full bg-transparent font-semibold focus:outline-none cursor-pointer text-lg">
-                <option value="">Loading...</option>
-            </select>
-        </div>
-        
-        <div class="flex items-center gap-2">
-            <button onclick="speakText()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Listen">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
-            </button>
-            <button onclick="toggleSettings(true)" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-            </button>
-        </div>
-    </nav>
-
-    <main class="max-w-2xl mx-auto px-5">
-        <div id="loading-overlay" class="fixed inset-0 bg-white/80 z-50 flex items-center justify-center hidden">
-            <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
-        </div>
-
-        <div id="content-area" class="app-card rounded-[2rem] p-8 md:p-12 shadow-sm min-h-[60vh] mb-8">
-            <h1 id="passage-title" class="text-3xl font-bold mb-8 pb-4 border-b border-border"></h1>
-            <article id="passage-body" class="passage-container text-2xl leading-[2.2]">
-                <!-- Interactive text will be rendered here -->
-            </article>
-        </div>
-
-        <div class="flex justify-center pb-10">
-            <a href="index.html" class="btn-back px-8 py-3 rounded-full font-semibold shadow-sm flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                Back
-            </a>
-        </div>
-    </main>
-
-    <div id="tooltip" class="vocab-tooltip" onclick="hideTooltip()">
-        <div id="tooltip-reading" class="font-bold text-blue-500 leading-tight"></div>
-        <div id="tooltip-meaning" class="text-muted italic mt-1 text-center"></div>
-    </div>
-
-    <div id="settings-overlay" onclick="toggleSettings(false)" class="fixed inset-0 bg-black/20 z-40 hidden"></div>
-    <aside id="settings-drawer" class="fixed top-0 right-0 h-full w-80 app-card z-50 p-8 shadow-2xl overflow-y-auto">
-        <div class="flex justify-between items-center mb-10">
-            <h2 class="text-xl font-bold">Reading Settings</h2>
-            <button onclick="toggleSettings(false)" class="p-1 hover:bg-slate-100 rounded-lg">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-        </div>
-
-        <section class="space-y-8">
-            <div>
-                <label class="block text-sm font-semibold mb-3 uppercase tracking-wider text-muted">Theme</label>
-                <div class="grid grid-cols-3 gap-2">
-                    <button onclick="setTheme('light')" class="py-2 border rounded-lg bg-white text-slate-900 text-sm font-medium border-slate-200">Light</button>
-                    <button onclick="setTheme('sepia')" class="py-2 border rounded-lg bg-[#f4ecd8] text-[#5b4636] text-sm font-medium border-[#e6dfcc]">Sepia</button>
-                    <button onclick="setTheme('dark')" class="py-2 border rounded-lg bg-[#0f172a] text-white text-sm font-medium border-slate-700">Dark</button>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-sm font-semibold mb-3 uppercase tracking-wider text-muted">Text Size</label>
-                <input id="font-slider" type="range" min="16" max="40" value="24" oninput="updateFontSize(this.value)" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
-                <div class="flex justify-between text-xs mt-2 text-muted">
-                    <span>Small</span>
-                    <span>Large</span>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-sm font-semibold mb-3 uppercase tracking-wider text-muted">Spacing</label>
-                <div class="flex gap-2">
-                    <button onclick="updateLineHeight(1.8)" class="flex-1 py-2 border rounded-lg text-sm font-medium">Tight</button>
-                    <button onclick="updateLineHeight(2.2)" class="flex-1 py-2 border rounded-lg text-sm font-medium">Classic</button>
-                    <button onclick="updateLineHeight(2.8)" class="flex-1 py-2 border rounded-lg text-sm font-medium">Wide</button>
-                </div>
-            </div>
-        </section>
-    </aside>
+<body class="min-h-screen">
 
     <script>
-        const state = {
-            currentPassage: null,
+        // State variables
+        let currentPassage = null;
+        let activeTooltip = null;
+        let manifestData = []; // Compiled metadata directly from optimized manifest
+        let lessons = [];      // Unique sorted lesson IDs
+
+        // Settings (loaded from localStorage or defaulted)
+        let settings = {
             theme: 'light',
             fontSize: 24,
-            lineHeight: 2.2,
-            activeWord: null,
-            manifest: null
+            lineHeight: 2.2
         };
 
-        const STORAGE_KEY = 'jp_reader_prefs_v3';
-        const DATA_DIR = 'readerdata';
-
-        const elements = {
-            body: document.getElementById('passage-body'),
-            title: document.getElementById('passage-title'),
-            selector: document.getElementById('passage-selector'),
-            tooltip: document.getElementById('tooltip'),
-            tReading: document.getElementById('tooltip-reading'),
-            tMeaning: document.getElementById('tooltip-meaning'),
-            drawer: document.getElementById('settings-drawer'),
-            overlay: document.getElementById('settings-overlay'),
-            loader: document.getElementById('loading-overlay'),
-            fontSlider: document.getElementById('font-slider')
-        };
-
-        function saveSettings() {
-            const prefs = {
-                theme: state.theme,
-                fontSize: state.fontSize,
-                lineHeight: state.lineHeight
-            };
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
-        }
-
-        function loadSettings() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                const prefs = JSON.parse(saved);
-                state.theme = prefs.theme || state.theme;
-                state.fontSize = prefs.fontSize || state.fontSize;
-                state.lineHeight = prefs.lineHeight || state.lineHeight;
-                
-                elements.fontSlider.value = state.fontSize;
-                document.body.setAttribute('data-theme', state.theme);
-            }
-        }
-
-        async function startApp() {
+        /**
+         * System startup
+         */
+        async function initApp() {
             loadSettings();
-            updateUISettings(); 
-            
-            setLoader(true);
-            try {
-                const response = await fetch(`${DATA_DIR}/manifest.json`);
-                if (!response.ok) throw new Error("Manifest not found.");
-                state.manifest = await response.json();
+            applySettingsUI();
 
-                const passagePromises = state.manifest.passages.map(async (p) => {
-                    try {
-                        const res = await fetch(`${DATA_DIR}/${encodeURIComponent(p.file)}`);
-                        if (!res.ok) return null;
-                        const data = await res.json();
-                        return { id: p.id, file: p.file, title: data.title };
-                    } catch (e) {
-                        console.error("Error fetching passage:", p.file, e);
-                        return null;
-                    }
+            try {
+                // 1. Fetch manifest file
+                const response = await fetch('readerdata/manifest.json');
+                if (!response.ok) throw new Error('Could not load manifest file.');
+                const manifest = await response.json();
+
+                // 2. Build metadata directly from manifest file (Zero pre-fetch operations needed!)
+                manifestData = manifest.passages.map((item, idx) => {
+                    const fallbackTitle = item.file.replace(/\.json$/i, '');
+                    return {
+                        id: `p_${idx + 1}`,
+                        lesson: item.lesson,
+                        file: item.file,
+                        title: item.title || fallbackTitle
+                    };
                 });
 
-                const loadedPassages = (await Promise.all(passagePromises)).filter(p => p !== null);
-                renderDropdown(loadedPassages);
+                // 3. Collate sorted array of unique Lessons
+                const uniqueLessons = [...new Set(manifestData.map(item => item.lesson))];
+                lessons = uniqueLessons.sort((a, b) => {
+                    const numA = parseFloat(a);
+                    const numB = parseFloat(b);
+                    if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+                    return a.localeCompare(b);
+                });
 
-                if (loadedPassages.length > 0) {
-                    await loadPassage(loadedPassages[0].file);
+                // 4. Render drop-downs and restore states
+                renderLessonSelector(lessons);
+                setupDropdownListeners();
+
+                if (lessons.length > 0) {
+                    const savedLesson = localStorage.getItem('selected_lesson');
+                    const activeLesson = lessons.includes(savedLesson) ? savedLesson : lessons[0];
+                    document.getElementById('lesson-selector').value = activeLesson;
+                    updatePassageSelector(activeLesson);
                 }
+
             } catch (err) {
-                elements.body.innerHTML = `<div class="text-red-500 p-4">Error loading library. Check ${DATA_DIR} folder and manifest.</div>`;
                 console.error(err);
-            } finally {
-                setLoader(false);
+                document.getElementById('display-title').textContent = "Error loading data.";
+                document.getElementById('passage-container').innerHTML = `
+                    <p class="text-red-500 text-lg mb-2">Could not read from 'readerdata/manifest.json'.</p>
+                    <p class="text-sm opacity-70">Verify that the directory is named 'readerdata' and is situated in the same directory as this file.</p>
+                `;
             }
-        }
 
-        function renderDropdown(passages) {
-            elements.selector.innerHTML = passages.map(p => 
-                `<option value="${p.file}">${p.title}</option>`
-            ).join('');
-
-            elements.selector.addEventListener('change', (e) => {
-                if (e.target.value) loadPassage(e.target.value);
+            // Global tap dismissal listeners for tooltip/sentence highlights
+            document.addEventListener('click', (e) => {
+                if (activeTooltip && !e.target.closest('.target-vocab') && !e.target.closest('.vocab-tooltip')) {
+                    hideTooltip();
+                }
+                if (!e.target.closest('.reader-sentence') && !e.target.closest('.target-vocab')) {
+                    clearSentenceHighlights();
+                }
             });
         }
 
-        async function loadPassage(filename) {
-            setLoader(true);
-            hideTooltip();
-            try {
-                const res = await fetch(`${DATA_DIR}/${encodeURIComponent(filename)}`);
-                state.currentPassage = await res.json();
-                renderPassage();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } catch (err) {
-                elements.title.textContent = "Error";
-                elements.body.textContent = "Could not load file.";
-            } finally {
-                setLoader(false);
+        /**
+         * Populate Lesson Selector dropdown
+         */
+        function renderLessonSelector(lessonsList) {
+            const selector = document.getElementById('lesson-selector');
+            selector.innerHTML = lessonsList.map(lessonVal => 
+                `<option value="${lessonVal}">Lesson ${lessonVal}</option>`
+            ).join('');
+        }
+
+        /**
+         * Set up selector interaction actions
+         */
+        function setupDropdownListeners() {
+            document.getElementById('lesson-selector').addEventListener('change', (e) => {
+                const selectedLesson = e.target.value;
+                localStorage.setItem('selected_lesson', selectedLesson);
+                updatePassageSelector(selectedLesson);
+            });
+
+            document.getElementById('passage-selector').addEventListener('change', async (e) => {
+                const selectedId = e.target.value;
+                const targetPassage = manifestData.find(p => p.id === selectedId);
+                if (targetPassage) {
+                    localStorage.setItem('selected_passage_id', selectedId);
+                    await loadPassage(targetPassage);
+                }
+            });
+        }
+
+        /**
+         * Update Passage Selector dropdown dynamically based on chosen lesson
+         */
+        function updatePassageSelector(lessonValue) {
+            const filteredPassages = manifestData.filter(item => item.lesson === lessonValue);
+            const selector = document.getElementById('passage-selector');
+
+            selector.innerHTML = filteredPassages.map(p => 
+                `<option value="${p.id}">${p.title}</option>`
+            ).join('');
+
+            if (filteredPassages.length > 0) {
+                const savedPassageId = localStorage.getItem('selected_passage_id');
+                const activePassage = filteredPassages.find(p => p.id === savedPassageId) || filteredPassages[0];
+                selector.value = activePassage.id;
+                loadPassage(activePassage);
             }
         }
 
-        function renderPassage() {
-            elements.title.textContent = state.currentPassage.title;
-            
-            const rawContent = state.currentPassage.content;
-            const sentences = rawContent.match(/[^。？！]+[。？！]?/g) || [rawContent];
+        /**
+         * Async Load Specific Passage Data and Render
+         */
+        async function loadPassage(passageMeta) {
+            hideTooltip();
+            clearSentenceHighlights();
+            const container = document.getElementById('passage-container');
+            const titleEl = document.getElementById('display-title');
 
-            const html = sentences.map(sentence => {
-                let processed = sentence;
-                const vocabKeys = Object.keys(state.currentPassage.vocabulary || {})
-                    .sort((a, b) => b.length - a.length);
+            titleEl.innerHTML = `<span class="loader mr-2"></span> Loading passage...`;
+            container.innerHTML = "";
 
-                vocabKeys.forEach(word => {
-                    const regex = new RegExp(`\\*\\*${word}\\*\\*`, 'g');
-                    processed = processed.replace(regex, 
-                        `<span class="target-vocab" onclick="showTooltip(event, '${word}')">${word}</span>`
-                    );
+            try {
+                const response = await fetch(`readerdata/${encodeURIComponent(passageMeta.file)}`);
+                if (!response.ok) throw new Error('File not found');
+                currentPassage = await response.json();
+
+                titleEl.textContent = currentPassage.title;
+
+                let text = currentPassage.content;
+
+                // 1. Temporarily replace vocabulary matches with placeholders to avoid sentence splitting issues
+                const vocabWords = Object.keys(currentPassage.vocabulary);
+                vocabWords.forEach((word, index) => {
+                    const placeholder = `__VOCAB_PLACEHOLDER_${index}__`;
+                    text = text.replaceAll(`**${word}**`, placeholder);
                 });
 
-                return `<span class="sentence-node" onclick="highlightSentence(this)">${processed}</span>`;
-            }).join('');
+                // 2. Segment paragraphs by newline, then split into punctuated Japanese sentences
+                const paragraphs = text.split('\n');
+                const paragraphsHTML = paragraphs.map(para => {
+                    if (!para.trim()) return '';
 
-            elements.body.innerHTML = html;
-            updateUISettings();
+                    const sentences = para.split(/(?<=[。！？])/g);
+                    const sentenceSpans = sentences.map(sentence => {
+                        if (!sentence.trim()) return '';
+
+                        // 3. Re-inject vocabulary markup inside the sentence span container
+                        let sentenceHTML = sentence;
+                        vocabWords.forEach((word, index) => {
+                            const placeholder = `__VOCAB_PLACEHOLDER_${index}__`;
+                            sentenceHTML = sentenceHTML.replaceAll(placeholder, 
+                                `<span class="target-vocab font-bold text-blue-600 dark:text-blue-400" onclick="handleVocabClick(event, '${word}')">${word}</span>`
+                            );
+                        });
+
+                        return `<span class="reader-sentence transition-all duration-150" onclick="handleSentenceClick(event)">${sentenceHTML}</span>`;
+                    }).join('');
+
+                    return `<p class="mb-4">${sentenceSpans}</p>`;
+                }).join('');
+
+                container.innerHTML = paragraphsHTML;
+                applySavedTextStyle();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            } catch (err) {
+                console.error(err);
+                titleEl.textContent = "Error Loading Content";
+                container.innerHTML = `
+                    <div class="text-red-500 text-lg mb-2">Could not read: ${passageMeta.file}</div>
+                    <p class="text-sm opacity-70">Check if the JSON name matches the manifest configuration exactly.</p>
+                `;
+            }
         }
 
-        function showTooltip(event, word) {
+        /**
+         * Floating Window Trigger
+         */
+        function handleVocabClick(event, word) {
             event.stopPropagation();
-            if (state.activeWord === word) {
+
+            if (activeTooltip && activeTooltip.trigger === event.target) {
                 hideTooltip();
                 return;
             }
 
-            state.activeWord = word;
-            const data = state.currentPassage.vocabulary[word];
+            const info = currentPassage.vocabulary[word];
             const rect = event.target.getBoundingClientRect();
+            showTooltip(rect, info, event.target);
+        }
 
-            elements.tReading.textContent = `[ ${data.reading} ]`;
-            elements.tMeaning.textContent = data.meaning;
-            
-            elements.tReading.style.fontSize = `${state.fontSize}px`;
-            elements.tMeaning.style.fontSize = `${Math.max(16, state.fontSize * 0.8)}px`;
+        /**
+         * Highlight Active Reading Line
+         */
+        function handleSentenceClick(event) {
+            event.stopPropagation();
+            if (event.target.closest('.target-vocab')) return; // Ignore if vocab was tapped instead
 
-            elements.tooltip.style.display = 'flex';
+            clearSentenceHighlights();
+            const sentenceSpan = event.currentTarget;
+            sentenceSpan.classList.add('active-sentence');
+        }
+
+        function clearSentenceHighlights() {
+            document.querySelectorAll('.reader-sentence').forEach(span => {
+                span.classList.remove('active-sentence');
+            });
+        }
+
+        /**
+         * Display Tooltip above active target word
+         */
+        function showTooltip(rect, info, triggerElement) {
+            const tooltip = document.getElementById('tooltip');
+            const readingEl = document.getElementById('tooltip-reading');
+            const meaningEl = document.getElementById('tooltip-meaning');
+
+            readingEl.textContent = `[${info.reading}]`;
+            meaningEl.textContent = info.meaning;
+
+            // Make it visible to calculate client bounding constraints
+            tooltip.style.display = 'block';
+
             const scrollY = window.scrollY || window.pageYOffset;
-            
-            let leftPos = rect.left + (rect.width / 2);
-            const tWidth = elements.tooltip.offsetWidth;
-            
-            if (leftPos < tWidth/2) leftPos = tWidth/2 + 10;
-            if (leftPos > window.innerWidth - tWidth/2) leftPos = window.innerWidth - tWidth/2 - 10;
+            const tooltipWidth = tooltip.offsetWidth;
+            const left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
+            const top = rect.top + scrollY - tooltip.offsetHeight;
 
-            elements.tooltip.style.left = `${leftPos}px`;
-            elements.tooltip.style.top = `${rect.top + scrollY}px`;
+            // Enforce window borders alignment
+            tooltip.style.left = `${Math.max(10, Math.min(left, window.innerWidth - tooltipWidth - 10))}px`;
+            tooltip.style.top = `${top}px`;
+
+            activeTooltip = { element: tooltip, trigger: triggerElement };
         }
 
+        /**
+         * Dismiss the active tooltip window
+         */
         function hideTooltip() {
-            elements.tooltip.style.display = 'none';
-            state.activeWord = null;
+            const tooltip = document.getElementById('tooltip');
+            tooltip.style.display = 'none';
+            activeTooltip = null;
         }
 
-        function setTheme(t) {
-            state.theme = t;
-            document.body.setAttribute('data-theme', t);
+        /**
+         * Play Audio via native Web Speech Synthesis
+         */
+        function playAudio() {
+            if (!currentPassage) return;
+            window.speechSynthesis.cancel();
+
+            const cleanText = currentPassage.content.replace(/\*\*/g, '');
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.lang = 'ja-JP';
+
+            const voices = window.speechSynthesis.getVoices();
+            const jaVoice = voices.find(voice => voice.lang.startsWith('ja'));
+            if (jaVoice) utterance.voice = jaVoice;
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        /**
+         * State & Persistent Settings Control
+         */
+        function loadSettings() {
+            const local = localStorage.getItem('japanese_reader_pref');
+            if (local) {
+                try {
+                    settings = { ...settings, ...JSON.parse(local) };
+                } catch(e) {}
+            }
+        }
+
+        function saveSettings() {
+            localStorage.setItem('japanese_reader_pref', JSON.stringify(settings));
+        }
+
+        function applySettingsUI() {
+            // Apply Theme Classes to Body
+            document.body.className = '';
+            if (settings.theme === 'sepia') document.body.classList.add('theme-sepia');
+            if (settings.theme === 'dark') document.body.classList.add('theme-dark');
+
+            // Set Form Settings UI
+            document.getElementById('font-size-slider').value = settings.fontSize;
+            document.getElementById('font-size-val').textContent = `${settings.fontSize}px`;
+            
+            document.getElementById('line-height-slider').value = settings.lineHeight;
+            document.getElementById('line-height-val').textContent = settings.lineHeight;
+
+            applySavedTextStyle();
+        }
+
+        function applySavedTextStyle() {
+            const container = document.getElementById('passage-container');
+            if (container) {
+                container.style.fontSize = `${settings.fontSize}px`;
+                container.style.lineHeight = settings.lineHeight;
+            }
+
+            // Adjust tooltips font-size dynamically to match user preference scale
+            const tooltip = document.getElementById('tooltip');
+            if (tooltip) {
+                tooltip.style.fontSize = `${settings.fontSize}px`;
+            }
+        }
+
+        function toggleSettingsDrawer() {
+            const panel = document.getElementById('settings-drawer');
+            panel.classList.toggle('translate-x-full');
+        }
+
+        function changeTheme(themeName) {
+            settings.theme = themeName;
             saveSettings();
-            toggleSettings(false);
+            applySettingsUI();
         }
 
         function updateFontSize(val) {
-            state.fontSize = parseInt(val);
-            elements.body.style.fontSize = `${val}px`;
+            settings.fontSize = parseInt(val);
+            document.getElementById('font-size-val').textContent = `${val}px`;
             saveSettings();
+            applySavedTextStyle();
         }
 
         function updateLineHeight(val) {
-            state.lineHeight = val;
-            elements.body.style.lineHeight = val;
+            settings.lineHeight = parseFloat(val);
+            document.getElementById('line-height-val').textContent = val;
             saveSettings();
+            applySavedTextStyle();
         }
 
-        function updateUISettings() {
-            elements.body.style.fontSize = `${state.fontSize}px`;
-            elements.body.style.lineHeight = state.lineHeight;
-            document.body.setAttribute('data-theme', state.theme);
-        }
-
-        function highlightSentence(el) {
-            document.querySelectorAll('.sentence-node').forEach(s => s.classList.remove('active'));
-            el.classList.add('active');
-        }
-
-        function toggleSettings(show) {
-            elements.drawer.classList.toggle('open', show);
-            elements.overlay.classList.toggle('hidden', !show);
-        }
-
-        function setLoader(val) {
-            elements.loader.classList.toggle('hidden', !val);
-        }
-
-        function speakText() {
-            if (!state.currentPassage) return;
-            window.speechSynthesis.cancel();
-            
-            const cleanText = state.currentPassage.content.replace(/\*\*/g, '');
-            const msg = new SpeechSynthesisUtterance(cleanText);
-            msg.lang = 'ja-JP';
-            msg.rate = 0.9;
-            window.speechSynthesis.speak(msg);
-        }
-
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.target-vocab')) hideTooltip();
-        });
-
-        window.onload = startApp;
+        // Initialize App on Window Loaded state
+        window.onload = initApp;
     </script>
+
+    <!-- App Wrapper Container -->
+    <div class="max-w-2xl mx-auto px-4 py-8 md:py-12 pb-32">
+        
+        <!-- Header Setup -->
+        <header class="mb-10 text-center relative">
+            <div class="flex items-center justify-between mb-6">
+                <h1 class="text-3xl font-bold tracking-tight">Japanese Reader</h1>
+                <!-- Controls buttons -->
+                <div class="flex gap-2">
+                    <button onclick="playAudio()" class="custom-button-secondary p-3 rounded-xl transition duration-150 shadow-sm" aria-label="Listen audio text">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                    </button>
+                    <button onclick="toggleSettingsDrawer()" class="custom-button-secondary p-3 rounded-xl transition duration-150 shadow-sm" aria-label="Open reading panel settings">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Double Dropdowns Layout -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto mb-6 text-left">
+                <!-- Lesson Dropdown Selector -->
+                <div class="relative">
+                    <label class="block text-sm font-medium text-slate-500 mb-2">Lesson:</label>
+                    <div class="relative">
+                        <select id="lesson-selector" class="block appearance-none w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 py-3 px-4 pr-10 rounded-xl leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm cursor-pointer">
+                            <option>Loading...</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Passage Dropdown Selector -->
+                <div class="relative">
+                    <label class="block text-sm font-medium text-slate-500 mb-2">Passage:</label>
+                    <div class="relative">
+                        <select id="passage-selector" class="block appearance-none w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 py-3 px-4 pr-10 rounded-xl leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm cursor-pointer">
+                            <option>Loading...</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Reading Card -->
+        <main class="custom-card rounded-3xl shadow-xl p-8 md:p-12 border relative">
+            <h2 id="display-title" class="text-xl font-bold text-blue-600 dark:text-blue-400 mb-8 border-b border-slate-100 dark:border-slate-700 pb-4">Initializing reader...</h2>
+            
+            <!-- Injected Reading Area -->
+            <article id="passage-container" class="passage-text text-slate-800 dark:text-slate-100 leading-relaxed">
+            </article>
+
+            <!-- Navigation Back Button -->
+            <div class="mt-12 pt-6 border-t border-slate-100 dark:border-slate-700 flex justify-center">
+                <a href="index.html" class="custom-button-secondary px-8 py-3 rounded-xl font-semibold transition duration-150 inline-flex items-center gap-2 shadow-sm">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    Back
+                </a>
+            </div>
+        </main>
+
+        <footer class="mt-8 text-center text-slate-400 text-sm">
+            Tap a <span class="font-bold text-blue-600 dark:text-blue-400">bold word</span> for details, or tap outside to dismiss.
+        </footer>
+    </div>
+
+    <!-- Active Popup Floating Tooltip -->
+    <div id="tooltip" class="vocab-tooltip" onclick="hideTooltip()">
+        <div class="flex flex-col items-center text-center">
+            <div id="tooltip-reading" class="text-blue-600 dark:text-blue-400 font-bold mb-1"></div>
+            <div id="tooltip-meaning" class="text-slate-600 dark:text-slate-300 italic font-medium"></div>
+            <!-- Arrow tip wrapper -->
+            <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-inherit border-r border-b border-inherit rotate-45"></div>
+        </div>
+    </div>
+
+    <!-- Slide-out Configuration Drawer -->
+    <div id="settings-drawer" class="fixed right-0 top-0 h-full w-80 bg-white dark:bg-slate-900 shadow-2xl border-l border-slate-200 dark:border-slate-800 transition-transform duration-300 transform translate-x-full z-50 p-6">
+        <div class="flex items-center justify-between mb-8">
+            <h3 class="text-lg font-bold">Reading Preferences</h3>
+            <button onclick="toggleSettingsDrawer()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <!-- Color Palette Picker -->
+        <div class="mb-8">
+            <span class="block text-sm font-semibold mb-3 text-slate-400">THEME</span>
+            <div class="grid grid-cols-3 gap-2">
+                <button onclick="changeTheme('light')" class="py-2 border rounded-xl font-medium bg-white border-slate-200 text-slate-800 text-xs">Light</button>
+                <button onclick="changeTheme('sepia')" class="py-2 border rounded-xl font-medium bg-[#fdf6e3] border-[#ebdcb9] text-[#5c4a3c] text-xs">Sepia</button>
+                <button onclick="changeTheme('dark')" class="py-2 border rounded-xl font-medium bg-slate-800 border-slate-700 text-slate-100 text-xs">Dark</button>
+            </div>
+        </div>
+
+        <!-- Text Adjustments -->
+        <div class="mb-6">
+            <div class="flex justify-between text-sm mb-2">
+                <span class="font-semibold text-slate-400 text-xs">FONT SIZE</span>
+                <span id="font-size-val" class="font-bold">24px</span>
+            </div>
+            <input id="font-size-slider" type="range" min="16" max="40" step="1" oninput="updateFontSize(this.value)" class="w-full accent-blue-500 cursor-pointer">
+        </div>
+
+        <div>
+            <div class="flex justify-between text-sm mb-2">
+                <span class="font-semibold text-slate-400 text-xs">LINE SPACING</span>
+                <span id="line-height-val" class="font-bold">2.2</span>
+            </div>
+            <input id="line-height-slider" type="range" min="1.8" max="3" step="0.1" oninput="updateLineHeight(this.value)" class="w-full accent-blue-500 cursor-pointer">
+        </div>
+    </div>
+
 </body>
 </html>
