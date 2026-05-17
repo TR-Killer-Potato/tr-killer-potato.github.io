@@ -104,7 +104,6 @@
             <button class="style-btn" data-type="Meaning-Reading">Meaning - Reading</button>
         </div>
         <div class="action-btns">
-            <button class="back-btn" onclick="showState('landing-page')">← Back</button>
             <button id="start-btn" class="start-btn" disabled>Start Session</button>
         </div>
     </div>
@@ -118,9 +117,23 @@
         <div id="score-board">Progression: <span id="current-count">0</span> / <span id="total-q">0</span> | Mastery: <span id="score">0</span></div>
     </div>
 
+    <!-- 4. Results Screen -->
+    <div id="results-ui" class="hidden">
+        <h2 style="color:var(--accent-blue)">Session Results</h2>
+        <p id="results-meta" class="sub-text">Lesson ID: Title</p>
+        <p id="results-score" style="font-size: 1.1rem; margin-bottom: 1.5rem;">Final Score: 0 / 0</p>
+        <div class="final-results-wrap">
+            <table>
+                <thead><tr><th>Question</th><th>Pick</th><th>Answer</th></tr></thead>
+                <tbody id="results-tbody"></tbody>
+            </table>
+        </div>
+        <button class="start-btn" onclick="location.reload()" style="margin-top: 1.5rem;">Restart Quiz</button>
+    </div>
+
     <!-- Global Footer -->
     <div class="persistent-nav">
-        <a href="index.html" class="menu-link">
+        <a href="index.html" class="menu-link" id="global-menu-link">
             <button class="back-btn" style="font-size: 0.9rem; padding: 10px 25px;">Main Menu</button>
         </a>
     </div>
@@ -143,10 +156,38 @@ let selectedStyles = new Set();
  * UI State Controller
  */
 function showState(stateId) {
-    ['landing-page', 'selection-screen', 'quiz-ui', 'status-view'].forEach(id => {
-        document.getElementById(id).classList.add('hidden');
+    ['landing-page', 'selection-screen', 'quiz-ui', 'results-ui', 'status-view'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
     });
-    document.getElementById(stateId).classList.remove('hidden');
+    const activeEl = document.getElementById(stateId);
+    if (activeEl) activeEl.classList.remove('hidden');
+
+    // Dynamically manage the Main Menu button behavior depending on the active view state
+    const menuLink = document.getElementById('global-menu-link');
+    const menuButton = menuLink ? menuLink.querySelector('button') : null;
+
+    if (menuLink && menuButton) {
+        if (stateId === 'selection-screen') {
+            menuButton.innerText = '← Back';
+            menuLink.href = '#';
+            menuLink.onclick = (e) => {
+                e.preventDefault();
+                showState('landing-page');
+            };
+        } else if (stateId === 'quiz-ui') {
+            menuButton.innerText = '← Back';
+            menuLink.href = '#';
+            menuLink.onclick = (e) => {
+                e.preventDefault();
+                showState('selection-screen');
+            };
+        } else {
+            menuButton.innerText = 'Main Menu';
+            menuLink.href = 'index.html';
+            menuLink.onclick = null;
+        }
+    }
 }
 
 function showLoading(text) {
@@ -305,18 +346,11 @@ function showFinalResults() {
             <td>${l.answer}</td>
         </tr>`).join('');
         
-    document.getElementById('quiz-ui').innerHTML = `
-        <h2 style='color:var(--accent-blue)'>Session Results</h2>
-        <p>${currentLessonID}: ${currentLessonFullObject.title}</p>
-        <p>Final Score: ${score} / ${questions.length}</p>
-        <div class="final-results-wrap">
-            <table>
-                <thead><tr><th>Question</th><th>Pick</th><th>Answer</th></tr></thead>
-                <tbody>${rows}</tbody>
-            </table>
-        </div>
-        <button class="start-btn" onclick="location.reload()">Restart Quiz</button>
-    `;
+    document.getElementById('results-meta').innerText = `${currentLessonID}: ${currentLessonFullObject.title}`;
+    document.getElementById('results-score').innerText = `Final Score: ${score} / ${questions.length}`;
+    document.getElementById('results-tbody').innerHTML = rows;
+    
+    showState('results-ui');
 }
 
 // Bootstrap
