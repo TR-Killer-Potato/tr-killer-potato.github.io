@@ -163,7 +163,7 @@ function showState(stateId) {
     const activeEl = document.getElementById(stateId);
     if (activeEl) activeEl.classList.remove('hidden');
 
-    // Dynamically manage the Main Menu button behavior depending on the active view state
+    // Manage the Main Menu button text and action state depending on page context
     const menuLink = document.getElementById('global-menu-link');
     const menuButton = menuLink ? menuLink.querySelector('button') : null;
 
@@ -302,6 +302,12 @@ function loadQuestion() {
         showFinalResults();
         return;
     }
+    
+    // Safety Sweep: Remove focus from any active element to prevent browser focus transfers
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+        document.activeElement.blur();
+    }
+
     const q = questions[currentIdx];
     document.getElementById('q-type').innerText = q.type;
     document.getElementById('display-text').innerText = q.q;
@@ -319,6 +325,7 @@ function loadQuestion() {
         btn.className = 'option-btn';
         btn.innerText = opt;
         btn.onclick = () => {
+            btn.blur(); // Remove active/focused state immediately upon click
             document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
             const isCorrect = (opt === q.a);
             sessionLogs.push({ type: q.type, word: q.q, response: opt, answer: q.a, correct: isCorrect });
