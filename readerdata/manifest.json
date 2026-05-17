@@ -1,20 +1,39 @@
 {
     "passages": [
         {
-            "id": "p1",
-            "file": "L03-今週の仕事.json"
+            "lesson": "3",
+            "file": "L03-今週の仕事.json",
+            "title": "今週の仕事"
         },
         {
-            "id": "p2",
-            "file": "L20-忙しい会社員.json"
+            "lesson": "2",
+            "file": "L02-朝の習慣.json",
+            "title": "朝の習慣"
         },
         {
-            "id": "p3",
-            "file": "日本の四季.json"
+            "lesson": "20",
+            "file": "L20-忙しい会社員.json",
+            "title": "忙しい会社員"
         },
         {
-            "id": "p4",
-            "file": "朝の習慣.json"
+            "lesson": "0",
+            "file": "日本の四季.json",
+            "title": "日本の四季"
+        },
+        {
+            "lesson": "0",
+            "file": "朝の習慣.json",
+            "title": "朝の習慣"
+        },
+        {
+            "lesson": "5",
+            "file": "朝の習慣.json",
+            "title": "朝の習慣"
+        },
+        {
+            "lesson": "4",
+            "file": "l04-僕たちの夏休みと町への旅行.json",
+            "title": "僕たちの夏休みと町への旅行"
         }
     ]
 }
