@@ -1,0 +1,206 @@
+{
+  "title": "L04 大学生の一日 (A College Student's Day)",
+  "content": "私は**大学生**です。朝、家を**早く****出かける**。電車で**学校**に**行く**。**ここ**は**明るい****教室**です。私は**あそこ**の椅子に**座る**。先生は**日本語**の**文法**と**漢字**を**教える**。私はそれを**習う**。先生に質問を**聞く**。友達と**話す**。**ドア**から**外**に**出る**。**図書館**へ**歩く**。私はノートを**忘れる**。それは大変です。**パソコン**でテストを**始める**。**トイレ**で**休む**。今日、**店**で**食べ物**を**持つ**。**そこ**に**ご飯**と**鶏肉**と**肉**と**魚**があります。それを食べます。**コーヒー**を**飲む**。夜、家に**帰る**。**台所**で**ニュース**と**スポーツ**を**知る**。部屋の**テレビ**に**ホラー**の映画があります。私は**映画館**に行きません。犬に**会う**。犬は**強い**です。犬は海で**泳ぐ**。犬が**飛ぶ**のは危険です。古い猫が**死ぬ**。",
+  "vocabulary": {
+    "出かける": {
+      "reading": "でかける",
+      "meaning": "To go out"
+    },
+    "教える": {
+      "reading": "おしえる",
+      "meaning": "To teach"
+    },
+    "始める": {
+      "reading": "はじめる",
+      "meaning": "To begin"
+    },
+    "聞く": {
+      "reading": "きく",
+      "meaning": "To listen / To hear / To ask"
+    },
+    "座る": {
+      "reading": "すわる",
+      "meaning": "To sit"
+    },
+    "飲む": {
+      "reading": "のむ",
+      "meaning": "To drink"
+    },
+    "会う": {
+      "reading": "あう",
+      "meaning": "To meet"
+    },
+    "飛ぶ": {
+      "reading": "とぶ",
+      "meaning": "To fly"
+    },
+    "行く": {
+      "reading": "いく",
+      "meaning": "To go"
+    },
+    "泳ぐ": {
+      "reading": "およぐ",
+      "meaning": "To swim"
+    },
+    "話す": {
+      "reading": "はなす",
+      "meaning": "To speak"
+    },
+    "歩く": {
+      "reading": "あるく",
+      "meaning": "To walk"
+    },
+    "死ぬ": {
+      "reading": "しぬ",
+      "meaning": "To die"
+    },
+    "帰る": {
+      "reading": "かえる",
+      "meaning": "To return"
+    },
+    "漢字": {
+      "reading": "かんじ",
+      "meaning": "Kanji"
+    },
+    "スポーツ": {
+      "reading": "すぽーつ",
+      "meaning": "Sports"
+    },
+    "テレビ": {
+      "reading": "てれび",
+      "meaning": "TV"
+    },
+    "ドア": {
+      "reading": "どあ",
+      "meaning": "Door"
+    },
+    "鶏肉": {
+      "reading": "とりにく",
+      "meaning": "Chicken"
+    },
+    "ニュース": {
+      "reading": "にゅーす",
+      "meaning": "News"
+    },
+    "出る": {
+      "reading": "でる",
+      "meaning": "To exit / To leave"
+    },
+    "ホラー": {
+      "reading": "ほらー",
+      "meaning": "Horror"
+    },
+    "早く": {
+      "reading": "はやく",
+      "meaning": "Early / Fast"
+    },
+    "忘れる": {
+      "reading": "わすれる",
+      "meaning": "To forget"
+    },
+    "肉": {
+      "reading": "にく",
+      "meaning": "Meat"
+    },
+    "持つ": {
+      "reading": "もつ",
+      "meaning": "To hold / To have"
+    },
+    "休む": {
+      "reading": "やすむ",
+      "meaning": "To rest"
+    },
+    "知る": {
+      "reading": "しる",
+      "meaning": "To know"
+    },
+    "魚": {
+      "reading": "さかな",
+      "meaning": "Fish"
+    },
+    "大学生": {
+      "reading": "だいがくせい",
+      "meaning": "College student"
+    },
+    "映画館": {
+      "reading": "えいがかん",
+      "meaning": "Movie theater"
+    },
+    "コーヒー": {
+      "reading": "こーひー",
+      "meaning": "Coffee"
+    },
+    "ここ": {
+      "reading": "ここ",
+      "meaning": "Here"
+    },
+    "台所": {
+      "reading": "だいどころ",
+      "meaning": "Kitchen"
+    },
+    "外": {
+      "reading": "そと",
+      "meaning": "Outside"
+    },
+    "店": {
+      "reading": "みせ",
+      "meaning": "Shop"
+    },
+    "食べ物": {
+      "reading": "たべもの",
+      "meaning": "Food"
+    },
+    "そこ": {
+      "reading": "そこ",
+      "meaning": "There"
+    },
+    "パソコン": {
+      "reading": "ぱそこん",
+      "meaning": "PC"
+    },
+    "明るい": {
+      "reading": "あかるい",
+      "meaning": "Bright"
+    },
+    "トイレ": {
+      "reading": "といれ",
+      "meaning": "Toilet"
+    },
+    "強い": {
+      "reading": "つよい",
+      "meaning": "Strong"
+    },
+    "教室": {
+      "reading": "きょうしつ",
+      "meaning": "Classroom"
+    },
+    "あそこ": {
+      "reading": "あそこ",
+      "meaning": "Over there"
+    },
+    "文法": {
+      "reading": "ぶんぽう",
+      "meaning": "Grammar"
+    },
+    "習う": {
+      "reading": "ならう",
+      "meaning": "To learn"
+    },
+    "ご飯": {
+      "reading": "ごはん",
+      "meaning": "Rice / Meal"
+    },
+    "図書館": {
+      "reading": "としょかん",
+      "meaning": "Library"
+    },
+    "日本語": {
+      "reading": "にほんご",
+      "meaning": "Japanese language"
+    },
+    "学校": {
+      "reading": "がっこう",
+      "meaning": "School"
+    }
+  }
+}
