@@ -1,0 +1,207 @@
+{
+  "title": "イギリスの友達 (A Friend from the UK)",
+  "content": "**イギリス**から私の友達が来ました。彼は**お金持（かねも）ち**で、**身長**がとても高いです。今日は**お正月（しょうがつ）**です。彼は**大抵（たいてい）**、朝に自分の家で**家事**をします。今日の**朝（あさ）ご飯（はん）**は**ステーキ**と**天（てん）ぷら**と**サラダ**でした。彼は甘い**菓子**も食べました。それから、彼は部屋の**引（ひ）き出（だ）し**から新しい**スマホ**を出しました。彼は**黄色（きいろ）い****Ｔ（ティー）シャツ**に**オレンジ**の**シャツ**を合わせました。とても**丈夫**な**ズボン**を**締（し）めます**。**シルバー**の**ハンカチ**と**金色（きんいろ）**の**靴下**も準備しました。彼は**スカート**を履きません。\n外は雨ですから、大きな傘を**差（さ）します**。彼は**自動車**で新しい**デパート**へ行きました。**受付**に**有名人**がいました。有名な**歌手**と**漫画家**です。彼は「これは**幾（いく）ら**ですか」と聞きました。そこでカメラの**フィルム**を買いました。その後、**急行**の電車に乗りましたが、彼は残念ながら**骨折**をしました。とても大変です。**交番**へ行って、**お巡（まわ）りさん**を呼びました。彼は静かな部屋で**注射**をしました。\n彼は**経済**の**文章**をよく読みます。家では**ラジオ**も聞きます。彼は**サークル**で**ボランティア**をします。**花見**や**バーベキュー**が大好きです。いつか**歌舞伎**や**コンサート**も見たいと言いました。夜、彼は**正月（しょうがつ）**の静かな部屋で**カーテン**を閉めました。",
+  "vocabulary": {
+    "身長": {
+      "reading": "しんちょう",
+      "meaning": "Height"
+    },
+    "コンサート": {
+      "reading": "こんさーと",
+      "meaning": "Concert"
+    },
+    "ハンカチ": {
+      "reading": "はんかち",
+      "meaning": "Handkerchief"
+    },
+    "シルバー": {
+      "reading": "しるばー",
+      "meaning": "Silver"
+    },
+    "デパート": {
+      "reading": "でぱーと",
+      "meaning": "Department store"
+    },
+    "イギリス": {
+      "reading": "いぎりす",
+      "meaning": "United Kingdom"
+    },
+    "交番": {
+      "reading": "こうばん",
+      "meaning": "Police box"
+    },
+    "ラジオ": {
+      "reading": "らじお",
+      "meaning": "Radio"
+    },
+    "お金持（かねも）ち": {
+      "reading": "かねもち",
+      "meaning": "Rich person"
+    },
+    "スカート": {
+      "reading": "すかーと",
+      "meaning": "Skirt"
+    },
+    "骨折": {
+      "reading": "こっせつ",
+      "meaning": "Bone fracture"
+    },
+    "天（てん）ぷら": {
+      "reading": "てんぷら",
+      "meaning": "Tempura"
+    },
+    "靴下": {
+      "reading": "くつした",
+      "meaning": "Socks"
+    },
+    "差（さ）す": {
+      "reading": "さす",
+      "meaning": "To hold (an umbrella)"
+    },
+    "家事": {
+      "reading": "かじ",
+      "meaning": "Housework"
+    },
+    "オレンジ": {
+      "reading": "おれんじ",
+      "meaning": "Orange"
+    },
+    "自動車": {
+      "reading": "じどうしゃ",
+      "meaning": "Automobile"
+    },
+    "お正月（しょうがつ）": {
+      "reading": "しょうがつ",
+      "meaning": "New Year"
+    },
+    "スマホ": {
+      "reading": "すまほ",
+      "meaning": "Smartphone"
+    },
+    "正月（しょうがつ）": {
+      "reading": "しょうがつ",
+      "meaning": "New Year"
+    },
+    "有名人": {
+      "reading": "ゆうめいじん",
+      "meaning": "Famous person"
+    },
+    "シャツ": {
+      "reading": "しゃつ",
+      "meaning": "Shirt"
+    },
+    "Ｔ（ティー）シャツ": {
+      "reading": "てぃーしゃつ",
+      "meaning": "T-shirt"
+    },
+    "サラダ": {
+      "reading": "さらだ",
+      "meaning": "Salad"
+    },
+    "受付": {
+      "reading": "うけつけ",
+      "meaning": "Reception"
+    },
+    "引（ひ）き出（だ）し": {
+      "reading": "ひきだし",
+      "meaning": "Drawer"
+    },
+    "急行": {
+      "reading": "きゅうこう",
+      "meaning": "Express train"
+    },
+    "朝（あさ）ご飯（はん）": {
+      "reading": "あさごはん",
+      "meaning": "Breakfast"
+    },
+    "花見": {
+      "reading": "はなみ",
+      "meaning": "Cherry blossom viewing"
+    },
+    "文章": {
+      "reading": "ぶんしょう",
+      "meaning": "Sentence/Writing"
+    },
+    "バーベキュー": {
+      "reading": "ばーべきゅー",
+      "meaning": "Barbecue"
+    },
+    "フィルム": {
+      "reading": "ふぃるむ",
+      "meaning": "Film"
+    },
+    "漫画家": {
+      "reading": "まんがか",
+      "meaning": "Manga artist"
+    },
+    "菓子": {
+      "reading": "かし",
+      "meaning": "Sweets"
+    },
+    "注射": {
+      "reading": "ちゅうしゃ",
+      "meaning": "Injection"
+    },
+    "ズボン": {
+      "reading": "ずぼん",
+      "meaning": "Trousers/Pants"
+    },
+    "歌手": {
+      "reading": "かしゅ",
+      "meaning": "Singer"
+    },
+    "お巡（まわ）りさん": {
+      "reading": "おまわりさん",
+      "meaning": "Police officer"
+    },
+    "サークル": {
+      "reading": "さーくる",
+      "meaning": "Club/Circle"
+    },
+    "ステーキ": {
+      "reading": "すてーき",
+      "meaning": "Steak"
+    },
+    "幾（いく）ら": {
+      "reading": "いくら",
+      "meaning": "How much"
+    },
+    "黄色（きいろ）い": {
+      "reading": "きいろい",
+      "meaning": "Yellow"
+    },
+    "大抵（たいてい）": {
+      "reading": "たいてい",
+      "meaning": "Usually"
+    },
+    "丈夫": {
+      "reading": "じょうぶ",
+      "meaning": "Strong/Durable"
+    },
+    "経済": {
+      "reading": "けいざい",
+      "meaning": "Economy"
+    },
+    "ボランティア": {
+      "reading": "ぼらんてぃあ",
+      "meaning": "Volunteer"
+    },
+    "締（し）める": {
+      "reading": "しめる",
+      "meaning": "To tie/fasten"
+    },
+    "カーテン": {
+      "reading": "かーてん",
+      "meaning": "Curtain"
+    },
+    "金色（きんいろ）": {
+      "reading": "きんいろ",
+      "meaning": "Gold"
+    },
+    "歌舞伎": {
+      "reading": "かぶき",
+      "meaning": "Kabuki"
+    }
+  }
+}
+NotebookLM can be inaccurate; please double-check its responses.
