@@ -18,9 +18,9 @@
         }
 
         body.theme-sepia {
-            --bg-primary: #f4ecd8;
+            --bg-primary: #fbf0d9;
             --bg-card: #fdf6e3;
-            --text-primary: #5c4a3c;
+            --text-primary: #5F4B32;
             --text-secondary: #8c7662;
             --border-color: #e6dac3;
             --btn-secondary: #ebdcb9;
@@ -47,6 +47,7 @@
         .custom-card {
             background-color: var(--bg-card);
             border-color: var(--border-color);
+            color: var(--text-primary);
         }
 
         .custom-button-secondary {
@@ -60,6 +61,11 @@
 
         .passage-text {
             letter-spacing: 0.05em;
+            color: var(--text-primary) !important;
+        }
+
+        .passage-text p {
+            color: var(--text-primary) !important;
         }
 
         /* Highlight entire sentence */
@@ -67,6 +73,7 @@
             cursor: pointer;
             padding: 2px 4px;
             border-radius: 4px;
+            color: var(--text-primary) !important;
         }
         .reader-sentence:hover {
             background-color: rgba(59, 130, 246, 0.08);
@@ -75,10 +82,11 @@
             background-color: rgba(59, 130, 246, 0.15);
         }
 
-        /* Highlight interactive target vocabulary */
+        /* Dynamic Custom Vocab Color Hook */
         .target-vocab {
             cursor: pointer;
-            border-bottom: 2px solid #3b82f6;
+            border-bottom: 2px solid var(--vocab-dynamic-color, #3b82f6);
+            color: var(--vocab-dynamic-color, #3b82f6) !important;
             transition: background-color 0.2s;
             padding: 0 2px;
             border-radius: 2px;
@@ -102,12 +110,35 @@
             transform: translateY(-10px);
             animation: fadeIn 0.2s ease-out forwards;
         }
+        #tooltip-reading {
+            color: var(--vocab-dynamic-color, #3b82f6);
+        }
+        #tooltip-meaning {
+            color: var(--text-primary);
+            opacity: 0.85;
+        }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-5px); }
             to { opacity: 1; transform: translateY(-10px); }
         }
 
-        /* Utility classes */
+        /* Custom color swatch sizing */
+        .color-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+            border: 2px solid transparent;
+        }
+        .color-dot:hover {
+            transform: scale(1.15);
+        }
+        .color-dot.active-dot {
+            border-color: var(--text-primary);
+            transform: scale(1.1);
+        }
+
         .loader {
             border: 3px solid rgba(0,0,0,0.1);
             border-top: 3px solid #3b82f6;
@@ -126,33 +157,40 @@
 <body class="min-h-screen">
 
     <script>
-        // State variables
         let currentPassage = null;
         let activeTooltip = null;
-        let manifestData = []; // Compiled metadata directly from optimized manifest
-        let lessons = [];      // Unique sorted lesson IDs
+        let manifestData = [];
+        let lessons = [];
 
-        // Settings (loaded from localStorage or defaulted)
+        // Spectrum base configuration hues
+        const colorSpectrumBase = [
+            "hsl(0, 85%, 50%)",    // Red
+            "hsl(35, 90%, 50%)",   // Orange
+            "hsl(140, 75%, 45%)",  // Green
+            "hsl(195, 85%, 45%)",  // Cyan
+            "hsl(220, 85%, 50%)",  // Blue (Default)
+            "hsl(270, 80%, 50%)",  // Purple
+            "hsl(325, 80%, 50%)"   // Pink
+        ];
+
         let settings = {
             theme: 'light',
             fontSize: 24,
-            lineHeight: 2.2
+            lineHeight: 2.2,
+            vocabHueIndex: 4, 
+            vocabLightness: 50
         };
 
-        /**
-         * System startup
-         */
         async function initApp() {
             loadSettings();
             applySettingsUI();
+            buildColorSpectrumUI();
 
             try {
-                // 1. Fetch manifest file
                 const response = await fetch('readerdata/manifest.json');
                 if (!response.ok) throw new Error('Could not load manifest file.');
                 const manifest = await response.json();
 
-                // 2. Build metadata directly from manifest file (Zero pre-fetch operations needed!)
                 manifestData = manifest.passages.map((item, idx) => {
                     const fallbackTitle = item.file.replace(/\.json$/i, '');
                     return {
@@ -163,7 +201,6 @@
                     };
                 });
 
-                // 3. Collate sorted array of unique Lessons
                 const uniqueLessons = [...new Set(manifestData.map(item => item.lesson))];
                 lessons = uniqueLessons.sort((a, b) => {
                     const numA = parseFloat(a);
@@ -172,7 +209,6 @@
                     return a.localeCompare(b);
                 });
 
-                // 4. Render drop-downs and restore states
                 renderLessonSelector(lessons);
                 setupDropdownListeners();
 
@@ -188,11 +224,9 @@
                 document.getElementById('display-title').textContent = "Error loading data.";
                 document.getElementById('passage-container').innerHTML = `
                     <p class="text-red-500 text-lg mb-2">Could not read from 'readerdata/manifest.json'.</p>
-                    <p class="text-sm opacity-70">Verify that the directory is named 'readerdata' and is situated in the same directory as this file.</p>
                 `;
             }
 
-            // Global tap dismissal listeners for tooltip/sentence highlights
             document.addEventListener('click', (e) => {
                 if (activeTooltip && !e.target.closest('.target-vocab') && !e.target.closest('.vocab-tooltip')) {
                     hideTooltip();
@@ -203,9 +237,6 @@
             });
         }
 
-        /**
-         * Populate Lesson Selector dropdown
-         */
         function renderLessonSelector(lessonsList) {
             const selector = document.getElementById('lesson-selector');
             selector.innerHTML = lessonsList.map(lessonVal => 
@@ -213,9 +244,6 @@
             ).join('');
         }
 
-        /**
-         * Set up selector interaction actions
-         */
         function setupDropdownListeners() {
             document.getElementById('lesson-selector').addEventListener('change', (e) => {
                 const selectedLesson = e.target.value;
@@ -233,9 +261,6 @@
             });
         }
 
-        /**
-         * Update Passage Selector dropdown dynamically based on chosen lesson
-         */
         function updatePassageSelector(lessonValue) {
             const filteredPassages = manifestData.filter(item => item.lesson === lessonValue);
             const selector = document.getElementById('passage-selector');
@@ -252,9 +277,6 @@
             }
         }
 
-        /**
-         * Async Load Specific Passage Data and Render
-         */
         async function loadPassage(passageMeta) {
             hideTooltip();
             clearSentenceHighlights();
@@ -273,14 +295,12 @@
 
                 let text = currentPassage.content;
 
-                // 1. Temporarily replace vocabulary matches with placeholders to avoid sentence splitting issues
                 const vocabWords = Object.keys(currentPassage.vocabulary);
                 vocabWords.forEach((word, index) => {
                     const placeholder = `__VOCAB_PLACEHOLDER_${index}__`;
                     text = text.replaceAll(`**${word}**`, placeholder);
                 });
 
-                // 2. Segment paragraphs by newline, then split into punctuated Japanese sentences
                 const paragraphs = text.split('\n');
                 const paragraphsHTML = paragraphs.map(para => {
                     if (!para.trim()) return '';
@@ -289,12 +309,11 @@
                     const sentenceSpans = sentences.map(sentence => {
                         if (!sentence.trim()) return '';
 
-                        // 3. Re-inject vocabulary markup inside the sentence span container
                         let sentenceHTML = sentence;
                         vocabWords.forEach((word, index) => {
                             const placeholder = `__VOCAB_PLACEHOLDER_${index}__`;
                             sentenceHTML = sentenceHTML.replaceAll(placeholder, 
-                                `<span class="target-vocab font-bold text-blue-600 dark:text-blue-400" onclick="handleVocabClick(event, '${word}')">${word}</span>`
+                                `<span class="target-vocab font-bold" onclick="handleVocabClick(event, '${word}')">${word}</span>`
                             );
                         });
 
@@ -311,16 +330,10 @@
             } catch (err) {
                 console.error(err);
                 titleEl.textContent = "Error Loading Content";
-                container.innerHTML = `
-                    <div class="text-red-500 text-lg mb-2">Could not read: ${passageMeta.file}</div>
-                    <p class="text-sm opacity-70">Check if the JSON name matches the manifest configuration exactly.</p>
-                `;
+                container.innerHTML = `<div class="text-red-500 text-lg mb-2">Could not read: ${passageMeta.file}</div>`;
             }
         }
 
-        /**
-         * Floating Window Trigger
-         */
         function handleVocabClick(event, word) {
             event.stopPropagation();
 
@@ -334,12 +347,9 @@
             showTooltip(rect, info, event.target);
         }
 
-        /**
-         * Highlight Active Reading Line
-         */
         function handleSentenceClick(event) {
             event.stopPropagation();
-            if (event.target.closest('.target-vocab')) return; // Ignore if vocab was tapped instead
+            if (event.target.closest('.target-vocab')) return;
 
             clearSentenceHighlights();
             const sentenceSpan = event.currentTarget;
@@ -352,9 +362,6 @@
             });
         }
 
-        /**
-         * Display Tooltip above active target word
-         */
         function showTooltip(rect, info, triggerElement) {
             const tooltip = document.getElementById('tooltip');
             const readingEl = document.getElementById('tooltip-reading');
@@ -363,7 +370,6 @@
             readingEl.textContent = `[${info.reading}]`;
             meaningEl.textContent = info.meaning;
 
-            // Make it visible to calculate client bounding constraints
             tooltip.style.display = 'block';
 
             const scrollY = window.scrollY || window.pageYOffset;
@@ -371,25 +377,18 @@
             const left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
             const top = rect.top + scrollY - tooltip.offsetHeight;
 
-            // Enforce window borders alignment
             tooltip.style.left = `${Math.max(10, Math.min(left, window.innerWidth - tooltipWidth - 10))}px`;
             tooltip.style.top = `${top}px`;
 
             activeTooltip = { element: tooltip, trigger: triggerElement };
         }
 
-        /**
-         * Dismiss the active tooltip window
-         */
         function hideTooltip() {
             const tooltip = document.getElementById('tooltip');
             tooltip.style.display = 'none';
             activeTooltip = null;
         }
 
-        /**
-         * Play Audio via native Web Speech Synthesis
-         */
         function playAudio() {
             if (!currentPassage) return;
             window.speechSynthesis.cancel();
@@ -405,9 +404,6 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        /**
-         * State & Persistent Settings Control
-         */
         function loadSettings() {
             const local = localStorage.getItem('japanese_reader_pref');
             if (local) {
@@ -422,19 +418,20 @@
         }
 
         function applySettingsUI() {
-            // Apply Theme Classes to Body
             document.body.className = '';
             if (settings.theme === 'sepia') document.body.classList.add('theme-sepia');
             if (settings.theme === 'dark') document.body.classList.add('theme-dark');
 
-            // Set Form Settings UI
             document.getElementById('font-size-slider').value = settings.fontSize;
             document.getElementById('font-size-val').textContent = `${settings.fontSize}px`;
             
             document.getElementById('line-height-slider').value = settings.lineHeight;
             document.getElementById('line-height-val').textContent = settings.lineHeight;
 
+            document.getElementById('shade-slider').value = settings.vocabLightness;
+
             applySavedTextStyle();
+            calculateVocabColor();
         }
 
         function applySavedTextStyle() {
@@ -444,10 +441,48 @@
                 container.style.lineHeight = settings.lineHeight;
             }
 
-            // Adjust tooltips font-size dynamically to match user preference scale
             const tooltip = document.getElementById('tooltip');
             if (tooltip) {
                 tooltip.style.fontSize = `${settings.fontSize}px`;
+            }
+        }
+
+        function buildColorSpectrumUI() {
+            const container = document.getElementById('spectrum-dots-container');
+            container.innerHTML = colorSpectrumBase.map((color, idx) => {
+                const isActive = idx === settings.vocabHueIndex ? 'active-dot' : '';
+                return `<button onclick="selectVocabColorHue(${idx})" class="color-dot ${isActive}" style="background-color: ${color};" aria-label="Color choice ${idx + 1}"></button>`;
+            }).join('');
+        }
+
+        function selectVocabColorHue(index) {
+            settings.vocabHueIndex = index;
+            saveSettings();
+            
+            document.querySelectorAll('.color-dot').forEach((dot, i) => {
+                if (i === index) dot.classList.add('active-dot');
+                else dot.classList.remove('active-dot');
+            });
+            
+            calculateVocabColor();
+        }
+
+        function updateVocabShade(lightnessVal) {
+            settings.vocabLightness = parseInt(lightnessVal);
+            saveSettings();
+            calculateVocabColor();
+        }
+
+        function calculateVocabColor() {
+            // Extracts core Hue from active configuration array items
+            const match = colorSpectrumBase[settings.vocabHueIndex].match(/hsl\((\d+),\s*(\d+)%,/);
+            if (match) {
+                const hue = match[1];
+                const saturation = match[2];
+                const finalCSSColor = `hsl(${hue}, ${saturation}%, ${settings.vocabLightness}%)`;
+                
+                // Assign dynamically evaluated styling tokens directly onto document node tree
+                document.documentElement.style.setProperty('--vocab-dynamic-color', finalCSSColor);
             }
         }
 
@@ -476,18 +511,13 @@
             applySavedTextStyle();
         }
 
-        // Initialize App on Window Loaded state
         window.onload = initApp;
     </script>
 
-    <!-- App Wrapper Container -->
-    <div class="max-w-2xl mx-auto px-4 py-8 md:py-12 pb-32">
-        
-        <!-- Header Setup -->
+    <div class="max-w-2xl mx-auto px-4 py-8 md:py-12 pb-24">
         <header class="mb-10 text-center relative">
             <div class="flex items-center justify-between mb-6">
                 <h1 class="text-3xl font-bold tracking-tight">Japanese Reader</h1>
-                <!-- Controls buttons -->
                 <div class="flex gap-2">
                     <button onclick="playAudio()" class="custom-button-secondary p-3 rounded-xl transition duration-150 shadow-sm" aria-label="Listen audio text">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
@@ -498,9 +528,7 @@
                 </div>
             </div>
 
-            <!-- Double Dropdowns Layout -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto mb-6 text-left">
-                <!-- Lesson Dropdown Selector -->
                 <div class="relative">
                     <label class="block text-sm font-medium text-slate-500 mb-2">Lesson:</label>
                     <div class="relative">
@@ -513,7 +541,6 @@
                     </div>
                 </div>
 
-                <!-- Passage Dropdown Selector -->
                 <div class="relative">
                     <label class="block text-sm font-medium text-slate-500 mb-2">Passage:</label>
                     <div class="relative">
@@ -528,15 +555,12 @@
             </div>
         </header>
 
-        <!-- Main Reading Card -->
         <main class="custom-card rounded-3xl shadow-xl p-8 md:p-12 border relative">
             <h2 id="display-title" class="text-xl font-bold text-blue-600 dark:text-blue-400 mb-8 border-b border-slate-100 dark:border-slate-700 pb-4">Initializing reader...</h2>
             
-            <!-- Injected Reading Area -->
-            <article id="passage-container" class="passage-text text-slate-800 dark:text-slate-100 leading-relaxed">
+            <article id="passage-container" class="passage-text leading-relaxed">
             </article>
 
-            <!-- Navigation Back Button -->
             <div class="mt-12 pt-6 border-t border-slate-100 dark:border-slate-700 flex justify-center">
                 <a href="index.html" class="custom-button-secondary px-8 py-3 rounded-xl font-semibold transition duration-150 inline-flex items-center gap-2 shadow-sm">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
@@ -544,24 +568,17 @@
                 </a>
             </div>
         </main>
-
-        <footer class="mt-8 text-center text-slate-400 text-sm">
-            Tap a <span class="font-bold text-blue-600 dark:text-blue-400">bold word</span> for details, or tap outside to dismiss.
-        </footer>
     </div>
 
-    <!-- Active Popup Floating Tooltip -->
     <div id="tooltip" class="vocab-tooltip" onclick="hideTooltip()">
         <div class="flex flex-col items-center text-center">
-            <div id="tooltip-reading" class="text-blue-600 dark:text-blue-400 font-bold mb-1"></div>
-            <div id="tooltip-meaning" class="text-slate-600 dark:text-slate-300 italic font-medium"></div>
-            <!-- Arrow tip wrapper -->
+            <div id="tooltip-reading" class="font-bold mb-1"></div>
+            <div id="tooltip-meaning" class="italic font-medium"></div>
             <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-inherit border-r border-b border-inherit rotate-45"></div>
         </div>
     </div>
 
-    <!-- Slide-out Configuration Drawer -->
-    <div id="settings-drawer" class="fixed right-0 top-0 h-full w-80 bg-white dark:bg-slate-900 shadow-2xl border-l border-slate-200 dark:border-slate-800 transition-transform duration-300 transform translate-x-full z-50 p-6">
+    <div id="settings-drawer" class="fixed right-0 top-0 h-full w-80 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 shadow-2xl border-l border-slate-200 dark:border-slate-800 transition-transform duration-300 transform translate-x-full z-50 p-6 overflow-y-auto">
         <div class="flex items-center justify-between mb-8">
             <h3 class="text-lg font-bold">Reading Preferences</h3>
             <button onclick="toggleSettingsDrawer()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
@@ -569,7 +586,6 @@
             </button>
         </div>
 
-        <!-- Color Palette Picker -->
         <div class="mb-8">
             <span class="block text-sm font-semibold mb-3 text-slate-400">THEME</span>
             <div class="grid grid-cols-3 gap-2">
@@ -579,7 +595,6 @@
             </div>
         </div>
 
-        <!-- Text Adjustments -->
         <div class="mb-6">
             <div class="flex justify-between text-sm mb-2">
                 <span class="font-semibold text-slate-400 text-xs">FONT SIZE</span>
@@ -588,12 +603,25 @@
             <input id="font-size-slider" type="range" min="16" max="40" step="1" oninput="updateFontSize(this.value)" class="w-full accent-blue-500 cursor-pointer">
         </div>
 
-        <div>
+        <div class="mb-6">
             <div class="flex justify-between text-sm mb-2">
                 <span class="font-semibold text-slate-400 text-xs">LINE SPACING</span>
                 <span id="line-height-val" class="font-bold">2.2</span>
             </div>
             <input id="line-height-slider" type="range" min="1.8" max="3" step="0.1" oninput="updateLineHeight(this.value)" class="w-full accent-blue-500 cursor-pointer">
+        </div>
+
+        <hr class="border-t border-slate-200 dark:border-slate-800 my-6">
+
+        <div class="mb-6">
+            <span class="block text-sm font-semibold mb-3 text-slate-400">TARGET VOCABULARY COLOR</span>
+            <div id="spectrum-dots-container" class="flex flex-wrap gap-3 justify-between items-center mb-4">
+                </div>
+        </div>
+
+        <div>
+            <span class="block text-sm font-semibold mb-2 text-slate-400">VOCAB SHADE (LIGHT / DARK)</span>
+            <input id="shade-slider" type="range" min="15" max="85" step="1" oninput="updateVocabShade(this.value)" class="w-full accent-blue-500 cursor-pointer">
         </div>
     </div>
 
