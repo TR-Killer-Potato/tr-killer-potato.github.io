@@ -1,0 +1,206 @@
+{
+  "title": "L03 今週の仕事 (This Week's Work)",
+  "content": "**今週**、私の**仕事**は**多い**です。**今**、**アパート**の部屋は**静か**です。朝、**早い**です。私は**起きる**。本を**閉める**。**冷たい**水を**浴びる**。それは**怖い**です。**暖かい**お風呂がいいです。**美味しい**パンを**食べる**。**熱い****お茶**もあります。**水曜日**、**この****女の人**と**安い****自転車**で公園へ行きます。公園は**遠い**です。**細い****川**と**長い****木**を**見る**。**土曜日**は**暇**です。**その****バス**で**サッカー**と**野球**の**練習**に行きます。**背が高い**友達がいます。彼に**赤**の**鞄**を**借りる**。**とても****大切**です。先生の**授業**は**難しい**です。これを**覚える**。新しい**絵**があります。夜、**辛い****カレー**が好きです。**そうです**。新しいカメラが**欲しい**です。夜、**寝る**。",
+  "vocabulary": {
+    "美味しい": {
+      "reading": "おいしい",
+      "meaning": "Delicious / Tasty"
+    },
+    "その": {
+      "reading": "その",
+      "meaning": "That"
+    },
+    "アパート": {
+      "reading": "あぱーと",
+      "meaning": "Apartment"
+    },
+    "今週": {
+      "reading": "こんしゅう",
+      "meaning": "This week"
+    },
+    "仕事": {
+      "reading": "しごと",
+      "meaning": "Work / Job"
+    },
+    "多い": {
+      "reading": "おおい",
+      "meaning": "Many / A lot"
+    },
+    "この": {
+      "reading": "この",
+      "meaning": "This"
+    },
+    "冷たい": {
+      "reading": "つめたい",
+      "meaning": "Cold (to the touch)"
+    },
+    "安い": {
+      "reading": "やすい",
+      "meaning": "Cheap / Inexpensive"
+    },
+    "サッカー": {
+      "reading": "さっかー",
+      "meaning": "Soccer"
+    },
+    "長い": {
+      "reading": "ながい",
+      "meaning": "Long"
+    },
+    "暖かい": {
+      "reading": "あたたかい",
+      "meaning": "Warm"
+    },
+    "怖い": {
+      "reading": "こわい",
+      "meaning": "Scary / Frightening"
+    },
+    "遠い": {
+      "reading": "とおい",
+      "meaning": "Far / Distant"
+    },
+    "難しい": {
+      "reading": "むずかしい",
+      "meaning": "Difficult"
+    },
+    "とても": {
+      "reading": "とても",
+      "meaning": "Very"
+    },
+    "鞄": {
+      "reading": "かばん",
+      "meaning": "Bag"
+    },
+    "絵": {
+      "reading": "え",
+      "meaning": "Picture / Painting"
+    },
+    "女の人": {
+      "reading": "おんなのひと",
+      "meaning": "Woman"
+    },
+    "暇": {
+      "reading": "ひま",
+      "meaning": "Free time / Spare time"
+    },
+    "静か": {
+      "reading": "しずか",
+      "meaning": "Quiet"
+    },
+    "大切": {
+      "reading": "たいせつ",
+      "meaning": "Important"
+    },
+    "今": {
+      "reading": "いま",
+      "meaning": "Now"
+    },
+    "授業": {
+      "reading": "じゅぎょう",
+      "meaning": "Class / Lesson"
+    },
+    "お茶": {
+      "reading": "おちゃ",
+      "meaning": "Tea"
+    },
+    "カレー": {
+      "reading": "かれー",
+      "meaning": "Curry"
+    },
+    "辛い": {
+      "reading": "からい",
+      "meaning": "Spicy / Hot"
+    },
+    "木": {
+      "reading": "き",
+      "meaning": "Tree / Wood"
+    },
+    "川": {
+      "reading": "かわ",
+      "meaning": "River"
+    },
+    "細い": {
+      "reading": "ほそい",
+      "meaning": "Thin / Slender"
+    },
+    "欲しい": {
+      "reading": "ほしい",
+      "meaning": "Want / Desire"
+    },
+    "赤": {
+      "reading": "あか",
+      "meaning": "Red"
+    },
+    "早い": {
+      "reading": "はやい",
+      "meaning": "Early / Fast"
+    },
+    "背が高い": {
+      "reading": "せがたかい",
+      "meaning": "Tall (person)"
+    },
+    "野球": {
+      "reading": "やきゅう",
+      "meaning": "Baseball"
+    },
+    "熱い": {
+      "reading": "あつい",
+      "meaning": "Hot (thing)"
+    },
+    "バス": {
+      "reading": "ばす",
+      "meaning": "Bus"
+    },
+    "練習": {
+      "reading": "れんしゅう",
+      "meaning": "Practice"
+    },
+    "土曜日": {
+      "reading": "どようび",
+      "meaning": "Saturday"
+    },
+    "そうです": {
+      "reading": "そうです",
+      "meaning": "That's right / It is so"
+    },
+    "水曜日": {
+      "reading": "すいようび",
+      "meaning": "Wednesday"
+    },
+    "自転車": {
+      "reading": "じてんしゃ",
+      "meaning": "Bicycle"
+    },
+    "見る": {
+      "reading": "みる",
+      "meaning": "To see / To look"
+    },
+    "寝る": {
+      "reading": "ねる",
+      "meaning": "To sleep"
+    },
+    "覚える": {
+      "reading": "おぼえる",
+      "meaning": "To remember / To memorize"
+    },
+    "食べる": {
+      "reading": "たべる",
+      "meaning": "To eat"
+    },
+    "浴びる": {
+      "reading": "あびる",
+      "meaning": "To bathe / To shower"
+    },
+    "借りる": {
+      "reading": "かりる",
+      "meaning": "To borrow"
+    },
+    "起きる": {
+      "reading": "おきる",
+      "meaning": "To wake up"
+    },
+    "閉める": {
+      "reading": "しめる",
+      "meaning": "To close"
+    }
+  }
+}
