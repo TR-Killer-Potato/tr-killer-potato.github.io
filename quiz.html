@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mastery Challenge v5.1 - Clean Architecture</title>
+    <title>Mastery Challenge - Reader</title>
     <style>
         :root {
             --bg-dark: #1a1a2e;
@@ -36,7 +36,8 @@
         .style-btn { padding: 15px; background: var(--bg-dark); border: 2px solid var(--border-color); border-radius: 10px; color: var(--text-dim); cursor: pointer; transition: 0.2s; font-weight: 600; font-size: 0.9rem; }
         .style-btn.selected { border-color: var(--accent-blue); background: var(--border-color); color: #fff; box-shadow: 0 0 10px rgba(52, 152, 219, 0.3); }
         .action-btns { display: flex; gap: 12px; justify-content: center; margin-top: 1rem; }
-        .back-btn { padding: 15px 25px; border-radius: 50px; border: 1px solid var(--text-dim); background: transparent; color: var(--text-dim); cursor: pointer; }
+        .back-btn { padding: 15px 25px; border-radius: 50px; border: 1px solid var(--text-dim); background: transparent; color: var(--text-dim); cursor: pointer; transition: 0.2s; }
+        .back-btn:hover { color: #fff; border-color: #fff; }
 
         /* Quiz UI */
         .type-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-blue); margin-bottom: 0.8rem; font-weight: bold; }
@@ -65,6 +66,7 @@
 
         /* Persistent Navigation */
         .persistent-nav { margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem; }
+        .menu-link { text-decoration: none; }
     </style>
 </head>
 <body>
@@ -85,14 +87,14 @@
     <!-- 1. Landing Page -->
     <div id="landing-page">
         <h1 class="header-title">Mastery Challenge</h1>
-        <p class="sub-text">Select a practice module.</p>
+        <p class="sub-text">Select a module to begin.</p>
         <div id="lesson-list" class="lesson-grid"></div>
     </div>
 
     <!-- 2. Style Selection -->
     <div id="selection-screen" class="hidden">
         <h2 id="selected-lesson-title" style="color: var(--accent-blue);">Loading Title...</h2>
-        <p class="sub-text">Select the challenge types for this session:</p>
+        <p class="sub-text">Choose your challenge types:</p>
         <div class="selection-grid">
             <button class="style-btn" data-type="Vocab-Reading">Vocabulary - Reading</button>
             <button class="style-btn" data-type="Vocab-Meaning">Vocabulary - Meaning</button>
@@ -116,9 +118,9 @@
         <div id="score-board">Progression: <span id="current-count">0</span> / <span id="total-q">0</span> | Mastery: <span id="score">0</span></div>
     </div>
 
-    <!-- Persistent Global Footer -->
+    <!-- Global Footer -->
     <div class="persistent-nav">
-        <a href="index.html" style="text-decoration: none;">
+        <a href="reader.html" class="menu-link">
             <button class="back-btn" style="font-size: 0.9rem; padding: 10px 25px;">Main Menu</button>
         </a>
     </div>
@@ -128,7 +130,7 @@
 /**
  * APP ENGINE CONFIG
  */
-const MANIFEST_PATH = 'quizdata/manifest.json';
+const MANIFEST_PATH = 'readerdata/manifest.json';
 let currentLessonFullObject = null;
 let currentLessonID = "";
 let questions = [];
@@ -162,13 +164,13 @@ function showError(msg) {
 }
 
 /**
- * Data Fetching (Manifest & Lesson Data)
+ * Data Management
  */
 async function loadRepository() {
-    showLoading('Initializing...');
+    showLoading('Initializing repository...');
     try {
         const response = await fetch(MANIFEST_PATH);
-        if (!response.ok) throw new Error('Manifest not found.');
+        if (!response.ok) throw new Error('Manifest not found in readerdata/');
         const manifest = await response.json();
         renderSelector(manifest.lessons);
         showState('landing-page');
@@ -181,10 +183,10 @@ async function loadLesson(lessonMeta) {
     showLoading(`Fetching ${lessonMeta.id}...`);
     try {
         const response = await fetch(lessonMeta.file);
-        if (!response.ok) throw new Error(`File missing: ${lessonMeta.file}`);
+        if (!response.ok) throw new Error(`Data file missing: ${lessonMeta.file}`);
         const fullData = await response.json();
         
-        // Data format: { title: "...", vocabulary: [...] }
+        // Source of Truth: { title: "...", vocabulary: [...] }
         currentLessonFullObject = fullData;
         currentLessonID = lessonMeta.id;
         
@@ -208,7 +210,7 @@ function renderSelector(lessons) {
 }
 
 /**
- * Selection Screen Logic
+ * Selection Logic
  */
 document.querySelectorAll('.style-btn').forEach(btn => {
     btn.onclick = () => {
@@ -226,7 +228,7 @@ document.getElementById('start-btn').onclick = () => {
 };
 
 /**
- * Quiz Processing Logic
+ * Quiz Loop Logic
  */
 function prepareQuestions() {
     questions = [];
@@ -237,7 +239,7 @@ function prepareQuestions() {
     const vocabulary = currentLessonFullObject.vocabulary || [];
     
     vocabulary.forEach(item => {
-        // v = Vocabulary, r = Reading, m = Meaning
+        // v = Vocab, r = Reading, m = Meaning
         // dv = Distractor Vocab, dr = Distractor Reading, dm = Distractor Meaning
         if (selectedStyles.has("Vocab-Meaning")) questions.push({ q: item.v, a: item.m, type: "Vocab-Meaning", dist: item.dm });
         if (selectedStyles.has("Meaning-Vocab")) questions.push({ q: item.m, a: item.v, type: "Meaning-Vocab", dist: item.dv });
@@ -305,10 +307,10 @@ function showFinalResults() {
     document.getElementById('quiz-ui').innerHTML = `
         <h2 style='color:var(--accent-blue)'>Session Results</h2>
         <p>${currentLessonID}: ${currentLessonFullObject.title}</p>
-        <p>Mastery: ${score} / ${questions.length}</p>
+        <p>Final Score: ${score} / ${questions.length}</p>
         <div class="final-results-wrap">
             <table>
-                <thead><tr><th>Question</th><th>Selection</th><th>Answer</th></tr></thead>
+                <thead><tr><th>Question</th><th>Pick</th><th>Answer</th></tr></thead>
                 <tbody>${rows}</tbody>
             </table>
         </div>
@@ -316,6 +318,7 @@ function showFinalResults() {
     `;
 }
 
+// Bootstrap
 loadRepository();
 </script>
 </body>
