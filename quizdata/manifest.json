@@ -2,7 +2,11 @@
   "lessons": [
     {
       "id": "L17",
-      "file": "quizdata/testquiz.json"
+      "file": "quizdata/l17.json"
+    },
+        {
+      "id": "L18",
+      "file": "quizdata/l18.json"
     }
   ]
 }
