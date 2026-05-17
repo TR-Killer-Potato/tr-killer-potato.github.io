@@ -1,0 +1,203 @@
+{
+  "title": "僕たちの夏休みと町への旅行 (Our Summer Holiday and Trip to Town)",
+  "lesson": "5",
+  "content": "**僕**と**妹**と**弟**の**夏休み**です。**外国人**の**留学生**と**初めて**、**町**へ**旅行**をします。彼は**青**い服を**着ます**。彼は大変**優しい**人です。私たちは**町**の**喫茶店**で**ジュース**を飲みます。**砂糖**が**有ります**。**飲み物**と**お弁当**を**買います**。**右**に**曲がります**。**橋**が**有ります**。**動物園**で**動物**や**写真**が**有ります**。**僕**は**走ります**が、**弟**は**遅い**です。**弟**は**鼻**が**悪い**です。私たちは**すみません**と言って、**病院**へ行きます。まだ**時間**が**有ります**から、**医者**を待ちます。**病院**の**机**に**新聞**を**置きます**。**僕**は**紙**に**番号**を**書きます**。本を**読みます**。本を**開きます**。**窓**が**開きます**。今日は**妹**の**誕生日**です。みんなで**半分**の**果物**を食べます。**弟**は**薬を飲む**。**あの**人は私の**先生**です。**外国人**に本を**返します**。友達と楽しく**遊びます**。",
+  "vocabulary": {
+    "新聞": {
+      "reading": "しんぶん",
+      "meaning": "Newspaper"
+    },
+    "読む": {
+      "reading": "よむ",
+      "meaning": "To read"
+    },
+    "曲がる": {
+      "reading": "まがる",
+      "meaning": "To turn"
+    },
+    "置く": {
+      "reading": "おく",
+      "meaning": "To put / To place"
+    },
+    "机": {
+      "reading": "つくえ",
+      "meaning": "Desk"
+    },
+    "病院": {
+      "reading": "びょういん",
+      "meaning": "Hospital"
+    },
+    "返す": {
+      "reading": "かえす",
+      "meaning": "To return (something)"
+    },
+    "青": {
+      "reading": "あお",
+      "meaning": "Blue"
+    },
+    "書く": {
+      "reading": "かく",
+      "meaning": "To write"
+    },
+    "遊ぶ": {
+      "reading": "あそぶ",
+      "meaning": "To play / To hang out"
+    },
+    "旅行": {
+      "reading": "りょこう",
+      "meaning": "Travel / Trip"
+    },
+    "夏休み": {
+      "reading": "なつやすみ",
+      "meaning": "Summer holiday"
+    },
+    "僕": {
+      "reading": "ぼく",
+      "meaning": "I (male)"
+    },
+    "走る": {
+      "reading": "はしる",
+      "meaning": "To run"
+    },
+    "すみません": {
+      "reading": "すみません",
+      "meaning": "Excuse me / Sorry"
+    },
+    "妹": {
+      "reading": "いもうと",
+      "meaning": "Younger sister"
+    },
+    "ジュース": {
+      "reading": "じゅーす",
+      "meaning": "Juice"
+    },
+    "初めて": {
+      "reading": "はじめて",
+      "meaning": "For the first time"
+    },
+    "お弁当": {
+      "reading": "べんとう",
+      "meaning": "Lunch box / Bento"
+    },
+    "右": {
+      "reading": "みぎ",
+      "meaning": "Right"
+    },
+    "半分": {
+      "reading": "はんぶん",
+      "meaning": "Half"
+    },
+    "医者": {
+      "reading": "いしゃ",
+      "meaning": "Doctor"
+    },
+    "有る": {
+      "reading": "ある",
+      "meaning": "To have / To exist"
+    },
+    "時間": {
+      "reading": "じかん",
+      "meaning": "Time"
+    },
+    "紙": {
+      "reading": "かみ",
+      "meaning": "Paper"
+    },
+    "喫茶店": {
+      "reading": "きっさてん",
+      "meaning": "Coffee shop / Café"
+    },
+    "砂糖": {
+      "reading": "さとう",
+      "meaning": "Sugar"
+    },
+    "誕生日": {
+      "reading": "たんじょうび",
+      "meaning": "Birthday"
+    },
+    "留学生": {
+      "reading": "りゅうがくせい",
+      "meaning": "Foreign student / Exchange student"
+    },
+    "外国人": {
+      "reading": "がいこくじん",
+      "meaning": "Foreigner / Foreign person"
+    },
+    "写真": {
+      "reading": "しゃしん",
+      "meaning": "Photograph / Photo"
+    },
+    "動物": {
+      "reading": "どうぶつ",
+      "meaning": "Animal"
+    },
+    "飲み物": {
+      "reading": "のみもの",
+      "meaning": "Drink / Beverage"
+    },
+    "橋": {
+      "reading": "はし",
+      "meaning": "Bridge"
+    },
+    "番号": {
+      "reading": "ばんごう",
+      "meaning": "Number"
+    },
+    "弟": {
+      "reading": "おとうと",
+      "meaning": "Younger brother"
+    },
+    "買う": {
+      "reading": "かう",
+      "meaning": "To buy"
+    },
+    "果物": {
+      "reading": "くだもの",
+      "meaning": "Fruit"
+    },
+    "あの": {
+      "reading": "あの",
+      "meaning": "That (over there)"
+    },
+    "着る": {
+      "reading": "きる",
+      "meaning": "To wear (upper body)"
+    },
+    "薬を飲む": {
+      "reading": "くすりをのむ",
+      "meaning": "To take medicine"
+    },
+    "町": {
+      "reading": "まち",
+      "meaning": "Town"
+    },
+    "窓": {
+      "reading": "まど",
+      "meaning": "Window"
+    },
+    "開く": {
+      "reading": "あく、ひらく",
+      "meaning": "To open"
+    },
+    "悪い": {
+      "reading": "わるい",
+      "meaning": "Bad"
+    },
+    "遅い": {
+      "reading": "おそい",
+      "meaning": "Late / Slow"
+    },
+    "鼻": {
+      "reading": "はな",
+      "meaning": "Nose"
+    },
+    "動物園": {
+      "reading": "どうぶつえん",
+      "meaning": "Zoo"
+    },
+    "優しい": {
+      "reading": "やさしい",
+      "meaning": "Kind"
+    }
+  }
+}
