@@ -2,14 +2,18 @@
     "passages": [
         {
             "id": "p1",
-            "file": "L20-忙しい会社員.json"
+            "file": "L03-今週の仕事.json"
         },
         {
             "id": "p2",
-            "file": "日本の四季.json"
+            "file": "L20-忙しい会社員.json"
         },
         {
             "id": "p3",
+            "file": "日本の四季.json"
+        },
+        {
+            "id": "p4",
             "file": "朝の習慣.json"
         }
     ]
