@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Japanese Vocabulary Reader</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-primary: #f8fafc;
@@ -60,6 +60,7 @@
         }
 
         .passage-text {
+            font-family: var(--passage-font-family, 'Noto Sans JP', sans-serif);
             letter-spacing: 0.05em;
             color: var(--text-primary) !important;
         }
@@ -74,6 +75,7 @@
             padding: 2px 4px;
             border-radius: 4px;
             color: var(--text-primary) !important;
+            font-family: inherit;
         }
         .reader-sentence:hover {
             background-color: rgba(59, 130, 246, 0.08);
@@ -128,14 +130,15 @@
             height: 28px;
             border-radius: 50%;
             cursor: pointer;
-            transition: transform 0.15s ease, border-color 0.15s ease;
-            border: 2px solid transparent;
+            transition: transform 0.15s ease, border-color 0.15s ease, border-width 0.15s ease;
+            border: 4px solid transparent; /* 4px baseline prevents layout jitter on selection */
         }
         .color-dot:hover {
             transform: scale(1.15);
         }
         .color-dot.active-dot {
             border-color: var(--text-primary);
+            border-width: 4px;
             transform: scale(1.1);
         }
 
@@ -162,7 +165,7 @@
         let manifestData = [];
         let lessons = [];
 
-        // Spectrum base configuration hues
+        // Spectrum base configuration hues (Substituted Pink with HSL Black on the far right)
         const colorSpectrumBase = [
             "hsl(0, 85%, 50%)",    // Red
             "hsl(35, 90%, 50%)",   // Orange
@@ -170,11 +173,12 @@
             "hsl(195, 85%, 45%)",  // Cyan
             "hsl(220, 85%, 50%)",  // Blue (Default)
             "hsl(270, 80%, 50%)",  // Purple
-            "hsl(325, 80%, 50%)"   // Pink
+            "hsl(0, 0%, 0%)"       // Black (Far right)
         ];
 
         let settings = {
             theme: 'light',
+            fontFamily: 'gothic',
             fontSize: 24,
             lineHeight: 2.2,
             vocabHueIndex: 4, 
@@ -409,6 +413,15 @@
             if (local) {
                 try {
                     settings = { ...settings, ...JSON.parse(local) };
+                    
+                    // Add legacy backup default if loading from older session settings
+                    if (!settings.fontFamily) {
+                        settings.fontFamily = 'gothic';
+                    }
+
+                    // Clamp loaded preferences safely to stay within the new 10px - 30px boundary limits
+                    if (settings.fontSize < 10) settings.fontSize = 10;
+                    if (settings.fontSize > 30) settings.fontSize = 30;
                 } catch(e) {}
             }
         }
@@ -429,6 +442,11 @@
             document.getElementById('line-height-val').textContent = settings.lineHeight;
 
             document.getElementById('shade-slider').value = settings.vocabLightness;
+
+            // Apply selected font family variable rule
+            const fontVal = settings.fontFamily === 'mincho' ? "'Noto Serif JP', serif" : "'Noto Sans JP', sans-serif";
+            document.documentElement.style.setProperty('--passage-font-family', fontVal);
+            applyFontUI();
 
             applySavedTextStyle();
             calculateVocabColor();
@@ -474,14 +492,11 @@
         }
 
         function calculateVocabColor() {
-            // Extracts core Hue from active configuration array items
             const match = colorSpectrumBase[settings.vocabHueIndex].match(/hsl\((\d+),\s*(\d+)%,/);
             if (match) {
                 const hue = match[1];
                 const saturation = match[2];
                 const finalCSSColor = `hsl(${hue}, ${saturation}%, ${settings.vocabLightness}%)`;
-                
-                // Assign dynamically evaluated styling tokens directly onto document node tree
                 document.documentElement.style.setProperty('--vocab-dynamic-color', finalCSSColor);
             }
         }
@@ -495,6 +510,26 @@
             settings.theme = themeName;
             saveSettings();
             applySettingsUI();
+        }
+
+        function changeFontFamily(fontName) {
+            settings.fontFamily = fontName;
+            saveSettings();
+            applySettingsUI();
+        }
+
+        function applyFontUI() {
+            const gothicBtn = document.getElementById('font-btn-gothic');
+            const minchoBtn = document.getElementById('font-btn-mincho');
+            if (!gothicBtn || !minchoBtn) return;
+            
+            if (settings.fontFamily === 'mincho') {
+                gothicBtn.className = "py-2 border rounded-xl font-medium text-xs bg-transparent border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition duration-150";
+                minchoBtn.className = "py-2 border rounded-xl font-medium text-xs bg-blue-50 dark:bg-blue-950/40 border-blue-500 text-blue-600 dark:text-blue-400 transition duration-150";
+            } else {
+                gothicBtn.className = "py-2 border rounded-xl font-medium text-xs bg-blue-50 dark:bg-blue-950/40 border-blue-500 text-blue-600 dark:text-blue-400 transition duration-150";
+                minchoBtn.className = "py-2 border rounded-xl font-medium text-xs bg-transparent border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition duration-150";
+            }
         }
 
         function updateFontSize(val) {
@@ -523,7 +558,7 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
                     </button>
                     <button onclick="toggleSettingsDrawer()" class="custom-button-secondary p-3 rounded-xl transition duration-150 shadow-sm" aria-label="Open reading panel settings">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37(2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     </button>
                 </div>
             </div>
@@ -578,6 +613,7 @@
         </div>
     </div>
 
+    <!-- Preferences Settings Drawer panel -->
     <div id="settings-drawer" class="fixed right-0 top-0 h-full w-80 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 shadow-2xl border-l border-slate-200 dark:border-slate-800 transition-transform duration-300 transform translate-x-full z-50 p-6 overflow-y-auto">
         <div class="flex items-center justify-between mb-8">
             <h3 class="text-lg font-bold">Reading Preferences</h3>
@@ -586,6 +622,7 @@
             </button>
         </div>
 
+        <!-- Color Palette Picker -->
         <div class="mb-8">
             <span class="block text-sm font-semibold mb-3 text-slate-400">THEME</span>
             <div class="grid grid-cols-3 gap-2">
@@ -595,14 +632,25 @@
             </div>
         </div>
 
+        <!-- Font Style (Gothic/Mincho selector) -->
+        <div class="mb-6">
+            <span class="block text-sm font-semibold mb-3 text-slate-400 text-xs">FONT STYLE</span>
+            <div class="grid grid-cols-2 gap-2">
+                <button id="font-btn-gothic" onclick="changeFontFamily('gothic')" class="py-2 border rounded-xl font-medium text-xs">Gothic (ゴシック)</button>
+                <button id="font-btn-mincho" onclick="changeFontFamily('mincho')" class="py-2 border rounded-xl font-medium text-xs">Mincho (明朝)</button>
+            </div>
+        </div>
+
+        <!-- Font Size Slider -->
         <div class="mb-6">
             <div class="flex justify-between text-sm mb-2">
                 <span class="font-semibold text-slate-400 text-xs">FONT SIZE</span>
                 <span id="font-size-val" class="font-bold">24px</span>
             </div>
-            <input id="font-size-slider" type="range" min="16" max="40" step="1" oninput="updateFontSize(this.value)" class="w-full accent-blue-500 cursor-pointer">
+            <input id="font-size-slider" type="range" min="10" max="30" step="1" oninput="updateFontSize(this.value)" class="w-full accent-blue-500 cursor-pointer">
         </div>
 
+        <!-- Line Spacing Slider -->
         <div class="mb-6">
             <div class="flex justify-between text-sm mb-2">
                 <span class="font-semibold text-slate-400 text-xs">LINE SPACING</span>
@@ -613,12 +661,14 @@
 
         <hr class="border-t border-slate-200 dark:border-slate-800 my-6">
 
+        <!-- Vocabulary Color Swatches -->
         <div class="mb-6">
             <span class="block text-sm font-semibold mb-3 text-slate-400">TARGET VOCABULARY COLOR</span>
             <div id="spectrum-dots-container" class="flex flex-wrap gap-3 justify-between items-center mb-4">
-                </div>
+            </div>
         </div>
 
+        <!-- Vocabulary Shading Spectrum -->
         <div>
             <span class="block text-sm font-semibold mb-2 text-slate-400">VOCAB SHADE (LIGHT / DARK)</span>
             <input id="shade-slider" type="range" min="15" max="85" step="1" oninput="updateVocabShade(this.value)" class="w-full accent-blue-500 cursor-pointer">
