@@ -2,17 +2,17 @@
     "passages": [
         {
             "lesson": "3",
-            "file": "L03-今週の仕事.json",
+            "file": "l03-今週の仕事.json",
             "title": "今週の仕事"
         },
         {
             "lesson": "19",
-            "file": "L19-ジャーナリストの忙しい月.json",
+            "file": "l19-ジャーナリストの忙しい月.json",
             "title": "ジャーナリストの忙しい月"
         },
         {
             "lesson": "20",
-            "file": "L20-忙しい会社員.json",
+            "file": "l20-忙しい会社員.json",
             "title": "忙しい会社員"
         },
         {
@@ -27,12 +27,12 @@
         },
         {
             "lesson": "4",
-            "file": "L04-大学生の一日.json",
+            "file": "l04-大学生の一日.json",
             "title": "大学生の一日"
         },
         {
             "lesson": "5",
-            "file": "L05-僕たちの夏休みと町への旅行.json",
+            "file": "l05-僕たちの夏休みと町への旅行.json",
             "title": "僕たちの夏休みと町への旅行"
         }
     ]
