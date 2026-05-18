@@ -1,0 +1,206 @@
+{
+    "title": "L19 凄いく可哀想なジャーナリスト (The Terrifically Pitiful Journalist)",
+    "content": "私の<b>名前</b>はピーターです。私は<b>オーストラリア</b>から来ました。私は今<b>二十歳</b>で、ここに三<b>ヶ月</b>います。私の<b>家</b>はとても<b>綺麗</b>ですが、<b>今日</b>の<b>朝</b>は<b>大変</b>です。<b>昨日</b>の<b>夜</b>にたくさん<b>水</b>を飲みませんでしたから、<b>今日</b>は<b>凄い</b><b>二日酔い</b>です。それに、<b>暑い</b>のに<b>咳</b>と<b>鼻水</b>があります。私は<b>アレルギー</b>もありますから、本当に<b>可哀想</b>です。\n\n<b>午前中</b>に、この<b>辺</b>で<b>有名</b>な<b>内科</b>へ行きました。<b>先生</b>はとても<b>いい</b><b>人</b>です。私は<b>内科</b>で<b>点滴</b>を<b>貰う</b>ことにしました。それから、<b>暗い</b><b>部屋</b>で<b>天気予報</b>を見ました。今日の<b>天気予報</b>は<b>晴れ</b>で、<b>気温</b>もとても<b>高い</b>です。私は<b>今日</b>、<b>レポート</b>と<b>作文</b>を書きます。私は<b>ジャーナリスト</b>ですから。\n\nまず、<b>大使館</b>へ行きました。そこで<b>学生</b>に<b>アンケート</b>をしました。それから、とても<b>広い</b><b>美術館</b>へ行きました。そこには<b>エジプト</b>の<b>古い</b><b>レコード</b>がありました。私はその<b>レコード</b>が<b>大好き</b>です。<b>美術館</b>を出て、<b>交差点</b>を<b>左側</b>に曲がります。そこに、<b>右側</b>に小さな<b>地蔵</b>があります。その<b>地蔵</b>は<b>灰色</b>の<b>丸い</b><b>笠</b>をかぶっています。すぐ近くに<b>古い</b><b>お寺</b>もあります。\n\n<b>晩</b>に、<b>パン</b>を買いに<b>八百屋</b>へ行きました。<b>キャベツ</b>を五〇〇<b>グラム</b>と、甘い<b>ぶどう</b>を<b>幾つ</b>か買いました。私は<b>八百屋</b>の<b>人</b>に「<b>醤油</b>はありますか」と<b>質問</b>をしましたが、答えは「<b>ばつ</b>」でした。この<b>八百屋</b>にはありません。私は<b>公園</b>の前の<b>本屋</b>へ行きました。<b>本棚</b>の隣に置く新しい<b>家具</b>と、白い<b>消しゴム</b>を買いました。\n\n私の<b>家</b>には、たくさんの<b>古い</b><b>レコード</b>と、<b>新しい</b><b>茶碗</b>があります。<b>今日</b>は手がとても<b>大変</b>でしたから、<b>スプーン</b>を使って<b>ハンバーガー</b>を食べました。味は<b>余り</b>よくありません。私は今、あまり<b>元気</b>ではありません。<b>夜</b>に<b>お手洗い</b>へ行きました。<b>時計</b>を見ましたが、<b>終電</b>はもうありません。今日は<b>往復</b>でたくさん歩きました。もう<b>明日</b>まで<b>寝る</b>ことにします。",
+    "vocabulary": {
+        "キャベツ": {
+            "reading": "きゃべつ",
+            "meaning": "cabbage"
+        },
+        "貰う": {
+            "reading": "もらう",
+            "meaning": "to receive"
+        },
+        "往復": {
+            "reading": "おうふく",
+            "meaning": "round trip"
+        },
+        "醤油": {
+            "reading": "しょうゆ",
+            "meaning": "soy sauce"
+        },
+        "二十歳": {
+            "reading": "はたち",
+            "meaning": "20 years old"
+        },
+        "内科": {
+            "reading": "ないか",
+            "meaning": "internal medicine clinic"
+        },
+        "辺": {
+            "reading": "へん",
+            "meaning": "area, vicinity"
+        },
+        "お寺": {
+            "reading": "おてら",
+            "meaning": "temple"
+        },
+        "本屋": {
+            "reading": "ほんや",
+            "meaning": "bookshop"
+        },
+        "美術館": {
+            "reading": "びじゅつかん",
+            "meaning": "art museum"
+        },
+        "午前中": {
+            "reading": "ごぜんちゅう",
+            "meaning": "in the morning"
+        },
+        "アンケート": {
+            "reading": "あんけーと",
+            "meaning": "questionnaire"
+        },
+        "笠": {
+            "reading": "かさ",
+            "meaning": "bamboo hat"
+        },
+        "ばつ": {
+            "reading": "ばつ",
+            "meaning": "X, incorrect"
+        },
+        "点滴": {
+            "reading": "てんてき",
+            "meaning": "IV drip"
+        },
+        "幾つ": {
+            "reading": "いくつ",
+            "meaning": "how many, a few"
+        },
+        "レポート": {
+            "reading": "れぽーと",
+            "meaning": "report"
+        },
+        "作文": {
+            "reading": "さくぶん",
+            "meaning": "essay, composition"
+        },
+        "ハンバーガー": {
+            "reading": "はんばーがー",
+            "meaning": "hamburger"
+        },
+        "茶碗": {
+            "reading": "ちゃわん",
+            "meaning": "bowl, teacup"
+        },
+        "余り": {
+            "reading": "あまり",
+            "meaning": "not very (used with negative)"
+        },
+        "天気予報": {
+            "reading": "てんきよほう",
+            "meaning": "weather forecast"
+        },
+        "晴れ": {
+            "reading": "はれ",
+            "meaning": "sunny weather"
+        },
+        "凄い": {
+            "reading": "すごい",
+            "meaning": "terrific, amazing"
+        },
+        "右側": {
+            "reading": "みぎがわ",
+            "meaning": "right side"
+        },
+        "地蔵": {
+            "reading": "じぞう",
+            "meaning": "Jizo statue"
+        },
+        "エジプト": {
+            "reading": "えじぷと",
+            "meaning": "Egypt"
+        },
+        "咳": {
+            "reading": "せき",
+            "meaning": "cough"
+        },
+        "気温": {
+            "reading": "きおん",
+            "meaning": "air temperature"
+        },
+        "スプーン": {
+            "reading": "すぷーん",
+            "meaning": "spoon"
+        },
+        "交差点": {
+            "reading": "こうさてん",
+            "meaning": "intersection"
+        },
+        "アレルギー": {
+            "reading": "あれるぎー",
+            "meaning": "allergy"
+        },
+        "グラム": {
+            "reading": "ぐらむ",
+            "meaning": "gramme"
+        },
+        "大使館": {
+            "reading": "たいしかん",
+            "meaning": "embassy"
+        },
+        "ジャーナリスト": {
+            "reading": "じゃーなりすと",
+            "meaning": "journalist"
+        },
+        "ぶどう": {
+            "reading": "ぶどう",
+            "meaning": "grapes"
+        },
+        "家具": {
+            "reading": "かぐ",
+            "meaning": "furniture"
+        },
+        "消しゴム": {
+            "reading": "けしごむ",
+            "meaning": "eraser"
+        },
+        "灰色": {
+            "reading": "はいいろ",
+            "meaning": "grey"
+        },
+        "ヶ月": {
+            "reading": "かげつ",
+            "meaning": "months (counter)"
+        },
+        "オーストラリア": {
+            "reading": "おーすとらりあ",
+            "meaning": "Australia"
+        },
+        "可哀想": {
+            "reading": "かわいそう",
+            "meaning": "pitiful, poor"
+        },
+        "二日酔い": {
+            "reading": "ふつかよい",
+            "meaning": "hangover"
+        },
+        "左側": {
+            "reading": "ひだりがわ",
+            "meaning": "left side"
+        },
+        "本棚": {
+            "reading": "ほんだな",
+            "meaning": "bookshelf"
+        },
+        "終電": {
+            "reading": "しゅうでん",
+            "meaning": "last train"
+        },
+        "お手洗い": {
+            "reading": "おてあらい",
+            "meaning": "toilet"
+        },
+        "レコード": {
+            "reading": "れこーど",
+            "meaning": "record"
+        },
+        "鼻水": {
+            "reading": "はなみず",
+            "meaning": "runny nose"
+        },
+        "八百屋": {
+            "reading": "やおや",
+            "meaning": "greengrocer"
+        }
+    }
+}
