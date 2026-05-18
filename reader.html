@@ -164,6 +164,7 @@
         let activeTooltip = null;
         let manifestData = [];
         let lessons = [];
+        let activeUtterance = null; // Global reference to protect TTS from Garbage Collection
 
         // Spectrum base configuration hues (Substituted Pink with HSL Black on the far right)
         const colorSpectrumBase = [
@@ -182,7 +183,8 @@
             fontSize: 24,
             lineHeight: 2.2,
             vocabHueIndex: 4, 
-            vocabLightness: 50
+            vocabLightness: 50,
+            ttsSpeed: 1.0
         };
 
         async function initApp() {
@@ -284,6 +286,7 @@
         async function loadPassage(passageMeta) {
             hideTooltip();
             clearSentenceHighlights();
+            stopAudio(); // Reset TTS if reading active
             const container = document.getElementById('passage-container');
             const titleEl = document.getElementById('display-title');
 
@@ -299,12 +302,14 @@
 
                 let text = currentPassage.content;
 
+                // 1. Temporarily replace vocabulary HTML bold matches with placeholders to avoid sentence splitting issues
                 const vocabWords = Object.keys(currentPassage.vocabulary);
                 vocabWords.forEach((word, index) => {
                     const placeholder = `__VOCAB_PLACEHOLDER_${index}__`;
-                    text = text.replaceAll(`**${word}**`, placeholder);
+                    text = text.replaceAll(`<b>${word}</b>`, placeholder);
                 });
 
+                // 2. Segment paragraphs by newline, then split into punctuated Japanese sentences
                 const paragraphs = text.split('\n');
                 const paragraphsHTML = paragraphs.map(para => {
                     if (!para.trim()) return '';
@@ -393,19 +398,106 @@
             activeTooltip = null;
         }
 
-        function playAudio() {
+        /**
+         * Unified Speech Control Actions
+         */
+        function handlePlayPause() {
             if (!currentPassage) return;
-            window.speechSynthesis.cancel();
+            
+            if (window.speechSynthesis.speaking) {
+                if (window.speechSynthesis.paused) {
+                    window.speechSynthesis.resume();
+                    updateTTSUI('playing');
+                } else {
+                    window.speechSynthesis.pause();
+                    updateTTSUI('paused');
+                }
+            } else {
+                startAudioPlayback();
+            }
+        }
 
-            const cleanText = currentPassage.content.replace(/\*\*/g, '');
+        function startAudioPlayback() {
+            window.speechSynthesis.cancel(); // safety flush
+
+            const cleanText = currentPassage.content.replace(/<\/?b>/gi, '');
             const utterance = new SpeechSynthesisUtterance(cleanText);
             utterance.lang = 'ja-JP';
+            utterance.rate = settings.ttsSpeed || 1.0;
 
             const voices = window.speechSynthesis.getVoices();
             const jaVoice = voices.find(voice => voice.lang.startsWith('ja'));
-            if (jaVoice) utterance.voice = jaVoice;
+            if (jaVoice) {
+                utterance.voice = jaVoice;
+            }
 
+            // Sync start to avoid delayed toggle UI states on slower clients
+            utterance.onstart = () => {
+                updateTTSUI('playing');
+            };
+
+            utterance.onend = () => {
+                updateTTSUI('stopped');
+            };
+
+            utterance.onerror = (e) => {
+                console.error("Speech Synthesis Error:", e);
+                updateTTSUI('stopped');
+            };
+
+            activeUtterance = utterance; // Keep active pointer reference safe from collection sweep
             window.speechSynthesis.speak(utterance);
+        }
+
+        function stopAudio() {
+            window.speechSynthesis.cancel();
+            updateTTSUI('stopped');
+        }
+
+        function changeTTSSpeed(val) {
+            settings.ttsSpeed = parseFloat(val);
+            saveSettings();
+            
+            // Apply speed immediately if active playback exists
+            if (window.speechSynthesis.speaking) {
+                startAudioPlayback();
+            }
+        }
+
+        function updateTTSUI(state) {
+            const playBtn = document.getElementById('tts-play-btn');
+            const stopBtn = document.getElementById('tts-stop-btn');
+            
+            if (state === 'playing') {
+                // Render custom pause SVG state
+                playBtn.innerHTML = `
+                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                    </svg>`;
+                playBtn.setAttribute('aria-label', 'Pause');
+                
+                // Active stop button styling
+                stopBtn.classList.remove('text-slate-400', 'dark:text-slate-500');
+                stopBtn.classList.add('text-slate-700', 'dark:text-slate-200');
+            } else if (state === 'paused') {
+                // Render custom play SVG state showing highlighted pause/resume alert
+                playBtn.innerHTML = `
+                    <svg class="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>`;
+                playBtn.setAttribute('aria-label', 'Resume');
+            } else {
+                // Stopped / Initial state
+                playBtn.innerHTML = `
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>`;
+                playBtn.setAttribute('aria-label', 'Play');
+                
+                // Disabled stop button styling
+                stopBtn.classList.add('text-slate-400', 'dark:text-slate-500');
+                stopBtn.classList.remove('text-slate-700', 'dark:text-slate-200');
+            }
         }
 
         function loadSettings() {
@@ -414,9 +506,11 @@
                 try {
                     settings = { ...settings, ...JSON.parse(local) };
                     
-                    // Add legacy backup default if loading from older session settings
                     if (!settings.fontFamily) {
                         settings.fontFamily = 'gothic';
+                    }
+                    if (!settings.ttsSpeed) {
+                        settings.ttsSpeed = 1.0;
                     }
 
                     // Clamp loaded preferences safely to stay within the new 10px - 30px boundary limits
@@ -442,6 +536,7 @@
             document.getElementById('line-height-val').textContent = settings.lineHeight;
 
             document.getElementById('shade-slider').value = settings.vocabLightness;
+            document.getElementById('tts-speed-select').value = settings.ttsSpeed;
 
             // Apply selected font family variable rule
             const fontVal = settings.fontFamily === 'mincho' ? "'Noto Serif JP', serif" : "'Noto Sans JP', sans-serif";
@@ -512,6 +607,7 @@
             applySettingsUI();
         }
 
+        // Font Family manipulation utility
         function changeFontFamily(fontName) {
             settings.fontFamily = fontName;
             saveSettings();
@@ -551,14 +647,46 @@
 
     <div class="max-w-2xl mx-auto px-4 py-8 md:py-12 pb-24">
         <header class="mb-10 text-center relative">
-            <div class="flex items-center justify-between mb-6">
+            <div class="flex flex-wrap gap-4 items-center justify-between mb-6">
                 <h1 class="text-3xl font-bold tracking-tight">Japanese Reader</h1>
-                <div class="flex gap-2">
-                    <button onclick="playAudio()" class="custom-button-secondary p-3 rounded-xl transition duration-150 shadow-sm" aria-label="Listen audio text">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
-                    </button>
-                    <button onclick="toggleSettingsDrawer()" class="custom-button-secondary p-3 rounded-xl transition duration-150 shadow-sm" aria-label="Open reading panel settings">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37(2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                
+                <div class="flex items-center gap-2">
+                    <!-- Dynamic TTS Controls (Themed automatically) -->
+                    <div id="audio-controls-container" class="flex items-center gap-1 p-1 rounded-2xl border custom-card shadow-sm transition-all duration-300">
+                        <!-- Play / Pause / Resume Button -->
+                        <button id="tts-play-btn" onclick="handlePlayPause()" class="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 transition duration-150" aria-label="Play">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                        
+                        <!-- Dedicated Stop Button -->
+                        <button id="tts-stop-btn" onclick="stopAudio()" class="p-2 rounded-xl text-slate-400 dark:text-slate-500 hover:bg-black/5 dark:hover:bg-white/10 hover:text-red-500 dark:hover:text-red-400 transition duration-150" aria-label="Stop">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
+                        </button>
+                        
+                        <!-- Divider -->
+                        <div class="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1"></div>
+
+                        <!-- Native Playback Speed Selector -->
+                        <div class="relative inline-flex items-center">
+                            <select id="tts-speed-select" onchange="changeTTSSpeed(this.value)" class="bg-transparent text-xs font-bold py-1.5 pl-2 pr-7 rounded cursor-pointer focus:outline-none appearance-none text-current">
+                                <option class="bg-white dark:bg-slate-900" value="0.7">0.7x</option>
+                                <option class="bg-white dark:bg-slate-900" value="0.85">0.85x</option>
+                                <option class="bg-white dark:bg-slate-900" value="1.0" selected>1.0x</option>
+                                <option class="bg-white dark:bg-slate-900" value="1.2">1.2x</option>
+                                <option class="bg-white dark:bg-slate-900" value="1.5">1.5x</option>
+                                <option class="bg-white dark:bg-slate-900" value="2.0">2.0x</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-slate-400">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Config Drawer Trigger -->
+                    <button onclick="toggleSettingsDrawer()" class="custom-button-secondary p-3 rounded-2xl transition duration-150 shadow-sm" aria-label="Open reading panel settings">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -622,7 +750,7 @@
             </button>
         </div>
 
-        <!-- Color Palette Picker -->
+        <!-- Color theme picker -->
         <div class="mb-8">
             <span class="block text-sm font-semibold mb-3 text-slate-400">THEME</span>
             <div class="grid grid-cols-3 gap-2">
