@@ -300,12 +300,22 @@
 
                 let text = currentPassage.content;
 
-                const vocabWords = Object.keys(currentPassage.vocabulary);
-                vocabWords.forEach((word, index) => {
+                // 1. Scan the text dynamically to find any content wrapped in <b>...</b> tags
+                const bTagRegex = /<b>(.*?)<\/b>/g;
+                const matches = [];
+                let match;
+                while ((match = bTagRegex.exec(text)) !== null) {
+                    matches.push(match[1]);
+                }
+                const uniqueExtractedWords = [...new Set(matches)];
+
+                // 2. Map only those specific extracted words to placeholder positions
+                uniqueExtractedWords.forEach((word, index) => {
                     const placeholder = `__VOCAB_PLACEHOLDER_${index}__`;
                     text = text.replaceAll(`<b>${word}</b>`, placeholder);
                 });
 
+                // 3. Segment paragraphs by newline, then split into punctuated Japanese sentences
                 const paragraphs = text.split('\n');
                 const paragraphsHTML = paragraphs.map(para => {
                     if (!para.trim()) return '';
@@ -315,10 +325,11 @@
                         if (!sentence.trim()) return '';
 
                         let sentenceHTML = sentence;
-                        vocabWords.forEach((word, index) => {
+                        uniqueExtractedWords.forEach((word, index) => {
                             const placeholder = `__VOCAB_PLACEHOLDER_${index}__`;
+                            const safeWord = word.replace(/'/g, "\\'");
                             sentenceHTML = sentenceHTML.replaceAll(placeholder, 
-                                `<span class="target-vocab font-bold" onclick="handleVocabClick(event, '${word}')">${word}</span>`
+                                `<span class="target-vocab font-bold" onclick="handleVocabClick(event, '${safeWord}')">${word}</span>`
                             );
                         });
 
@@ -339,6 +350,9 @@
             }
         }
 
+        /**
+         * Dynamic click handler with fuzzy lookups
+         */
         function handleVocabClick(event, word) {
             event.stopPropagation();
 
@@ -347,7 +361,38 @@
                 return;
             }
 
-            const info = currentPassage.vocabulary[word];
+            let info = null;
+            if (currentPassage && currentPassage.vocabulary) {
+                // Check 1: Direct exact match lookup
+                info = currentPassage.vocabulary[word];
+                
+                // Check 2: Trimmed whitespace lookup
+                if (!info) {
+                    info = currentPassage.vocabulary[word.trim()];
+                }
+                
+                // Check 3: Substring overlap lookup (solves dictionary/conjugation mismatches)
+                if (!info) {
+                    const vocabKeys = Object.keys(currentPassage.vocabulary);
+                    const matchKey = vocabKeys.find(key => {
+                        const k = key.trim();
+                        const w = word.trim();
+                        return w.includes(k) || k.includes(w);
+                    });
+                    if (matchKey) {
+                        info = currentPassage.vocabulary[matchKey];
+                    }
+                }
+            }
+
+            // Fallback definition container if omitted from JSON registry
+            if (!info) {
+                info = {
+                    reading: "読み方不明",
+                    meaning: "意味の登録がありません"
+                };
+            }
+
             const rect = event.target.getBoundingClientRect();
             showTooltip(rect, info, event.target);
         }
@@ -717,6 +762,7 @@
         </div>
     </div>
 
+    <!-- Preferences Settings Drawer panel -->
     <div id="settings-drawer" class="fixed right-0 top-0 h-full w-80 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 shadow-2xl border-l border-slate-200 dark:border-slate-800 transition-transform duration-300 transform translate-x-full z-50 p-6 overflow-y-auto">
         <div class="flex items-center justify-between mb-8">
             <h3 class="text-lg font-bold">Reading Preferences</h3>
@@ -725,6 +771,7 @@
             </button>
         </div>
 
+        <!-- Color theme picker -->
         <div class="mb-8">
             <span class="block text-sm font-semibold mb-3 text-slate-400">THEME</span>
             <div class="grid grid-cols-3 gap-2">
@@ -734,6 +781,7 @@
             </div>
         </div>
 
+        <!-- Font Style (Gothic/Mincho selector) -->
         <div class="mb-6">
             <span class="block text-sm font-semibold mb-3 text-slate-400 text-xs">FONT STYLE</span>
             <div class="grid grid-cols-2 gap-2">
@@ -742,6 +790,7 @@
             </div>
         </div>
 
+        <!-- Font Size Slider -->
         <div class="mb-6">
             <div class="flex justify-between text-sm mb-2">
                 <span class="font-semibold text-slate-400 text-xs">FONT SIZE</span>
@@ -750,6 +799,7 @@
             <input id="font-size-slider" type="range" min="10" max="30" step="1" oninput="updateFontSize(this.value)" class="w-full accent-blue-500 cursor-pointer">
         </div>
 
+        <!-- Line Spacing Slider -->
         <div class="mb-6">
             <div class="flex justify-between text-sm mb-2">
                 <span class="font-semibold text-slate-400 text-xs">LINE SPACING</span>
@@ -760,12 +810,14 @@
 
         <hr class="border-t border-slate-200 dark:border-slate-800 my-6">
 
+        <!-- Vocabulary Color Swatches -->
         <div class="mb-6">
             <span class="block text-sm font-semibold mb-3 text-slate-400">TARGET VOCABULARY COLOR</span>
             <div id="spectrum-dots-container" class="flex flex-wrap gap-3 justify-between items-center mb-4">
             </div>
         </div>
 
+        <!-- Vocabulary Shading Spectrum -->
         <div>
             <span class="block text-sm font-semibold mb-2 text-slate-400">VOCAB SHADE (LIGHT / DARK)</span>
             <input id="shade-slider" type="range" min="15" max="85" step="1" oninput="updateVocabShade(this.value)" class="w-full accent-blue-500 cursor-pointer">
