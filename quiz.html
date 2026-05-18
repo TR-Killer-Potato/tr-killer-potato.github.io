@@ -3,826 +3,365 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Japanese Vocabulary Reader</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+    <title>Mastery Challenge - Quiz App</title>
     <style>
         :root {
-            --bg-primary: #f8fafc;
-            --bg-card: #ffffff;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --border-color: #e2e8f0;
-            --btn-secondary: #f1f5f9;
-            --btn-secondary-hover: #e2e8f0;
+            --bg-dark: #1a1a2e;
+            --card-bg: #16213e;
+            --border-color: #0f3460;
+            --accent-blue: #3498db;
+            --accent-green: #4ecca3;
+            --error-red: #e94560;
+            --text-dim: #95a5a6;
         }
 
-        body.theme-sepia {
-            --bg-primary: #fbf0d9;
-            --bg-card: #fdf6e3;
-            --text-primary: #5F4B32;
-            --text-secondary: #8c7662;
-            --border-color: #e6dac3;
-            --btn-secondary: #ebdcb9;
-            --btn-secondary-hover: #decb9e;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-dark); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: #fff; }
+        #quiz-container { background: var(--card-bg); padding: 2.5rem; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); width: 100%; max-width: 750px; text-align: center; border: 1px solid var(--border-color); margin: 20px; min-height: 400px; display: flex; flex-direction: column; justify-content: center; }
+        
+        .hidden { display: none !important; }
 
-        body.theme-dark {
-            --bg-primary: #0f172a;
-            --bg-card: #1e293b;
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --border-color: #334155;
-            --btn-secondary: #334155;
-            --btn-secondary-hover: #475569;
-        }
+        /* Spinner */
+        .spinner { border: 4px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; border-left-color: var(--accent-green); animation: spin 1s linear infinite; margin: 0 auto 1.5rem; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        body {
-            font-family: 'Inter', 'Noto Sans JP', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            transition: background-color 0.3s, color 0.3s;
-        }
+        /* Landing Page */
+        .header-title { color: var(--accent-green); margin-bottom: 0.5rem; font-size: 2.2rem; }
+        .sub-text { color: var(--text-dim); margin-bottom: 2rem; }
+        .lesson-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; width: 100%; }
+        .lesson-btn { padding: 25px; background: var(--bg-dark); border: 2px solid var(--border-color); border-radius: 12px; color: #fff; cursor: pointer; transition: 0.3s; font-weight: bold; text-align: center; font-size: 1.2rem; }
+        .lesson-btn:hover { border-color: var(--accent-blue); background: var(--border-color); transform: translateY(-3px); }
 
-        .custom-card {
-            background-color: var(--bg-card);
-            border-color: var(--border-color);
-            color: var(--text-primary);
-        }
+        /* Selection Screen */
+        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 2rem 0; }
+        .style-btn { padding: 15px; background: var(--bg-dark); border: 2px solid var(--border-color); border-radius: 10px; color: var(--text-dim); cursor: pointer; transition: 0.2s; font-weight: 600; font-size: 0.9rem; }
+        .style-btn.selected { border-color: var(--accent-blue); background: var(--border-color); color: #fff; box-shadow: 0 0 10px rgba(52, 152, 219, 0.3); }
+        .action-btns { display: flex; gap: 12px; justify-content: center; margin-top: 1rem; }
+        .back-btn { padding: 15px 25px; border-radius: 50px; border: 1px solid var(--text-dim); background: transparent; color: var(--text-dim); cursor: pointer; transition: 0.2s; }
+        .back-btn:hover { color: #fff; border-color: #fff; }
 
-        .custom-button-secondary {
-            background-color: var(--btn-secondary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-        .custom-button-secondary:hover {
-            background-color: var(--btn-secondary-hover);
-        }
+        /* Quiz UI */
+        .type-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-blue); margin-bottom: 0.8rem; font-weight: bold; }
+        .word-display { font-size: 3.5rem; margin-bottom: 2.5rem; color: #fff; font-weight: bold; min-height: 6rem; display: flex; align-items: center; justify-content: center; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .option-btn { padding: 22px 15px; font-size: 1.1rem; border: 2px solid var(--border-color); border-radius: 12px; background: var(--bg-dark); color: var(--accent-green); cursor: pointer; transition: 0.2s; font-weight: 600; }
+        .option-btn:hover:not(:disabled) { background: var(--border-color); border-color: var(--accent-green); }
+        .option-btn.correct { background: #2ecc71 !important; border-color: #2ecc71 !important; color: white !important; }
+        .option-btn.wrong { background: var(--error-red) !important; border-color: var(--error-red) !important; color: white !important; }
+        
+        .progress-bar { height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden; margin-bottom: 25px; }
+        .progress-fill { height: 100%; background: var(--accent-blue); width: 0%; transition: 0.4s; }
+        #score-board { margin-top: 25px; font-size: 0.9rem; color: var(--text-dim); border-top: 1px solid var(--border-color); padding-top: 20px; }
+        
+        .final-results-wrap { max-height: 400px; overflow-y: auto; margin: 20px 0; border: 1px solid var(--border-color); border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; color: #fff; font-size: 0.85rem; }
+        th, td { border: 1px solid var(--border-color); padding: 12px; text-align: left; }
+        th { background: var(--border-color); color: var(--accent-blue); position: sticky; top: 0; }
+        .row-correct { color: #2ecc71; }
+        .row-wrong { color: var(--error-red); }
 
-        .passage-text {
-            font-family: var(--passage-font-family, 'Noto Sans JP', sans-serif);
-            letter-spacing: 0.05em;
-            color: var(--text-primary) !important;
-        }
+        .start-btn { padding: 15px 45px; font-size: 1.2rem; background: var(--accent-green); color: var(--bg-dark); border: none; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .start-btn:disabled { background: #2c3e50; color: #7f8c8d; cursor: not-allowed; opacity: 0.5; }
+        
+        .error-msg { color: var(--error-red); background: rgba(233, 69, 96, 0.1); padding: 20px; border-radius: 12px; border: 1px solid var(--error-red); }
 
-        .passage-text p {
-            color: var(--text-primary) !important;
-        }
-
-        /* Highlight entire sentence */
-        .reader-sentence {
-            cursor: pointer;
-            padding: 2px 4px;
-            border-radius: 4px;
-            color: var(--text-primary) !important;
-            font-family: inherit;
-        }
-        .reader-sentence:hover {
-            background-color: rgba(59, 130, 246, 0.08);
-        }
-        .reader-sentence.active-sentence {
-            background-color: rgba(59, 130, 246, 0.15);
-        }
-
-        /* Dynamic Custom Vocab Color Hook - Underline Removed */
-        .target-vocab {
-            cursor: pointer;
-            color: var(--vocab-dynamic-color, #3b82f6) !important;
-            transition: background-color 0.2s;
-            padding: 0 2px;
-            border-radius: 2px;
-            display: inline-block;
-        }
-        .target-vocab:hover {
-            background-color: rgba(59, 130, 246, 0.25) !important;
-        }
-
-        /* Tooltip style */
-        .vocab-tooltip {
-            position: absolute;
-            z-index: 50;
-            background: var(--bg-card);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px 16px;
-            pointer-events: auto;
-            display: none;
-            transform: translateY(-10px);
-            animation: fadeIn 0.2s ease-out forwards;
-        }
-        #tooltip-reading {
-            color: var(--vocab-dynamic-color, #3b82f6);
-        }
-        #tooltip-meaning {
-            color: var(--text-primary);
-            opacity: 0.85;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(-10px); }
-        }
-
-        /* Custom color swatch sizing */
-        .color-dot {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: transform 0.15s ease, border-color 0.15s ease, border-width 0.15s ease;
-            border: 4px solid transparent;
-        }
-        .color-dot:hover {
-            transform: scale(1.15);
-        }
-        .color-dot.active-dot {
-            border-color: var(--text-primary);
-            border-width: 4px;
-            transform: scale(1.1);
-        }
-
-        .loader {
-            border: 3px solid rgba(0,0,0,0.1);
-            border-top: 3px solid #3b82f6;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        /* Persistent Navigation */
+        .persistent-nav { margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem; }
+        .menu-link { text-decoration: none; }
     </style>
 </head>
-<body class="min-h-screen">
+<body>
 
-    <script>
-        let currentPassage = null;
-        let activeTooltip = null;
-        let manifestData = [];
-        let lessons = [];
-        let activeUtterance = null;
+<div id="quiz-container">
+    <!-- Status (Loading/Error) -->
+    <div id="status-view" class="hidden">
+        <div id="loader" class="hidden">
+            <div class="spinner"></div>
+            <p id="loader-text">Loading...</p>
+        </div>
+        <div id="error-container" class="hidden">
+            <div class="error-msg" id="error-text">An error occurred.</div>
+            <button class="back-btn" style="margin-top: 20px" onclick="location.reload()">Retry</button>
+        </div>
+    </div>
 
-        const colorSpectrumBase = [
-            "hsl(0, 85%, 50%)",    // Red
-            "hsl(35, 90%, 50%)",   // Orange
-            "hsl(140, 75%, 45%)",  // Green
-            "hsl(195, 85%, 45%)",  // Cyan
-            "hsl(220, 85%, 50%)",  // Blue (Default)
-            "hsl(270, 80%, 50%)",  // Purple
-            "hsl(0, 0%, 0%)"       // Black (Far right)
-        ];
+    <!-- 1. Landing Page -->
+    <div id="landing-page">
+        <h1 class="header-title">Mastery Challenge</h1>
+        <p class="sub-text">Select a practice module to begin.</p>
+        <div id="lesson-list" class="lesson-grid"></div>
+    </div>
 
-        let settings = {
-            theme: 'light',
-            fontFamily: 'gothic',
-            fontSize: 24,
-            lineHeight: 2.2,
-            vocabHueIndex: 4, 
-            vocabLightness: 50,
-            ttsSpeed: 1.0
+    <!-- 2. Style Selection -->
+    <div id="selection-screen" class="hidden">
+        <h2 id="selected-lesson-title" style="color: var(--accent-blue);">Loading Title...</h2>
+        <p class="sub-text">Choose your challenge types:</p>
+        <div class="selection-grid">
+            <button class="style-btn" data-type="Vocab-Reading">Vocabulary - Reading</button>
+            <button class="style-btn" data-type="Vocab-Meaning">Vocabulary - Meaning</button>
+            <button class="style-btn" data-type="Reading-Vocab">Reading - Vocabulary</button>
+            <button class="style-btn" data-type="Reading-Meaning">Reading - Meaning</button>
+            <button class="style-btn" data-type="Meaning-Vocab">Meaning - Vocabulary</button>
+            <button class="style-btn" data-type="Meaning-Reading">Meaning - Reading</button>
+        </div>
+        <div class="action-btns">
+            <button id="start-btn" class="start-btn" disabled>Start Session</button>
+        </div>
+    </div>
+
+    <!-- 3. Quiz Gameplay -->
+    <div id="quiz-ui" class="hidden">
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+        <div class="type-label" id="q-type">TYPE</div>
+        <div class="word-display" id="display-text">...</div>
+        <div class="options-grid" id="options"></div>
+        <div id="score-board">Progression: <span id="current-count">0</span> / <span id="total-q">0</span> | Mastery: <span id="score">0</span></div>
+    </div>
+
+    <!-- 4. Results Screen -->
+    <div id="results-ui" class="hidden">
+        <h2 style="color:var(--accent-blue)">Session Results</h2>
+        <p id="results-meta" class="sub-text">Lesson ID: Title</p>
+        <p id="results-score" style="font-size: 1.1rem; margin-bottom: 1.5rem;">Final Score: 0 / 0</p>
+        <div class="final-results-wrap">
+            <table>
+                <thead><tr><th>Question</th><th>Pick</th><th>Answer</th></tr></thead>
+                <tbody id="results-tbody"></tbody>
+            </table>
+        </div>
+        <button class="start-btn" onclick="location.reload()" style="margin-top: 1.5rem;">Restart Quiz</button>
+    </div>
+
+    <!-- Global Footer -->
+    <div class="persistent-nav">
+        <a href="index.html" class="menu-link" id="global-menu-link">
+            <button class="back-btn" style="font-size: 0.9rem; padding: 10px 25px;">Main Menu</button>
+        </a>
+    </div>
+</div>
+
+<script>
+/**
+ * QUIZ APP ENGINE CONFIG
+ */
+const MANIFEST_PATH = 'quizdata/manifest.json';
+let currentLessonFullObject = null;
+let currentLessonID = "";
+let questions = [];
+let score = 0;
+let currentIdx = 0;
+let sessionLogs = [];
+let selectedStyles = new Set();
+
+/**
+ * UI State Controller
+ */
+function showState(stateId) {
+    ['landing-page', 'selection-screen', 'quiz-ui', 'results-ui', 'status-view'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+    });
+    const activeEl = document.getElementById(stateId);
+    if (activeEl) activeEl.classList.remove('hidden');
+
+    // Manage the Main Menu button text and action state depending on page context
+    const menuLink = document.getElementById('global-menu-link');
+    const menuButton = menuLink ? menuLink.querySelector('button') : null;
+
+    if (menuLink && menuButton) {
+        if (stateId === 'selection-screen') {
+            menuButton.innerText = '← Back';
+            menuLink.href = '#';
+            menuLink.onclick = (e) => {
+                e.preventDefault();
+                showState('landing-page');
+            };
+        } else if (stateId === 'quiz-ui') {
+            menuButton.innerText = '← Back';
+            menuLink.href = '#';
+            menuLink.onclick = (e) => {
+                e.preventDefault();
+                showState('selection-screen');
+            };
+        } else {
+            menuButton.innerText = 'Main Menu';
+            menuLink.href = 'index.html';
+            menuLink.onclick = null;
+        }
+    }
+}
+
+function showLoading(text) {
+    showState('status-view');
+    document.getElementById('loader').classList.remove('hidden');
+    document.getElementById('error-container').classList.add('hidden');
+    document.getElementById('loader-text').innerText = text;
+}
+
+function showError(msg) {
+    showState('status-view');
+    document.getElementById('loader').classList.add('hidden');
+    document.getElementById('error-container').classList.remove('hidden');
+    document.getElementById('error-text').innerText = msg;
+}
+
+/**
+ * Data Management
+ */
+async function loadRepository() {
+    showLoading('Initializing repository...');
+    try {
+        const response = await fetch(MANIFEST_PATH);
+        if (!response.ok) throw new Error('Manifest not found in quizdata/');
+        const manifest = await response.json();
+        renderSelector(manifest.lessons);
+        showState('landing-page');
+    } catch (err) {
+        showError(`Init Error: ${err.message}`);
+    }
+}
+
+async function loadLesson(lessonMeta) {
+    showLoading(`Fetching ${lessonMeta.id}...`);
+    try {
+        const response = await fetch(lessonMeta.file);
+        if (!response.ok) throw new Error(`Data file missing: ${lessonMeta.file}`);
+        const fullData = await response.json();
+        
+        // Source of Truth: { title: "...", vocabulary: [...] }
+        currentLessonFullObject = fullData;
+        currentLessonID = lessonMeta.id;
+        
+        document.getElementById('selected-lesson-title').innerText = fullData.title || lessonMeta.id;
+        showState('selection-screen');
+    } catch (err) {
+        showError(`Load Error: ${err.message}`);
+    }
+}
+
+function renderSelector(lessons) {
+    const grid = document.getElementById('lesson-list');
+    grid.innerHTML = '';
+    lessons.forEach(lesson => {
+        const btn = document.createElement('button');
+        btn.className = 'lesson-btn';
+        btn.innerText = lesson.id;
+        btn.onclick = () => loadLesson(lesson);
+        grid.appendChild(btn);
+    });
+}
+
+/**
+ * Selection Screen Logic
+ */
+document.querySelectorAll('.style-btn').forEach(btn => {
+    btn.onclick = () => {
+        const type = btn.dataset.type;
+        selectedStyles.has(type) ? selectedStyles.delete(type) : selectedStyles.add(type);
+        btn.classList.toggle('selected');
+        document.getElementById('start-btn').disabled = (selectedStyles.size === 0);
+    };
+});
+
+document.getElementById('start-btn').onclick = () => {
+    prepareQuestions();
+    showState('quiz-ui');
+    loadQuestion();
+};
+
+/**
+ * Quiz Loop Logic
+ */
+function prepareQuestions() {
+    questions = [];
+    score = 0;
+    currentIdx = 0;
+    sessionLogs = [];
+    
+    const vocabulary = currentLessonFullObject.vocabulary || [];
+    
+    vocabulary.forEach(item => {
+        // v = Vocab, r = Reading, m = Meaning
+        // dv = Distractor Vocab, dr = Distractor Reading, dm = Distractor Meaning
+        if (selectedStyles.has("Vocab-Meaning")) questions.push({ q: item.v, a: item.m, type: "Vocab-Meaning", dist: item.dm });
+        if (selectedStyles.has("Meaning-Vocab")) questions.push({ q: item.m, a: item.v, type: "Meaning-Vocab", dist: item.dv });
+        if (selectedStyles.has("Reading-Meaning")) questions.push({ q: item.r, a: item.m, type: "Reading-Meaning", dist: item.dm });
+        if (selectedStyles.has("Meaning-Reading")) questions.push({ q: item.m, a: item.r, type: "Meaning-Reading", dist: item.dr });
+        
+        // Rule: Do NOT include Katakana vocabulary in Vocabulary-Reading or Reading-Vocabulary quizzes
+        if (!item.isKat) {
+            if (selectedStyles.has("Vocab-Reading")) questions.push({ q: item.v, a: item.r, type: "Vocab-Reading", dist: item.dr });
+            if (selectedStyles.has("Reading-Vocab")) questions.push({ q: item.r, a: item.v, type: "Reading-Vocab", dist: item.dv });
+        }
+    });
+
+    questions.sort(() => Math.random() - 0.5);
+}
+
+function loadQuestion() {
+    if (currentIdx >= questions.length) {
+        showFinalResults();
+        return;
+    }
+    
+    // Safety Sweep: Remove focus from any active element to prevent browser focus transfers
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+        document.activeElement.blur();
+    }
+
+    const q = questions[currentIdx];
+    document.getElementById('q-type').innerText = q.type;
+    document.getElementById('display-text').innerText = q.q;
+    document.getElementById('total-q').innerText = questions.length;
+    document.getElementById('score').innerText = score;
+    document.getElementById('current-count').innerText = currentIdx + 1;
+    document.getElementById('progress-fill').style.width = `${(currentIdx / questions.length) * 100}%`;
+    
+    const opts = [q.a, ...q.dist].sort(() => Math.random() - 0.5);
+    const div = document.getElementById('options');
+    div.innerHTML = '';
+    
+    opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = opt;
+        btn.onclick = () => {
+            btn.blur(); // Remove active/focused state immediately upon click
+            document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+            const isCorrect = (opt === q.a);
+            sessionLogs.push({ type: q.type, word: q.q, response: opt, answer: q.a, correct: isCorrect });
+            
+            if (isCorrect) {
+                score++; btn.classList.add('correct');
+                setTimeout(() => { currentIdx++; loadQuestion(); }, 800);
+            } else {
+                btn.classList.add('wrong');
+                document.querySelectorAll('.option-btn').forEach(b => {
+                    if (b.innerText === q.a) b.classList.add('correct');
+                });
+                setTimeout(() => { currentIdx++; loadQuestion(); }, 3500);
+            }
         };
-
-        async function initApp() {
-            loadSettings();
-            applySettingsUI();
-            buildColorSpectrumUI();
-
-            try {
-                const response = await fetch('readerdata/manifest.json');
-                if (!response.ok) throw new Error('Could not load manifest file.');
-                const manifest = await response.json();
-
-                manifestData = manifest.passages.map((item, idx) => {
-                    const fallbackTitle = item.file.replace(/\.json$/i, '');
-                    return {
-                        id: `p_${idx + 1}`,
-                        lesson: item.lesson,
-                        file: item.file,
-                        title: item.title || fallbackTitle
-                    };
-                });
-
-                const uniqueLessons = [...new Set(manifestData.map(item => item.lesson))];
-                lessons = uniqueLessons.sort((a, b) => {
-                    const numA = parseFloat(a);
-                    const numB = parseFloat(b);
-                    if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
-                    return a.localeCompare(b);
-                });
-
-                renderLessonSelector(lessons);
-                setupDropdownListeners();
-
-                if (lessons.length > 0) {
-                    const savedLesson = localStorage.getItem('selected_lesson');
-                    const activeLesson = lessons.includes(savedLesson) ? savedLesson : lessons[0];
-                    document.getElementById('lesson-selector').value = activeLesson;
-                    updatePassageSelector(activeLesson);
-                }
-
-            } catch (err) {
-                console.error(err);
-                document.getElementById('display-title').textContent = "Error loading data.";
-                document.getElementById('passage-container').innerHTML = `
-                    <p class="text-red-500 text-lg mb-2">Could not read from 'readerdata/manifest.json'.</p>
-                `;
-            }
-
-            document.addEventListener('click', (e) => {
-                if (activeTooltip && !e.target.closest('.target-vocab') && !e.target.closest('.vocab-tooltip')) {
-                    hideTooltip();
-                }
-                if (!e.target.closest('.reader-sentence') && !e.target.closest('.target-vocab')) {
-                    clearSentenceHighlights();
-                }
-            });
-        }
-
-        function renderLessonSelector(lessonsList) {
-            const selector = document.getElementById('lesson-selector');
-            selector.innerHTML = lessonsList.map(lessonVal => 
-                `<option value="${lessonVal}">Lesson ${lessonVal}</option>`
-            ).join('');
-        }
-
-        function setupDropdownListeners() {
-            document.getElementById('lesson-selector').addEventListener('change', (e) => {
-                const selectedLesson = e.target.value;
-                localStorage.setItem('selected_lesson', selectedLesson);
-                updatePassageSelector(selectedLesson);
-            });
-
-            document.getElementById('passage-selector').addEventListener('change', async (e) => {
-                const selectedId = e.target.value;
-                const targetPassage = manifestData.find(p => p.id === selectedId);
-                if (targetPassage) {
-                    localStorage.setItem('selected_passage_id', selectedId);
-                    await loadPassage(targetPassage);
-                }
-            });
-        }
-
-        function updatePassageSelector(lessonValue) {
-            const filteredPassages = manifestData.filter(item => item.lesson === lessonValue);
-            const selector = document.getElementById('passage-selector');
-
-            selector.innerHTML = filteredPassages.map(p => 
-                `<option value="${p.id}">${p.title}</option>`
-            ).join('');
-
-            if (filteredPassages.length > 0) {
-                const savedPassageId = localStorage.getItem('selected_passage_id');
-                const activePassage = filteredPassages.find(p => p.id === savedPassageId) || filteredPassages[0];
-                selector.value = activePassage.id;
-                loadPassage(activePassage);
-            }
-        }
-
-        async function loadPassage(passageMeta) {
-            hideTooltip();
-            clearSentenceHighlights();
-            stopAudio();
-            const container = document.getElementById('passage-container');
-            const titleEl = document.getElementById('display-title');
-
-            titleEl.innerHTML = `<span class="loader mr-2"></span> Loading passage...`;
-            container.innerHTML = "";
-
-            try {
-                const response = await fetch(`readerdata/${encodeURIComponent(passageMeta.file)}`);
-                if (!response.ok) throw new Error('File not found');
-                currentPassage = await response.json();
-
-                titleEl.textContent = currentPassage.title;
-
-                let text = currentPassage.content;
-
-                // 1. Scan the text dynamically to find any content wrapped in <b>...</b> tags
-                const bTagRegex = /<b>(.*?)<\/b>/g;
-                const matches = [];
-                let match;
-                while ((match = bTagRegex.exec(text)) !== null) {
-                    matches.push(match[1]);
-                }
-                const uniqueExtractedWords = [...new Set(matches)];
-
-                // 2. Map only those specific extracted words to placeholder positions
-                uniqueExtractedWords.forEach((word, index) => {
-                    const placeholder = `__VOCAB_PLACEHOLDER_${index}__`;
-                    text = text.replaceAll(`<b>${word}</b>`, placeholder);
-                });
-
-                // 3. Segment paragraphs by newline, then split into punctuated Japanese sentences
-                const paragraphs = text.split('\n');
-                const paragraphsHTML = paragraphs.map(para => {
-                    if (!para.trim()) return '';
-
-                    const sentences = para.split(/(?<=[。！？])/g);
-                    const sentenceSpans = sentences.map(sentence => {
-                        if (!sentence.trim()) return '';
-
-                        let sentenceHTML = sentence;
-                        uniqueExtractedWords.forEach((word, index) => {
-                            const placeholder = `__VOCAB_PLACEHOLDER_${index}__`;
-                            const safeWord = word.replace(/'/g, "\\'");
-                            sentenceHTML = sentenceHTML.replaceAll(placeholder, 
-                                `<span class="target-vocab font-bold" onclick="handleVocabClick(event, '${safeWord}')">${word}</span>`
-                            );
-                        });
-
-                        return `<span class="reader-sentence transition-all duration-150" onclick="handleSentenceClick(event)">${sentenceHTML}</span>`;
-                    }).join('');
-
-                    return `<p class="mb-4">${sentenceSpans}</p>`;
-                }).join('');
-
-                container.innerHTML = paragraphsHTML;
-                applySavedTextStyle();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            } catch (err) {
-                console.error(err);
-                titleEl.textContent = "Error Loading Content";
-                container.innerHTML = `<div class="text-red-500 text-lg mb-2">Could not read: ${passageMeta.file}</div>`;
-            }
-        }
-
-        /**
-         * Dynamic click handler with fuzzy lookups
-         */
-        function handleVocabClick(event, word) {
-            event.stopPropagation();
-
-            if (activeTooltip && activeTooltip.trigger === event.target) {
-                hideTooltip();
-                return;
-            }
-
-            let info = null;
-            if (currentPassage && currentPassage.vocabulary) {
-                // Check 1: Direct exact match lookup
-                info = currentPassage.vocabulary[word];
-                
-                // Check 2: Trimmed whitespace lookup
-                if (!info) {
-                    info = currentPassage.vocabulary[word.trim()];
-                }
-                
-                // Check 3: Substring overlap lookup (solves dictionary/conjugation mismatches)
-                if (!info) {
-                    const vocabKeys = Object.keys(currentPassage.vocabulary);
-                    const matchKey = vocabKeys.find(key => {
-                        const k = key.trim();
-                        const w = word.trim();
-                        return w.includes(k) || k.includes(w);
-                    });
-                    if (matchKey) {
-                        info = currentPassage.vocabulary[matchKey];
-                    }
-                }
-            }
-
-            // Fallback definition container if omitted from JSON registry
-            if (!info) {
-                info = {
-                    reading: "読み方不明",
-                    meaning: "意味の登録がありません"
-                };
-            }
-
-            const rect = event.target.getBoundingClientRect();
-            showTooltip(rect, info, event.target);
-        }
-
-        function handleSentenceClick(event) {
-            event.stopPropagation();
-            if (event.target.closest('.target-vocab')) return;
-
-            clearSentenceHighlights();
-            const sentenceSpan = event.currentTarget;
-            sentenceSpan.classList.add('active-sentence');
-        }
-
-        function clearSentenceHighlights() {
-            document.querySelectorAll('.reader-sentence').forEach(span => {
-                span.classList.remove('active-sentence');
-            });
-        }
-
-        function showTooltip(rect, info, triggerElement) {
-            const tooltip = document.getElementById('tooltip');
-            const readingEl = document.getElementById('tooltip-reading');
-            const meaningEl = document.getElementById('tooltip-meaning');
-
-            readingEl.textContent = `[${info.reading}]`;
-            meaningEl.textContent = info.meaning;
-
-            tooltip.style.display = 'block';
-
-            const scrollY = window.scrollY || window.pageYOffset;
-            const tooltipWidth = tooltip.offsetWidth;
-            const left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
-            const top = rect.top + scrollY - tooltip.offsetHeight;
-
-            tooltip.style.left = `${Math.max(10, Math.min(left, window.innerWidth - tooltipWidth - 10))}px`;
-            tooltip.style.top = `${top}px`;
-
-            activeTooltip = { element: tooltip, trigger: triggerElement };
-        }
-
-        function hideTooltip() {
-            const tooltip = document.getElementById('tooltip');
-            tooltip.style.display = 'none';
-            activeTooltip = null;
-        }
-
-        function handlePlayPause() {
-            if (!currentPassage) return;
-            
-            if (window.speechSynthesis.speaking) {
-                if (window.speechSynthesis.paused) {
-                    window.speechSynthesis.resume();
-                    updateTTSUI('playing');
-                } else {
-                    window.speechSynthesis.pause();
-                    updateTTSUI('paused');
-                }
-            } else {
-                startAudioPlayback();
-            }
-        }
-
-        function startAudioPlayback() {
-            window.speechSynthesis.cancel();
-
-            const cleanText = currentPassage.content.replace(/<\/?b>/gi, '');
-            const utterance = new SpeechSynthesisUtterance(cleanText);
-            utterance.lang = 'ja-JP';
-            utterance.rate = settings.ttsSpeed || 1.0;
-
-            const voices = window.speechSynthesis.getVoices();
-            const jaVoice = voices.find(voice => voice.lang.startsWith('ja'));
-            if (jaVoice) {
-                utterance.voice = jaVoice;
-            }
-
-            utterance.onstart = () => {
-                updateTTSUI('playing');
-            };
-
-            utterance.onend = () => {
-                updateTTSUI('stopped');
-            };
-
-            utterance.onerror = (e) => {
-                console.error("Speech Synthesis Error:", e);
-                updateTTSUI('stopped');
-            };
-
-            activeUtterance = utterance;
-            window.speechSynthesis.speak(utterance);
-        }
-
-        function stopAudio() {
-            window.speechSynthesis.cancel();
-            updateTTSUI('stopped');
-        }
-
-        function changeTTSSpeed(val) {
-            settings.ttsSpeed = parseFloat(val);
-            saveSettings();
-            
-            if (window.speechSynthesis.speaking) {
-                startAudioPlayback();
-            }
-        }
-
-        function updateTTSUI(state) {
-            const playBtn = document.getElementById('tts-play-btn');
-            const stopBtn = document.getElementById('tts-stop-btn');
-            
-            if (state === 'playing') {
-                playBtn.innerHTML = `
-                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-                    </svg>`;
-                playBtn.setAttribute('aria-label', 'Pause');
-                stopBtn.classList.remove('text-slate-400', 'dark:text-slate-500');
-                stopBtn.classList.add('text-slate-700', 'dark:text-slate-200');
-            } else if (state === 'paused') {
-                playBtn.innerHTML = `
-                    <svg class="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>`;
-                playBtn.setAttribute('aria-label', 'Resume');
-            } else {
-                playBtn.innerHTML = `
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>`;
-                playBtn.setAttribute('aria-label', 'Play');
-                stopBtn.classList.add('text-slate-400', 'dark:text-slate-500');
-                stopBtn.classList.remove('text-slate-700', 'dark:text-slate-200');
-            }
-        }
-
-        function loadSettings() {
-            const local = localStorage.getItem('japanese_reader_pref');
-            if (local) {
-                try {
-                    settings = { ...settings, ...JSON.parse(local) };
-                    
-                    if (!settings.fontFamily) {
-                        settings.fontFamily = 'gothic';
-                    }
-                    if (!settings.ttsSpeed) {
-                        settings.ttsSpeed = 1.0;
-                    }
-
-                    if (settings.fontSize < 10) settings.fontSize = 10;
-                    if (settings.fontSize > 30) settings.fontSize = 30;
-                } catch(e) {}
-            }
-        }
-
-        function saveSettings() {
-            localStorage.setItem('japanese_reader_pref', JSON.stringify(settings));
-        }
-
-        UX_THEME_MUTATION_TRIGGERS:
-        function applySettingsUI() {
-            document.body.className = '';
-            if (settings.theme === 'sepia') document.body.classList.add('theme-sepia');
-            if (settings.theme === 'dark') document.body.classList.add('theme-dark');
-
-            document.getElementById('font-size-slider').value = settings.fontSize;
-            document.getElementById('font-size-val').textContent = `${settings.fontSize}px`;
-            
-            document.getElementById('line-height-slider').value = settings.lineHeight;
-            document.getElementById('line-height-val').textContent = settings.lineHeight;
-
-            document.getElementById('shade-slider').value = settings.vocabLightness;
-            document.getElementById('tts-speed-select').value = settings.ttsSpeed;
-
-            const fontVal = settings.fontFamily === 'mincho' ? "'Noto Serif JP', serif" : "'Noto Sans JP', sans-serif";
-            document.documentElement.style.setProperty('--passage-font-family', fontVal);
-            applyFontUI();
-
-            applySavedTextStyle();
-            calculateVocabColor();
-        }
-
-        function applySavedTextStyle() {
-            const container = document.getElementById('passage-container');
-            if (container) {
-                container.style.fontSize = `${settings.fontSize}px`;
-                container.style.lineHeight = settings.lineHeight;
-            }
-
-            const tooltip = document.getElementById('tooltip');
-            if (tooltip) {
-                tooltip.style.fontSize = `${settings.fontSize}px`;
-            }
-        }
-
-        function buildColorSpectrumUI() {
-            const container = document.getElementById('spectrum-dots-container');
-            container.innerHTML = colorSpectrumBase.map((color, idx) => {
-                const isActive = idx === settings.vocabHueIndex ? 'active-dot' : '';
-                return `<button onclick="selectVocabColorHue(${idx})" class="color-dot ${isActive}" style="background-color: ${color};" aria-label="Color choice ${idx + 1}"></button>`;
-            }).join('');
-        }
-
-        function selectVocabColorHue(index) {
-            settings.vocabHueIndex = index;
-            saveSettings();
-            
-            document.querySelectorAll('.color-dot').forEach((dot, i) => {
-                if (i === index) dot.classList.add('active-dot');
-                else dot.classList.remove('active-dot');
-            });
-            
-            calculateVocabColor();
-        }
-
-        function updateVocabShade(lightnessVal) {
-            settings.vocabLightness = parseInt(lightnessVal);
-            saveSettings();
-            calculateVocabColor();
-        }
-
-        function calculateVocabColor() {
-            const match = colorSpectrumBase[settings.vocabHueIndex].match(/hsl\((\d+),\s*(\d+)%,/);
-            if (match) {
-                const hue = match[1];
-                const saturation = match[2];
-                const finalCSSColor = `hsl(${hue}, ${saturation}%, ${settings.vocabLightness}%)`;
-                document.documentElement.style.setProperty('--vocab-dynamic-color', finalCSSColor);
-            }
-        }
-
-        function toggleSettingsDrawer() {
-            const panel = document.getElementById('settings-drawer');
-            panel.classList.toggle('translate-x-full');
-        }
-
-        function changeTheme(themeName) {
-            settings.theme = themeName;
-            saveSettings();
-            applySettingsUI();
-        }
-
-        function changeFontFamily(fontName) {
-            settings.fontFamily = fontName;
-            saveSettings();
-            applySettingsUI();
-        }
-
-        function applyFontUI() {
-            const gothicBtn = document.getElementById('font-btn-gothic');
-            const minchoBtn = document.getElementById('font-btn-mincho');
-            if (!gothicBtn || !minchoBtn) return;
-            
-            if (settings.fontFamily === 'mincho') {
-                gothicBtn.className = "py-2 border rounded-xl font-medium text-xs bg-transparent border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition duration-150";
-                minchoBtn.className = "py-2 border rounded-xl font-medium text-xs bg-blue-50 dark:bg-blue-950/40 border-blue-500 text-blue-600 dark:text-blue-400 transition duration-150";
-            } else {
-                gothicBtn.className = "py-2 border rounded-xl font-medium text-xs bg-blue-50 dark:bg-blue-950/40 border-blue-500 text-blue-600 dark:text-blue-400 transition duration-150";
-                minchoBtn.className = "py-2 border rounded-xl font-medium text-xs bg-transparent border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition duration-150";
-            }
-        }
-
-        function updateFontSize(val) {
-            settings.fontSize = parseInt(val);
-            document.getElementById('font-size-val').textContent = `${val}px`;
-            saveSettings();
-            applySavedTextStyle();
-        }
-
-        function updateLineHeight(val) {
-            settings.lineHeight = parseFloat(val);
-            document.getElementById('line-height-val').textContent = val;
-            saveSettings();
-            applySavedTextStyle();
-        }
-
-        window.onload = initApp;
-    </script>
-
-    <div class="max-w-2xl mx-auto px-4 py-8 md:py-12 pb-24">
-        <header class="mb-10 text-center relative">
-            <div class="flex flex-wrap gap-4 items-center justify-between mb-6">
-                <h1 class="text-3xl font-bold tracking-tight">Japanese Reader</h1>
-                
-                <div class="flex items-center gap-2">
-                    <div id="audio-controls-container" class="flex items-center gap-1 p-1 rounded-2xl border custom-card shadow-sm transition-all duration-300">
-                        <button id="tts-play-btn" onclick="handlePlayPause()" class="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 transition duration-150" aria-label="Play">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                        </button>
-                        
-                        <button id="tts-stop-btn" onclick="stopAudio()" class="p-2 rounded-xl text-slate-400 dark:text-slate-500 hover:bg-black/5 dark:hover:bg-white/10 hover:text-red-500 dark:hover:text-red-400 transition duration-150" aria-label="Stop">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
-                        </button>
-                        
-                        <div class="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1"></div>
-
-                        <div class="relative inline-flex items-center">
-                            <select id="tts-speed-select" onchange="changeTTSSpeed(this.value)" class="bg-transparent text-xs font-bold py-1.5 pl-2 pr-7 rounded cursor-pointer focus:outline-none appearance-none text-current">
-                                <option class="bg-white dark:bg-slate-900" value="0.7">0.7x</option>
-                                <option class="bg-white dark:bg-slate-900" value="0.85">0.85x</option>
-                                <option class="bg-white dark:bg-slate-900" value="1.0" selected>1.0x</option>
-                                <option class="bg-white dark:bg-slate-900" value="1.2">1.2x</option>
-                                <option class="bg-white dark:bg-slate-900" value="1.5">1.5x</option>
-                                <option class="bg-white dark:bg-slate-900" value="2.0">2.0x</option>
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-slate-400">
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button onclick="toggleSettingsDrawer()" class="custom-button-secondary p-3 rounded-2xl transition duration-150 shadow-sm" aria-label="Open reading panel settings">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37(2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto mb-6 text-left">
-                <div class="relative">
-                    <label class="block text-sm font-medium text-slate-500 mb-2">Lesson:</label>
-                    <div class="relative">
-                        <select id="lesson-selector" class="block appearance-none w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 py-3 px-4 pr-10 rounded-xl leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm cursor-pointer">
-                            <option>Loading...</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
-                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="relative">
-                    <label class="block text-sm font-medium text-slate-500 mb-2">Passage:</label>
-                    <div class="relative">
-                        <select id="passage-selector" class="block appearance-none w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 py-3 px-4 pr-10 rounded-xl leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm cursor-pointer">
-                            <option>Loading...</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
-                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <main class="custom-card rounded-3xl shadow-xl p-8 md:p-12 border relative">
-            <h2 id="display-title" class="text-xl font-bold text-blue-600 dark:text-blue-400 mb-8 border-b border-slate-100 dark:border-slate-700 pb-4">Initializing reader...</h2>
-            
-            <article id="passage-container" class="passage-text leading-relaxed">
-            </article>
-
-            <div class="mt-12 pt-6 border-t border-slate-100 dark:border-slate-700 flex justify-center">
-                <a href="index.html" class="custom-button-secondary px-8 py-3 rounded-xl font-semibold transition duration-150 inline-flex items-center gap-2 shadow-sm">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    Back
-                </a>
-            </div>
-        </main>
-    </div>
-
-    <div id="tooltip" class="vocab-tooltip" onclick="hideTooltip()">
-        <div class="flex flex-col items-center text-center">
-            <div id="tooltip-reading" class="font-bold mb-1"></div>
-            <div id="tooltip-meaning" class="italic font-medium"></div>
-            <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-inherit border-r border-b border-inherit rotate-45"></div>
-        </div>
-    </div>
-
-    <!-- Preferences Settings Drawer panel -->
-    <div id="settings-drawer" class="fixed right-0 top-0 h-full w-80 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 shadow-2xl border-l border-slate-200 dark:border-slate-800 transition-transform duration-300 transform translate-x-full z-50 p-6 overflow-y-auto">
-        <div class="flex items-center justify-between mb-8">
-            <h3 class="text-lg font-bold">Reading Preferences</h3>
-            <button onclick="toggleSettingsDrawer()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-        </div>
-
-        <!-- Color theme picker -->
-        <div class="mb-8">
-            <span class="block text-sm font-semibold mb-3 text-slate-400">THEME</span>
-            <div class="grid grid-cols-3 gap-2">
-                <button onclick="changeTheme('light')" class="py-2 border rounded-xl font-medium bg-white border-slate-200 text-slate-800 text-xs">Light</button>
-                <button onclick="changeTheme('sepia')" class="py-2 border rounded-xl font-medium bg-[#fdf6e3] border-[#ebdcb9] text-[#5c4a3c] text-xs">Sepia</button>
-                <button onclick="changeTheme('dark')" class="py-2 border rounded-xl font-medium bg-slate-800 border-slate-700 text-slate-100 text-xs">Dark</button>
-            </div>
-        </div>
-
-        <!-- Font Style (Gothic/Mincho selector) -->
-        <div class="mb-6">
-            <span class="block text-sm font-semibold mb-3 text-slate-400 text-xs">FONT STYLE</span>
-            <div class="grid grid-cols-2 gap-2">
-                <button id="font-btn-gothic" onclick="changeFontFamily('gothic')" class="py-2 border rounded-xl font-medium text-xs">Gothic (ゴシック)</button>
-                <button id="font-btn-mincho" onclick="changeFontFamily('mincho')" class="py-2 border rounded-xl font-medium text-xs">Mincho (明朝)</button>
-            </div>
-        </div>
-
-        <!-- Font Size Slider -->
-        <div class="mb-6">
-            <div class="flex justify-between text-sm mb-2">
-                <span class="font-semibold text-slate-400 text-xs">FONT SIZE</span>
-                <span id="font-size-val" class="font-bold">24px</span>
-            </div>
-            <input id="font-size-slider" type="range" min="10" max="30" step="1" oninput="updateFontSize(this.value)" class="w-full accent-blue-500 cursor-pointer">
-        </div>
-
-        <!-- Line Spacing Slider -->
-        <div class="mb-6">
-            <div class="flex justify-between text-sm mb-2">
-                <span class="font-semibold text-slate-400 text-xs">LINE SPACING</span>
-                <span id="line-height-val" class="font-bold">2.2</span>
-            </div>
-            <input id="line-height-slider" type="range" min="1.8" max="3" step="0.1" oninput="updateLineHeight(this.value)" class="w-full accent-blue-500 cursor-pointer">
-        </div>
-
-        <hr class="border-t border-slate-200 dark:border-slate-800 my-6">
-
-        <!-- Vocabulary Color Swatches -->
-        <div class="mb-6">
-            <span class="block text-sm font-semibold mb-3 text-slate-400">TARGET VOCABULARY COLOR</span>
-            <div id="spectrum-dots-container" class="flex flex-wrap gap-3 justify-between items-center mb-4">
-            </div>
-        </div>
-
-        <!-- Vocabulary Shading Spectrum -->
-        <div>
-            <span class="block text-sm font-semibold mb-2 text-slate-400">VOCAB SHADE (LIGHT / DARK)</span>
-            <input id="shade-slider" type="range" min="15" max="85" step="1" oninput="updateVocabShade(this.value)" class="w-full accent-blue-500 cursor-pointer">
-        </div>
-    </div>
-
+        div.appendChild(btn);
+    });
+}
+
+function showFinalResults() {
+    let rows = sessionLogs.map(l => `
+        <tr class="${l.correct ? 'row-correct' : 'row-wrong'}">
+            <td>${l.type} (${l.word})</td>
+            <td>${l.response}</td>
+            <td>${l.answer}</td>
+        </tr>`).join('');
+        
+    document.getElementById('results-meta').innerText = `${currentLessonID}: ${currentLessonFullObject.title}`;
+    document.getElementById('results-score').innerText = `Final Score: ${score} / ${questions.length}`;
+    document.getElementById('results-tbody').innerHTML = rows;
+    
+    showState('results-ui');
+}
+
+// Bootstrap
+loadRepository();
+</script>
 </body>
 </html>
