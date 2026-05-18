@@ -84,10 +84,9 @@
             background-color: rgba(59, 130, 246, 0.15);
         }
 
-        /* Dynamic Custom Vocab Color Hook */
+        /* Dynamic Custom Vocab Color Hook - Underline Removed */
         .target-vocab {
             cursor: pointer;
-            border-bottom: 2px solid var(--vocab-dynamic-color, #3b82f6);
             color: var(--vocab-dynamic-color, #3b82f6) !important;
             transition: background-color 0.2s;
             padding: 0 2px;
@@ -131,7 +130,7 @@
             border-radius: 50%;
             cursor: pointer;
             transition: transform 0.15s ease, border-color 0.15s ease, border-width 0.15s ease;
-            border: 4px solid transparent; /* 4px baseline prevents layout jitter on selection */
+            border: 4px solid transparent;
         }
         .color-dot:hover {
             transform: scale(1.15);
@@ -164,9 +163,8 @@
         let activeTooltip = null;
         let manifestData = [];
         let lessons = [];
-        let activeUtterance = null; // Global reference to protect TTS from Garbage Collection
+        let activeUtterance = null;
 
-        // Spectrum base configuration hues (Substituted Pink with HSL Black on the far right)
         const colorSpectrumBase = [
             "hsl(0, 85%, 50%)",    // Red
             "hsl(35, 90%, 50%)",   // Orange
@@ -286,7 +284,7 @@
         async function loadPassage(passageMeta) {
             hideTooltip();
             clearSentenceHighlights();
-            stopAudio(); // Reset TTS if reading active
+            stopAudio();
             const container = document.getElementById('passage-container');
             const titleEl = document.getElementById('display-title');
 
@@ -302,14 +300,12 @@
 
                 let text = currentPassage.content;
 
-                // 1. Temporarily replace vocabulary HTML bold matches with placeholders to avoid sentence splitting issues
                 const vocabWords = Object.keys(currentPassage.vocabulary);
                 vocabWords.forEach((word, index) => {
                     const placeholder = `__VOCAB_PLACEHOLDER_${index}__`;
                     text = text.replaceAll(`<b>${word}</b>`, placeholder);
                 });
 
-                // 2. Segment paragraphs by newline, then split into punctuated Japanese sentences
                 const paragraphs = text.split('\n');
                 const paragraphsHTML = paragraphs.map(para => {
                     if (!para.trim()) return '';
@@ -398,9 +394,6 @@
             activeTooltip = null;
         }
 
-        /**
-         * Unified Speech Control Actions
-         */
         function handlePlayPause() {
             if (!currentPassage) return;
             
@@ -418,7 +411,7 @@
         }
 
         function startAudioPlayback() {
-            window.speechSynthesis.cancel(); // safety flush
+            window.speechSynthesis.cancel();
 
             const cleanText = currentPassage.content.replace(/<\/?b>/gi, '');
             const utterance = new SpeechSynthesisUtterance(cleanText);
@@ -431,7 +424,6 @@
                 utterance.voice = jaVoice;
             }
 
-            // Sync start to avoid delayed toggle UI states on slower clients
             utterance.onstart = () => {
                 updateTTSUI('playing');
             };
@@ -445,7 +437,7 @@
                 updateTTSUI('stopped');
             };
 
-            activeUtterance = utterance; // Keep active pointer reference safe from collection sweep
+            activeUtterance = utterance;
             window.speechSynthesis.speak(utterance);
         }
 
@@ -458,7 +450,6 @@
             settings.ttsSpeed = parseFloat(val);
             saveSettings();
             
-            // Apply speed immediately if active playback exists
             if (window.speechSynthesis.speaking) {
                 startAudioPlayback();
             }
@@ -469,32 +460,25 @@
             const stopBtn = document.getElementById('tts-stop-btn');
             
             if (state === 'playing') {
-                // Render custom pause SVG state
                 playBtn.innerHTML = `
                     <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
                     </svg>`;
                 playBtn.setAttribute('aria-label', 'Pause');
-                
-                // Active stop button styling
                 stopBtn.classList.remove('text-slate-400', 'dark:text-slate-500');
                 stopBtn.classList.add('text-slate-700', 'dark:text-slate-200');
             } else if (state === 'paused') {
-                // Render custom play SVG state showing highlighted pause/resume alert
                 playBtn.innerHTML = `
                     <svg class="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M8 5v14l11-7z"/>
                     </svg>`;
                 playBtn.setAttribute('aria-label', 'Resume');
             } else {
-                // Stopped / Initial state
                 playBtn.innerHTML = `
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M8 5v14l11-7z"/>
                     </svg>`;
                 playBtn.setAttribute('aria-label', 'Play');
-                
-                // Disabled stop button styling
                 stopBtn.classList.add('text-slate-400', 'dark:text-slate-500');
                 stopBtn.classList.remove('text-slate-700', 'dark:text-slate-200');
             }
@@ -513,7 +497,6 @@
                         settings.ttsSpeed = 1.0;
                     }
 
-                    // Clamp loaded preferences safely to stay within the new 10px - 30px boundary limits
                     if (settings.fontSize < 10) settings.fontSize = 10;
                     if (settings.fontSize > 30) settings.fontSize = 30;
                 } catch(e) {}
@@ -524,6 +507,7 @@
             localStorage.setItem('japanese_reader_pref', JSON.stringify(settings));
         }
 
+        UX_THEME_MUTATION_TRIGGERS:
         function applySettingsUI() {
             document.body.className = '';
             if (settings.theme === 'sepia') document.body.classList.add('theme-sepia');
@@ -538,7 +522,6 @@
             document.getElementById('shade-slider').value = settings.vocabLightness;
             document.getElementById('tts-speed-select').value = settings.ttsSpeed;
 
-            // Apply selected font family variable rule
             const fontVal = settings.fontFamily === 'mincho' ? "'Noto Serif JP', serif" : "'Noto Sans JP', sans-serif";
             document.documentElement.style.setProperty('--passage-font-family', fontVal);
             applyFontUI();
@@ -607,7 +590,6 @@
             applySettingsUI();
         }
 
-        // Font Family manipulation utility
         function changeFontFamily(fontName) {
             settings.fontFamily = fontName;
             saveSettings();
@@ -651,22 +633,17 @@
                 <h1 class="text-3xl font-bold tracking-tight">Japanese Reader</h1>
                 
                 <div class="flex items-center gap-2">
-                    <!-- Dynamic TTS Controls (Themed automatically) -->
                     <div id="audio-controls-container" class="flex items-center gap-1 p-1 rounded-2xl border custom-card shadow-sm transition-all duration-300">
-                        <!-- Play / Pause / Resume Button -->
                         <button id="tts-play-btn" onclick="handlePlayPause()" class="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 transition duration-150" aria-label="Play">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                         </button>
                         
-                        <!-- Dedicated Stop Button -->
                         <button id="tts-stop-btn" onclick="stopAudio()" class="p-2 rounded-xl text-slate-400 dark:text-slate-500 hover:bg-black/5 dark:hover:bg-white/10 hover:text-red-500 dark:hover:text-red-400 transition duration-150" aria-label="Stop">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
                         </button>
                         
-                        <!-- Divider -->
                         <div class="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1"></div>
 
-                        <!-- Native Playback Speed Selector -->
                         <div class="relative inline-flex items-center">
                             <select id="tts-speed-select" onchange="changeTTSSpeed(this.value)" class="bg-transparent text-xs font-bold py-1.5 pl-2 pr-7 rounded cursor-pointer focus:outline-none appearance-none text-current">
                                 <option class="bg-white dark:bg-slate-900" value="0.7">0.7x</option>
@@ -682,10 +659,9 @@
                         </div>
                     </div>
 
-                    <!-- Config Drawer Trigger -->
                     <button onclick="toggleSettingsDrawer()" class="custom-button-secondary p-3 rounded-2xl transition duration-150 shadow-sm" aria-label="Open reading panel settings">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37(2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                         </svg>
                     </button>
                 </div>
@@ -741,7 +717,6 @@
         </div>
     </div>
 
-    <!-- Preferences Settings Drawer panel -->
     <div id="settings-drawer" class="fixed right-0 top-0 h-full w-80 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 shadow-2xl border-l border-slate-200 dark:border-slate-800 transition-transform duration-300 transform translate-x-full z-50 p-6 overflow-y-auto">
         <div class="flex items-center justify-between mb-8">
             <h3 class="text-lg font-bold">Reading Preferences</h3>
@@ -750,7 +725,6 @@
             </button>
         </div>
 
-        <!-- Color theme picker -->
         <div class="mb-8">
             <span class="block text-sm font-semibold mb-3 text-slate-400">THEME</span>
             <div class="grid grid-cols-3 gap-2">
@@ -760,7 +734,6 @@
             </div>
         </div>
 
-        <!-- Font Style (Gothic/Mincho selector) -->
         <div class="mb-6">
             <span class="block text-sm font-semibold mb-3 text-slate-400 text-xs">FONT STYLE</span>
             <div class="grid grid-cols-2 gap-2">
@@ -769,7 +742,6 @@
             </div>
         </div>
 
-        <!-- Font Size Slider -->
         <div class="mb-6">
             <div class="flex justify-between text-sm mb-2">
                 <span class="font-semibold text-slate-400 text-xs">FONT SIZE</span>
@@ -778,7 +750,6 @@
             <input id="font-size-slider" type="range" min="10" max="30" step="1" oninput="updateFontSize(this.value)" class="w-full accent-blue-500 cursor-pointer">
         </div>
 
-        <!-- Line Spacing Slider -->
         <div class="mb-6">
             <div class="flex justify-between text-sm mb-2">
                 <span class="font-semibold text-slate-400 text-xs">LINE SPACING</span>
@@ -789,14 +760,12 @@
 
         <hr class="border-t border-slate-200 dark:border-slate-800 my-6">
 
-        <!-- Vocabulary Color Swatches -->
         <div class="mb-6">
             <span class="block text-sm font-semibold mb-3 text-slate-400">TARGET VOCABULARY COLOR</span>
             <div id="spectrum-dots-container" class="flex flex-wrap gap-3 justify-between items-center mb-4">
             </div>
         </div>
 
-        <!-- Vocabulary Shading Spectrum -->
         <div>
             <span class="block text-sm font-semibold mb-2 text-slate-400">VOCAB SHADE (LIGHT / DARK)</span>
             <input id="shade-slider" type="range" min="15" max="85" step="1" oninput="updateVocabShade(this.value)" class="w-full accent-blue-500 cursor-pointer">
