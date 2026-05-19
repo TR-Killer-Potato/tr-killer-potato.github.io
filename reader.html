@@ -552,7 +552,6 @@
             localStorage.setItem('japanese_reader_pref', JSON.stringify(settings));
         }
 
-        UX_THEME_MUTATION_TRIGGERS:
         function applySettingsUI() {
             document.body.className = '';
             if (settings.theme === 'sepia') document.body.classList.add('theme-sepia');
@@ -662,6 +661,7 @@
             applySavedTextStyle();
         }
 
+        // Line height adjustment logic
         function updateLineHeight(val) {
             settings.lineHeight = parseFloat(val);
             document.getElementById('line-height-val').textContent = val;
@@ -706,7 +706,8 @@
 
                     <button onclick="toggleSettingsDrawer()" class="custom-button-secondary p-3 rounded-2xl transition duration-150 shadow-sm" aria-label="Open reading panel settings">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37(2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     </button>
                 </div>
@@ -762,7 +763,6 @@
         </div>
     </div>
 
-    <!-- Preferences Settings Drawer panel -->
     <div id="settings-drawer" class="fixed right-0 top-0 h-full w-80 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 shadow-2xl border-l border-slate-200 dark:border-slate-800 transition-transform duration-300 transform translate-x-full z-50 p-6 overflow-y-auto">
         <div class="flex items-center justify-between mb-8">
             <h3 class="text-lg font-bold">Reading Preferences</h3>
@@ -771,7 +771,6 @@
             </button>
         </div>
 
-        <!-- Color theme picker -->
         <div class="mb-8">
             <span class="block text-sm font-semibold mb-3 text-slate-400">THEME</span>
             <div class="grid grid-cols-3 gap-2">
@@ -781,7 +780,6 @@
             </div>
         </div>
 
-        <!-- Font Style (Gothic/Mincho selector) -->
         <div class="mb-6">
             <span class="block text-sm font-semibold mb-3 text-slate-400 text-xs">FONT STYLE</span>
             <div class="grid grid-cols-2 gap-2">
@@ -790,7 +788,6 @@
             </div>
         </div>
 
-        <!-- Font Size Slider -->
         <div class="mb-6">
             <div class="flex justify-between text-sm mb-2">
                 <span class="font-semibold text-slate-400 text-xs">FONT SIZE</span>
@@ -799,7 +796,6 @@
             <input id="font-size-slider" type="range" min="10" max="30" step="1" oninput="updateFontSize(this.value)" class="w-full accent-blue-500 cursor-pointer">
         </div>
 
-        <!-- Line Spacing Slider -->
         <div class="mb-6">
             <div class="flex justify-between text-sm mb-2">
                 <span class="font-semibold text-slate-400 text-xs">LINE SPACING</span>
@@ -810,14 +806,12 @@
 
         <hr class="border-t border-slate-200 dark:border-slate-800 my-6">
 
-        <!-- Vocabulary Color Swatches -->
         <div class="mb-6">
             <span class="block text-sm font-semibold mb-3 text-slate-400">TARGET VOCABULARY COLOR</span>
             <div id="spectrum-dots-container" class="flex flex-wrap gap-3 justify-between items-center mb-4">
             </div>
         </div>
 
-        <!-- Vocabulary Shading Spectrum -->
         <div>
             <span class="block text-sm font-semibold mb-2 text-slate-400">VOCAB SHADE (LIGHT / DARK)</span>
             <input id="shade-slider" type="range" min="15" max="85" step="1" oninput="updateVocabShade(this.value)" class="w-full accent-blue-500 cursor-pointer">
