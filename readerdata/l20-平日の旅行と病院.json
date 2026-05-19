@@ -1,0 +1,208 @@
+{
+  "jlpt": "N5",
+  "lesson": "L20",
+  "title": "平日の旅行と病院 (A Weekday Trip and the Hospital)",
+  "content": "<b>この頃</b>、私は<b>カナダ</b>の<b>研究者</b>の友達と、<b>平日</b>の朝に遠い町へ<b>特急</b>の電車で出かけます。友達の<b>会社員</b>は男の人です。彼は、<b>グレー</b>と<b>水色</b>と<b>銀色</b>と<b>茶色い</b>服を着ています。とても<b>格好いい</b><b>背広</b>ですから、私は大好きです。大きい駅の<b>入口</b>を<b>真っ直ぐ</b>歩いて行きます。長い<b>番線</b>で<b>一号車</b>の電車の<b>乗り換え</b>をします。<b>二つ目</b>の新しい<b>売店</b>の<b>レジ</b>で、可愛い<b>葉書</b>と美味しい<b>飴</b>を買います。レストランの椅子に座って、美味しい<b>昼ご飯</b>を食べます。お皿の丸い<b>玉ねぎ</b>と<b>アボカド</b>を<b>沢山</b>食べます。冷たい水と<b>温い</b>お茶を１<b>リットル</b>飲みます。夜、静かなホテルで<b>お酒</b>を飲みます。肉と魚の食べ物があります。とてもいい<b>ご馳走</b>です。ホテルの部屋の<b>コンセント</b>に<b>玩具</b>を<b>被せ</b>ます。あ！私の古い<b>万年筆</b>を<b>無くし</b>ました。大変です。私は熱い<b>ストーブ</b>で<b>火傷</b>をしました。友達は<b>下痢</b>と<b>インフルエンザ</b>です。悪い風邪ですから、病院に行きます。私の鞄に<b>保険証</b>を持っていますから、大丈夫です。病院の<b>産婦人科</b>の先生の好きな映画の<b>ジャンル</b>は、海で泳ぐ<b>サーフィン</b>です。先生は大きい<b>黒板</b>に<b>方言</b>の<b>単語</b>と<b>発音</b>を書きます。病院の外の暗い<b>山道</b>で、元気な<b>消防士</b>に会います。犬と歩きます。夜、ホテルの窓から綺麗な<b>天の川</b>を見ます。とても楽しい旅行です。",
+  "vocabulary": {
+    "レジ": {
+      "reading": "レジ",
+      "meaning": "(Cash) register."
+    },
+    "グレー": {
+      "reading": "グレー",
+      "meaning": "Grey (gray)."
+    },
+    "入口": {
+      "reading": "いりぐち",
+      "meaning": "Entrance, entry, gate, approach, mouth."
+    },
+    "飴": {
+      "reading": "あめ",
+      "meaning": "(Hard) candy, toffee."
+    },
+    "水色": {
+      "reading": "みずいろ",
+      "meaning": "Light blue, pale blue, aqua."
+    },
+    "会社員": {
+      "reading": "かいしゃいん",
+      "meaning": "Company employee, office worker, white-collar worker."
+    },
+    "お酒": {
+      "reading": "おさけ",
+      "meaning": "Alcohol, sake."
+    },
+    "ご馳走": {
+      "reading": "ごちそう",
+      "meaning": "Feast, treating (someone)."
+    },
+    "ジャンル": {
+      "reading": "ジャンル",
+      "meaning": "Genre."
+    },
+    "昼ご飯": {
+      "reading": "ひるごはん",
+      "meaning": "Lunch, midday meal."
+    },
+    "万年筆": {
+      "reading": "まんねんひつ",
+      "meaning": "Fountain pen."
+    },
+    "この頃": {
+      "reading": "このごろ",
+      "meaning": "These days, nowadays, now, at present, recently, lately."
+    },
+    "カナダ": {
+      "reading": "カナダ",
+      "meaning": "Canada."
+    },
+    "発音": {
+      "reading": "はつおん",
+      "meaning": "Pronunciation."
+    },
+    "研究者": {
+      "reading": "けんきゅうしゃ",
+      "meaning": "Researcher."
+    },
+    "格好いい": {
+      "reading": "かっこういい",
+      "meaning": "Attractive, good-looking, stylish, cool, smooth, neat, with-it, groovy."
+    },
+    "単語": {
+      "reading": "たんご",
+      "meaning": "Word, vocabulary, (usually) single-character word."
+    },
+    "無くす": {
+      "reading": "なくす",
+      "meaning": "To lose something."
+    },
+    "売店": {
+      "reading": "ばいてん",
+      "meaning": "Stand, stall, booth, kiosk, store."
+    },
+    "平日": {
+      "reading": "へいじつ",
+      "meaning": "Weekday, ordinary days (i.e. non-holiday)."
+    },
+    "リットル": {
+      "reading": "リットル",
+      "meaning": "Litre."
+    },
+    "銀色": {
+      "reading": "ぎんいろ",
+      "meaning": "Silver (color, colour)."
+    },
+    "火傷": {
+      "reading": "やけど",
+      "meaning": "Burn, scald."
+    },
+    "一号車": {
+      "reading": "いちごうしゃ",
+      "meaning": "Car No. 1."
+    },
+    "天の川": {
+      "reading": "あまのがわ",
+      "meaning": "Milky Way, luminous band corresponding to the plane of the galaxy."
+    },
+    "黒板": {
+      "reading": "こくばん",
+      "meaning": "Blackboard."
+    },
+    "ストーブ": {
+      "reading": "ストーブ",
+      "meaning": "(Room) heater, stove."
+    },
+    "山道": {
+      "reading": "やまみち",
+      "meaning": "Mountain road, mountain trail."
+    },
+    "産婦人科": {
+      "reading": "さんふじんか",
+      "meaning": "Maternity and gynaecology department (gynecology), department of obstetrics and gynaecology (gynecology)."
+    },
+    "保険証": {
+      "reading": "ほけんしょう",
+      "meaning": "Insurance card."
+    },
+    "特急": {
+      "reading": "とっきゅう",
+      "meaning": "Limited express (train for which a limited-express ticket is required)."
+    },
+    "サーフィン": {
+      "reading": "サーフィン",
+      "meaning": "Surfing."
+    },
+    "消防士": {
+      "reading": "しょうぼうし",
+      "meaning": "Firefighter, fireman, fireperson."
+    },
+    "アボカド": {
+      "reading": "アボカド",
+      "meaning": "Avocado (Persea americana)."
+    },
+    "番線": {
+      "reading": "ばんせん",
+      "meaning": "Track number."
+    },
+    "方言": {
+      "reading": "ほうげん",
+      "meaning": "Dialect, provincialism."
+    },
+    "乗り換え": {
+      "reading": "のりかえ",
+      "meaning": "Transfer (trains, buses, etc.), change, connection."
+    },
+    "玉ねぎ": {
+      "reading": "たまねぎ",
+      "meaning": "Onion (Allium cepa)."
+    },
+    "インフルエンザ": {
+      "reading": "インフルエンザ",
+      "meaning": "Influenza, flu."
+    },
+    "コンセント": {
+      "reading": "コンセント",
+      "meaning": "Electrical outlet, wall socket, power plug."
+    },
+    "背広": {
+      "reading": "せびろ",
+      "meaning": "Business suit."
+    },
+    "温い": {
+      "reading": "ぬるい",
+      "meaning": "Lukewarm, tepid."
+    },
+    "下痢": {
+      "reading": "げり",
+      "meaning": "Diarrhea, diarrhoea."
+    },
+    "沢山": {
+      "reading": "たくさん",
+      "meaning": "A lot, lots, plenty, many, a large number, much, a great deal, a good deal."
+    },
+    "被せる": {
+      "reading": "かぶせる",
+      "meaning": "To cover (with something), to put on (e.g. on someone else's head), to plate something (with a metal), to pour or dash a liquid (on something), to charge (a person with a guilt)."
+    },
+    "茶色い": {
+      "reading": "ちゃいろい",
+      "meaning": "Light brown, tawny."
+    },
+    "玩具": {
+      "reading": "おもちゃ",
+      "meaning": "Toy, plaything."
+    },
+    "真っ直ぐ": {
+      "reading": "まっすぐ",
+      "meaning": "Straight (ahead), direct, upright, erect."
+    },
+    "二つ目": {
+      "reading": "ふたつめ",
+      "meaning": "One after next, second, next after first."
+    },
+    "葉書": {
+      "reading": "はがき",
+      "meaning": "Postcard."
+    }
+  }
+}
