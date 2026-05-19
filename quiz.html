@@ -43,8 +43,16 @@
         .type-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-blue); margin-bottom: 0.8rem; font-weight: bold; }
         .word-display { font-size: 3.5rem; margin-bottom: 2.5rem; color: #fff; font-weight: bold; min-height: 6rem; display: flex; align-items: center; justify-content: center; }
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .option-btn { padding: 22px 15px; font-size: 1.1rem; border: 2px solid var(--border-color); border-radius: 12px; background: var(--bg-dark); color: var(--accent-green); cursor: pointer; transition: 0.2s; font-weight: 600; }
-        .option-btn:hover:not(:disabled) { background: var(--border-color); border-color: var(--accent-green); }
+        .option-btn { padding: 22px 15px; font-size: 1.1rem; border: 2px solid var(--border-color); border-radius: 12px; background: var(--bg-dark); color: var(--accent-green); cursor: pointer; transition: 0.2s; font-weight: 600; outline: none; -webkit-tap-highlight-color: transparent; }
+        
+        /* Only apply hover configurations on devices that support hover pointers (Desktops) */
+        @media (hover: hover) {
+            .option-btn:hover:not(:disabled) { background: var(--border-color); border-color: var(--accent-green); }
+        }
+        
+        /* Snappy active state responsive to touch releases on mobile */
+        .option-btn:active:not(:disabled) { background: var(--border-color); border-color: var(--accent-green); }
+
         .option-btn.correct { background: #2ecc71 !important; border-color: #2ecc71 !important; color: white !important; }
         .option-btn.wrong { background: var(--error-red) !important; border-color: var(--error-red) !important; color: white !important; }
         
@@ -303,7 +311,7 @@ function loadQuestion() {
         return;
     }
     
-    // Safety Sweep: Remove focus from any active element to prevent browser focus transfers
+    // Safety Sweep 1: Remove active browser focus state immediately to prevent focus state transfers
     if (document.activeElement && typeof document.activeElement.blur === 'function') {
         document.activeElement.blur();
     }
@@ -317,15 +325,19 @@ function loadQuestion() {
     document.getElementById('progress-fill').style.width = `${(currentIdx / questions.length) * 100}%`;
     
     const opts = [q.a, ...q.dist].sort(() => Math.random() - 0.5);
-    const div = document.getElementById('options');
-    div.innerHTML = '';
+    
+    // Safety Sweep 2 (Silver Bullet for WebKit): Reconstruct the parent grid itself. 
+    // This purges all touch/tap-interaction associations the mobile OS is holding for this container space.
+    const oldDiv = document.getElementById('options');
+    const div = oldDiv.cloneNode(false);
+    oldDiv.parentNode.replaceChild(div, oldDiv);
     
     opts.forEach(opt => {
         const btn = document.createElement('button');
         btn.className = 'option-btn';
         btn.innerText = opt;
         btn.onclick = () => {
-            btn.blur(); // Remove active/focused state immediately upon click
+            btn.blur(); // Dismiss active/focused state immediately upon click
             document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
             const isCorrect = (opt === q.a);
             sessionLogs.push({ type: q.type, word: q.q, response: opt, answer: q.a, correct: isCorrect });
