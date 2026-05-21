@@ -1,15 +1,24 @@
 {
     "lessons": [
         {
-            "id": "Lesson 03",
+            "id": "Lesson 1",
+            "file": "quizdata/l01.json"
+        },
+        {
+            "id": "Lesson 2",
+            "file": "quizdata/l02.json"
+        },
+        {
+            "id": "Lesson 3",
             "file": "quizdata/l03.json"
-        },{
-            "id": "Lesson 04",
+        },
+        {
+            "id": "Lesson 4",
             "file": "quizdata/l04.json"
         },
         {
-            "id": "Lesson 06",
-            "file": "quizdata/l06.json"
+            "id": "Lesson 5",
+            "file": "quizdata/l05.json"
         },
         {
             "id": "Lesson 16",
