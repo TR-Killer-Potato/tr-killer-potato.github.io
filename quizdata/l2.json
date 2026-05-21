@@ -1,0 +1,905 @@
+{
+  "title": "Lesson 2",
+  "vocabulary": [
+    {
+      "v": "パン",
+      "r": "-",
+      "m": "Bread, pastries (e.g. croissants), pastry-based products.",
+      "dv": [
+        "バン",
+        "ハン"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Rice",
+        "Noodles"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "これ",
+      "r": "-",
+      "m": "This, this one.",
+      "dv": [
+        "それ",
+        "こね"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "That",
+        "Where"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "寿司",
+      "r": "すし",
+      "m": "Sushi, anything made with vinegared rice (may also contain vegetables, spices, fish, or other delicacies).",
+      "dv": [
+        "寿同",
+        "毒司"
+      ],
+      "dr": [
+        "ずし",
+        "すじ"
+      ],
+      "dm": [
+        "Sashimi",
+        "Ramen"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "何",
+      "r": "なん",
+      "m": "What.",
+      "dv": [
+        "向",
+        "伺"
+      ],
+      "dr": [
+        "だん",
+        "のん"
+      ],
+      "dm": [
+        "Who",
+        "When"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "何",
+      "r": "なに",
+      "m": "What.",
+      "dv": [
+        "向",
+        "伺"
+      ],
+      "dr": [
+        "だに",
+        "なぬ"
+      ],
+      "dm": [
+        "Where",
+        "Why"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "丸い",
+      "r": "まるい",
+      "m": "Round, circular, spherical.",
+      "dv": [
+        "九い",
+        "力い"
+      ],
+      "dr": [
+        "ばるい",
+        "まるえ"
+      ],
+      "dm": [
+        "Square",
+        "Flat"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "便利",
+      "r": "べんり",
+      "m": "Convenient, handy, useful.",
+      "dv": [
+        "更利",
+        "便和"
+      ],
+      "dr": [
+        "ぺんり",
+        "べんれ"
+      ],
+      "dm": [
+        "Inconvenient",
+        "Useless"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "お風呂",
+      "r": "おふろ",
+      "m": "Bath.",
+      "dv": [
+        "お風呂",
+        "お夙呂"
+      ],
+      "dr": [
+        "おぶろ",
+        "おふろお"
+      ],
+      "dm": [
+        "Kitchen",
+        "Toilet"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "それ",
+      "r": "-",
+      "m": "That, it.",
+      "dv": [
+        "これ",
+        "そわ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "This",
+        "Over there"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "エアコン",
+      "r": "-",
+      "m": "Air con, air conditioner, air conditioning.",
+      "dv": [
+        "ヱアコン",
+        "エアコソ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Heater",
+        "Fan"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "お皿",
+      "r": "おさら",
+      "m": "Plate, dish.",
+      "dv": [
+        "お血",
+        "お盆"
+      ],
+      "dr": [
+        "おざら",
+        "おさろ"
+      ],
+      "dm": [
+        "Bowl",
+        "Cup"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "ケーキ",
+      "r": "-",
+      "m": "Cake.",
+      "dv": [
+        "ケ一キ",
+        "ゲ一キ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Pie",
+        "Cookie"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "牛乳",
+      "r": "ぎゅうにゅう",
+      "m": "(Cow's) milk.",
+      "dv": [
+        "午後",
+        "牛孔"
+      ],
+      "dr": [
+        "きゅうにゅう",
+        "ぎゅにゅ"
+      ],
+      "dm": [
+        "Juice",
+        "Water"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "カメラ",
+      "r": "-",
+      "m": "Camera.",
+      "dv": [
+        "カメヲ",
+        "力メラ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Television",
+        "Computer"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "帽子",
+      "r": "ぼうし",
+      "m": "Hat, cap.",
+      "dv": [
+        "冒子",
+        "帽予"
+      ],
+      "dr": [
+        "ぽうし",
+        "ぼうじ"
+      ],
+      "dm": [
+        "Shoes",
+        "Gloves"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "コンビニ",
+      "r": "-",
+      "m": "Convenience store.",
+      "dv": [
+        "コソビニ",
+        "コンピニ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Supermarket",
+        "Department store"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "ホテル",
+      "r": "-",
+      "m": "Hotel.",
+      "dv": [
+        "ホテノレ",
+        "木テル"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Hospital",
+        "School"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "電車",
+      "r": "でんしゃ",
+      "m": "Train, electric train.",
+      "dv": [
+        "雷車",
+        "電軍"
+      ],
+      "dr": [
+        "てんしゃ",
+        "でんじゃ"
+      ],
+      "dm": [
+        "Bus",
+        "Airplane"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "兄",
+      "r": "あに",
+      "m": "Elder brother, older brother.",
+      "dv": [
+        "只",
+        "児"
+      ],
+      "dr": [
+        "おに",
+        "あぬ"
+      ],
+      "dm": [
+        "Younger brother",
+        "Elder sister"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "手紙",
+      "r": "てがみ",
+      "m": "Letter.",
+      "dv": [
+        "芋紙",
+        "手氏"
+      ],
+      "dr": [
+        "でがみ",
+        "てかみ"
+      ],
+      "dm": [
+        "Email",
+        "Phone call"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "車",
+      "r": "くるま",
+      "m": "Car, automobile, vehicle.",
+      "dv": [
+        "軍",
+        "東"
+      ],
+      "dr": [
+        "ぐるま",
+        "ころま"
+      ],
+      "dm": [
+        "Bicycle",
+        "Motorcycle"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "朝",
+      "r": "あさ",
+      "m": "Morning.",
+      "dv": [
+        "期",
+        "幹"
+      ],
+      "dr": [
+        "あざ",
+        "おさ"
+      ],
+      "dm": [
+        "Night",
+        "Evening"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "お金",
+      "r": "おかね",
+      "m": "Money.",
+      "dv": [
+        "お全",
+        "お企"
+      ],
+      "dr": [
+        "おがね",
+        "おかめ"
+      ],
+      "dm": [
+        "Credit card",
+        "Coin"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "新しい",
+      "r": "あたらしい",
+      "m": "New, novel, fresh, recent, latest, up-to-date, modern.",
+      "dv": [
+        "親しい",
+        "祈しい"
+      ],
+      "dr": [
+        "あだらしい",
+        "あたらじい"
+      ],
+      "dm": [
+        "Old",
+        "Ancient"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "椅子",
+      "r": "いす",
+      "m": "Chair, stool.",
+      "dv": [
+        "奇子",
+        "椅予"
+      ],
+      "dr": [
+        "えす",
+        "いず"
+      ],
+      "dm": [
+        "Table",
+        "Bed"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "傘",
+      "r": "かさ",
+      "m": "Umbrella, parasol.",
+      "dv": [
+        "蓋",
+        "華"
+      ],
+      "dr": [
+        "がさ",
+        "かざ"
+      ],
+      "dm": [
+        "Raincoat",
+        "Boots"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "名前",
+      "r": "なまえ",
+      "m": "Name, full name.",
+      "dv": [
+        "各前",
+        "名剪"
+      ],
+      "dr": [
+        "なばえ",
+        "なめえ"
+      ],
+      "dm": [
+        "Age",
+        "Address"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "生徒",
+      "r": "せいと",
+      "m": "Pupil, student.",
+      "dv": [
+        "生従",
+        "生走"
+      ],
+      "dr": [
+        "ぜいと",
+        "せいど"
+      ],
+      "dm": [
+        "Teacher",
+        "Principal"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "お父さん",
+      "r": "おとうさん",
+      "m": "Father, dad, papa, pa, pop, daddy, dada.",
+      "dv": [
+        "お交さん",
+        "お文さん"
+      ],
+      "dr": [
+        "おどうさん",
+        "おとおさん"
+      ],
+      "dm": [
+        "Mother",
+        "Grandfather"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "時計",
+      "r": "とけい",
+      "m": "Watch, clock, timepiece.",
+      "dv": [
+        "時針",
+        "時汁"
+      ],
+      "dr": [
+        "どけい",
+        "とげい"
+      ],
+      "dm": [
+        "Calendar",
+        "Ruler"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "今日",
+      "r": "きょう",
+      "m": "Today, this day.",
+      "dv": [
+        "令日",
+        "今目"
+      ],
+      "dr": [
+        "ぎょう",
+        "きょお"
+      ],
+      "dm": [
+        "Tomorrow",
+        "Yesterday"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "夜",
+      "r": "よる",
+      "m": "Evening, night.",
+      "dv": [
+        "液",
+        "掖"
+      ],
+      "dr": [
+        "ゆる",
+        "よろ"
+      ],
+      "dm": [
+        "Morning",
+        "Noon"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "部屋",
+      "r": "へや",
+      "m": "Room, apartment, flat, pad, chamber.",
+      "dv": [
+        "部室",
+        "倍屋"
+      ],
+      "dr": [
+        "べや",
+        "へゆ"
+      ],
+      "dm": [
+        "Building",
+        "Roof"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "駅",
+      "r": "えき",
+      "m": "Station.",
+      "dv": [
+        "駆",
+        "駄"
+      ],
+      "dr": [
+        "えぎ",
+        "あき"
+      ],
+      "dm": [
+        "Airport",
+        "Bus stop"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "ホーム",
+      "r": "-",
+      "m": "Platform.",
+      "dv": [
+        "ホ一ム",
+        "ホー厶"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Train",
+        "Ticket gate"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "いい",
+      "r": "-",
+      "m": "Good, excellent, fine, nice, pleasant, agreeable.",
+      "dv": [
+        "いし",
+        "りい"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Bad",
+        "Terrible"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "人",
+      "r": "じん",
+      "m": "-Ian (e.g. Italian), -ite (e.g. Tokyoite).",
+      "dv": [
+        "入",
+        "八"
+      ],
+      "dr": [
+        "しん",
+        "ぜん"
+      ],
+      "dm": [
+        "Animal",
+        "Object"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "人",
+      "r": "ひと",
+      "m": "Man, person, others.",
+      "dv": [
+        "入",
+        "八"
+      ],
+      "dr": [
+        "びと",
+        "ふと"
+      ],
+      "dm": [
+        "Animal",
+        "Machine"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "人",
+      "r": "にん",
+      "m": "Counter for people.",
+      "dv": [
+        "入",
+        "八"
+      ],
+      "dr": [
+        "ぬん",
+        "ねん"
+      ],
+      "dm": [
+        "Animal",
+        "Thing"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "昨日",
+      "r": "きのう",
+      "m": "Yesterday.",
+      "dv": [
+        "昨目",
+        "昨白"
+      ],
+      "dr": [
+        "ぎのう",
+        "きのお"
+      ],
+      "dm": [
+        "Today",
+        "Tomorrow"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "テスト",
+      "r": "-",
+      "m": "Test.",
+      "dv": [
+        "テヌト",
+        "デスト"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Homework",
+        "Class"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "楽しい",
+      "r": "たのしい",
+      "m": "Enjoyable, fun.",
+      "dv": [
+        "薬しい",
+        "楽じい"
+      ],
+      "dr": [
+        "だのしい",
+        "たのじい"
+      ],
+      "dm": [
+        "Boring",
+        "Sad"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "寒い",
+      "r": "さむい",
+      "m": "Cold (e.g. weather).",
+      "dv": [
+        "塞い",
+        "寨い"
+      ],
+      "dr": [
+        "ざむい",
+        "さめい"
+      ],
+      "dm": [
+        "Hot",
+        "Warm"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "高い",
+      "r": "たかい",
+      "m": "High, tall.",
+      "dv": [
+        "亭い",
+        "膏い"
+      ],
+      "dr": [
+        "だかい",
+        "たがい"
+      ],
+      "dm": [
+        "Low",
+        "Short"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "女の子",
+      "r": "おんなのこ",
+      "m": "Girl, daughter.",
+      "dv": [
+        "女の予",
+        "如の子"
+      ],
+      "dr": [
+        "おんなのご",
+        "おんねのこ"
+      ],
+      "dm": [
+        "Boy",
+        "Man"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "面白い",
+      "r": "おもしろい",
+      "m": "Interesting, fascinating, intriguing, enthralling.",
+      "dv": [
+        "面自い",
+        "而白い"
+      ],
+      "dr": [
+        "おもじろい",
+        "おもしるい"
+      ],
+      "dm": [
+        "Boring",
+        "Dull"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "ゲーム",
+      "r": "-",
+      "m": "Game.",
+      "dv": [
+        "ケーム",
+        "ゲー厶"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Study",
+        "Work"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "近い",
+      "r": "ちかい",
+      "m": "Near, close, short (distance).",
+      "dv": [
+        "辺い",
+        "込い"
+      ],
+      "dr": [
+        "じかい",
+        "ちがい"
+      ],
+      "dm": [
+        "Far",
+        "Distant"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "大きい",
+      "r": "おおきい",
+      "m": "Big, large, great, loud.",
+      "dv": [
+        "犬きい",
+        "太きい"
+      ],
+      "dr": [
+        "おぎい",
+        "おおぎい"
+      ],
+      "dm": [
+        "Small",
+        "Tiny"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "姉",
+      "r": "あね",
+      "m": "Older sister, elder sister.",
+      "dv": [
+        "妹",
+        "娘"
+      ],
+      "dr": [
+        "あぬ",
+        "おね"
+      ],
+      "dm": [
+        "Younger sister",
+        "Mother"
+      ],
+      "isReadingRedundant": false
+    }
+  ]
+}
