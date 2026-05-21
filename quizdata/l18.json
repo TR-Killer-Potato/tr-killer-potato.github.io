@@ -1,0 +1,905 @@
+{
+  "title": "Lesson 18",
+  "vocabulary": [
+    {
+      "v": "身長",
+      "r": "しんちょう",
+      "m": "Height (of body), stature.",
+      "dv": [
+        "身張",
+        "言長"
+      ],
+      "dr": [
+        "じんちょう",
+        "しんちょお"
+      ],
+      "dm": [
+        "Weight",
+        "Age"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "コンサート",
+      "r": "-",
+      "m": "Concert.",
+      "dv": [
+        "コソサート",
+        "ゴンサート"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Movie",
+        "Play"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "ハンカチ",
+      "r": "-",
+      "m": "Handkerchief.",
+      "dv": [
+        "ハソカチ",
+        "パンカチ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Towel",
+        "Tissue"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "シルバー",
+      "r": "-",
+      "m": "Silver.",
+      "dv": [
+        "ヅルバー",
+        "シルパー"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Gold",
+        "Bronze"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "デパート",
+      "r": "-",
+      "m": "Department store.",
+      "dv": [
+        "テパート",
+        "デバート"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Supermarket",
+        "Convenience store"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "イギリス",
+      "r": "-",
+      "m": "United Kingdom, Britain, Great Britain, England.",
+      "dv": [
+        "イキリス",
+        "イギリヌ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "France",
+        "Germany"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "交番",
+      "r": "こうばん",
+      "m": "Police box, small neighborhood police station.",
+      "dv": [
+        "文番",
+        "交香"
+      ],
+      "dr": [
+        "ごうばん",
+        "こうぱん"
+      ],
+      "dm": [
+        "Post office",
+        "Hospital"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "ラジオ",
+      "r": "-",
+      "m": "Radio.",
+      "dv": [
+        "ラヅオ",
+        "ヲジオ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Television",
+        "Newspaper"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "お金持ち",
+      "r": "おかねもち",
+      "m": "Rich person.",
+      "dv": [
+        "お全持ち",
+        "お金特ち"
+      ],
+      "dr": [
+        "おがねもち",
+        "おかねもじ"
+      ],
+      "dm": [
+        "Poor person",
+        "Beggar"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "スカート",
+      "r": "-",
+      "m": "Skirt.",
+      "dv": [
+        "ヌカート",
+        "スガート"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Pants",
+        "Shorts"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "骨折",
+      "r": "こっせつ",
+      "m": "Bone fracture.",
+      "dv": [
+        "滑折",
+        "骨析"
+      ],
+      "dr": [
+        "ごっせつ",
+        "こっぜつ"
+      ],
+      "dm": [
+        "Sprain",
+        "Bruise"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "天ぷら",
+      "r": "てんぷら",
+      "m": "Tempura, deep-fried fish and vegetables in a light batter.",
+      "dv": [
+        "夫ぷら",
+        "天ぶら"
+      ],
+      "dr": [
+        "でんぷら",
+        "てんぶら"
+      ],
+      "dm": [
+        "Sushi",
+        "Ramen"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "靴下",
+      "r": "くつした",
+      "m": "Socks, sock, stockings, stocking.",
+      "dv": [
+        "靴卜",
+        "鞄下"
+      ],
+      "dr": [
+        "ぐつした",
+        "くづした"
+      ],
+      "dm": [
+        "Shoes",
+        "Gloves"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "差す",
+      "r": "さす",
+      "m": "To shine.",
+      "dv": [
+        "着す",
+        "差寸"
+      ],
+      "dr": [
+        "ざす",
+        "さず"
+      ],
+      "dm": [
+        "To rain",
+        "To snow"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "家事",
+      "r": "かじ",
+      "m": "Housework, domestic chores.",
+      "dv": [
+        "稼事",
+        "家車"
+      ],
+      "dr": [
+        "がじ",
+        "かち"
+      ],
+      "dm": [
+        "Office work",
+        "Homework"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "オレンジ",
+      "r": "-",
+      "m": "Orange (fruit, colour).",
+      "dv": [
+        "オレソジ",
+        "ォレンジ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Apple",
+        "Banana"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "自動車",
+      "r": "じどうしゃ",
+      "m": "Automobile.",
+      "dv": [
+        "目動車",
+        "自働車"
+      ],
+      "dr": [
+        "しどうしゃ",
+        "じとうしゃ"
+      ],
+      "dm": [
+        "Bicycle",
+        "Train"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "お正月",
+      "r": "おしょうがつ",
+      "m": "New Year (esp. first three days).",
+      "dv": [
+        "お正日",
+        "お止月"
+      ],
+      "dr": [
+        "おじょうがつ",
+        "おしょうかつ"
+      ],
+      "dm": [
+        "Christmas",
+        "Halloween"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "スマホ",
+      "r": "-",
+      "m": "Smartphone, smart phone.",
+      "dv": [
+        "ヌマホ",
+        "スヤホ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Laptop",
+        "Tablet"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "正月",
+      "r": "しょうがつ",
+      "m": "New Year (esp. first three days).",
+      "dv": [
+        "正日",
+        "止月"
+      ],
+      "dr": [
+        "じょうがつ",
+        "しょうかつ"
+      ],
+      "dm": [
+        "Golden Week",
+        "Birthday"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "有名人",
+      "r": "ゆうめいじん",
+      "m": "Celebrity, famous person, public figure, big name.",
+      "dv": [
+        "右名人",
+        "有各人"
+      ],
+      "dr": [
+        "ゆめいじん",
+        "ゆうめしん"
+      ],
+      "dm": [
+        "Politician",
+        "Ordinary person"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "シャツ",
+      "r": "-",
+      "m": "Shirt (underwear), undershirt, singlet.",
+      "dv": [
+        "シヤツ",
+        "ツャツ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Pants",
+        "Jacket"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "Ｔシャツ",
+      "r": "-",
+      "m": "T-shirt, tee shirt.",
+      "dv": [
+        "Ｔシヤツ",
+        "Ｔツャツ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Sweater",
+        "Coat"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "サラダ",
+      "r": "-",
+      "m": "Salad.",
+      "dv": [
+        "ザラダ",
+        "サラタ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Soup",
+        "Sandwich"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "受付",
+      "r": "うけつけ",
+      "m": "Reception (desk), information desk.",
+      "dv": [
+        "愛付",
+        "受寸"
+      ],
+      "dr": [
+        "おけつけ",
+        "うげつけ"
+      ],
+      "dm": [
+        "Exit",
+        "Bathroom"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "引き出し",
+      "r": "ひきだし",
+      "m": "Drawer, withdrawal, variety of knowledge.",
+      "dv": [
+        "引キ出し",
+        "弓き出し"
+      ],
+      "dr": [
+        "びきだし",
+        "ひぎだし"
+      ],
+      "dm": [
+        "Closet",
+        "Shelf"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "急行",
+      "r": "きゅうこう",
+      "m": "Hurrying (to somewhere), rushing, hastening.",
+      "dv": [
+        "忘行",
+        "急彳"
+      ],
+      "dr": [
+        "ぎゅうこう",
+        "きゅこう"
+      ],
+      "dm": [
+        "Local train",
+        "Delay"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "朝ご飯",
+      "r": "あさごはん",
+      "m": "Breakfast.",
+      "dv": [
+        "期ご飯",
+        "朝ご飲"
+      ],
+      "dr": [
+        "あざごはん",
+        "あさこはん"
+      ],
+      "dm": [
+        "Lunch",
+        "Dinner"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "花見",
+      "r": "はなみ",
+      "m": "Cherry blossom viewing, flower viewing.",
+      "dv": [
+        "化見",
+        "花貝"
+      ],
+      "dr": [
+        "ばなみ",
+        "はなめ"
+      ],
+      "dm": [
+        "Moon viewing",
+        "Festival"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "文章",
+      "r": "ぶんしょう",
+      "m": "Sentence, article, composition.",
+      "dv": [
+        "父章",
+        "文草"
+      ],
+      "dr": [
+        "ぷんしょう",
+        "ぶんじょう"
+      ],
+      "dm": [
+        "Book",
+        "Word"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "バーベキュー",
+      "r": "-",
+      "m": "Barbecue, BBQ.",
+      "dv": [
+        "パーベキュー",
+        "バーペキュー"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Picnic",
+        "Buffet"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "フィルム",
+      "r": "-",
+      "m": "Film.",
+      "dv": [
+        "フイルム",
+        "フエルム"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Digital",
+        "Photo"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "漫画家",
+      "r": "まんがか",
+      "m": "Cartoonist, comic book artist, manga artist, manga author, mangaka.",
+      "dv": [
+        "漫両家",
+        "漫画室"
+      ],
+      "dr": [
+        "ばんがか",
+        "まんかが"
+      ],
+      "dm": [
+        "Novelist",
+        "Musician"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "菓子",
+      "r": "かし",
+      "m": "Confectionery, sweets, candy, cake.",
+      "dv": [
+        "果子",
+        "菓予"
+      ],
+      "dr": [
+        "がし",
+        "かじ"
+      ],
+      "dm": [
+        "Meat",
+        "Vegetable"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "注射",
+      "r": "ちゅうしゃ",
+      "m": "Injection, jab, shot.",
+      "dv": [
+        "柱射",
+        "注謝"
+      ],
+      "dr": [
+        "じゅうしゃ",
+        "ちゅしゃ"
+      ],
+      "dm": [
+        "Surgery",
+        "Medicine"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "ズボン",
+      "r": "-",
+      "m": "Trousers, pants.",
+      "dv": [
+        "ヌボン",
+        "スボン"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Shirt",
+        "Hat"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "歌手",
+      "r": "かしゅ",
+      "m": "Singer.",
+      "dv": [
+        "歌毛",
+        "欠手"
+      ],
+      "dr": [
+        "がしゅ",
+        "かじゅ"
+      ],
+      "dm": [
+        "Actor",
+        "Dancer"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "お巡りさん",
+      "r": "おまわりさん",
+      "m": "Police officer.",
+      "dv": [
+        "お辺りさん",
+        "お巡リさん"
+      ],
+      "dr": [
+        "おばわりさん",
+        "おまわろさん"
+      ],
+      "dm": [
+        "Firefighter",
+        "Doctor"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "サークル",
+      "r": "-",
+      "m": "Group with a common interest (e.g. students), club (e.g. company sports club), circle.",
+      "dv": [
+        "ザークル",
+        "サーグルの"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Class",
+        "Work"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "ステーキ",
+      "r": "-",
+      "m": "Steak.",
+      "dv": [
+        "ヌテーキ",
+        "スデーキ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Sushi",
+        "Salad"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "幾ら",
+      "r": "いくら",
+      "m": "How much?, how many?.",
+      "dv": [
+        "畿ら",
+        "機ら"
+      ],
+      "dr": [
+        "えくら",
+        "いぐら"
+      ],
+      "dm": [
+        "How many?",
+        "Who?"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "黄色い",
+      "r": "きいろい",
+      "m": "Yellow, shrill (high pitched) voice.",
+      "dv": [
+        "横色い",
+        "黄金い"
+      ],
+      "dr": [
+        "ぎいろい",
+        "きえろい"
+      ],
+      "dm": [
+        "Red",
+        "Blue"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "大抵",
+      "r": "たいてい",
+      "m": "Mostly, ordinarily, usually, generally.",
+      "dv": [
+        "太抵",
+        "大底"
+      ],
+      "dr": [
+        "だいてい",
+        "たいでい"
+      ],
+      "dm": [
+        "Rarely",
+        "Never"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "丈夫",
+      "r": "じょうぶ",
+      "m": "Healthy, robust, strong, solid, durable.",
+      "dv": [
+        "丈失",
+        "犬夫"
+      ],
+      "dr": [
+        "しょうぶ",
+        "じょぶ"
+      ],
+      "dm": [
+        "Sick",
+        "Weak"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "経済",
+      "r": "けいざい",
+      "m": "Economy, economics.",
+      "dv": [
+        "経剤",
+        "軽済"
+      ],
+      "dr": [
+        "げいざい",
+        "けいさい"
+      ],
+      "dm": [
+        "Politics",
+        "History"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "ボランティア",
+      "r": "-",
+      "m": "Volunteer.",
+      "dv": [
+        "ポランティア",
+        "ボランテア"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Employee",
+        "Manager"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "締める",
+      "r": "しめる",
+      "m": "To tie, to fasten.",
+      "dv": [
+        "諦める",
+        "締ゆる"
+      ],
+      "dr": [
+        "じめる",
+        "しめろ"
+      ],
+      "dm": [
+        "To untie",
+        "To cut"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "カーテン",
+      "r": "-",
+      "m": "Curtain, curtains.",
+      "dv": [
+        "カ一テン",
+        "ガーテン"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Carpet",
+        "Wallpaper"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "金色",
+      "r": "きんいろ",
+      "m": "Golden (colour, color).",
+      "dv": [
+        "全色",
+        "金包"
+      ],
+      "dr": [
+        "ぎんいろ",
+        "きんえろ"
+      ],
+      "dm": [
+        "Silver",
+        "Bronze"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "歌舞伎",
+      "r": "かぶき",
+      "m": "Kabuki, Japanese classical drama.",
+      "dv": [
+        "歌無伎",
+        "歌舞技"
+      ],
+      "dr": [
+        "がぶき",
+        "かぷき"
+      ],
+      "dm": [
+        "Noh",
+        "Opera"
+      ],
+      "isReadingRedundant": false
+    }
+  ]
+}
