@@ -72,6 +72,10 @@
         
         .error-msg { color: var(--error-red); background: rgba(233, 69, 96, 0.1); padding: 20px; border-radius: 12px; border: 1px solid var(--error-red); }
 
+        /* Scorecard Selector Styling */
+        .scorecard-select { padding: 12px 20px; background: var(--bg-dark); border: 2px solid var(--border-color); border-radius: 10px; color: #fff; font-weight: bold; cursor: pointer; outline: none; transition: 0.2s; font-size: 1rem; }
+        .scorecard-select:hover { border-color: var(--accent-blue); }
+
         /* Persistent Navigation */
         .persistent-nav { margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem; }
         .menu-link { text-decoration: none; }
@@ -96,7 +100,10 @@
     <div id="landing-page">
         <h1 class="header-title">Mastery Challenge</h1>
         <p class="sub-text">Select a practice module to begin.</p>
-        <div id="lesson-list" class="lesson-grid"></div>
+        <div id="lesson-list" class="lesson-grid" style="margin-bottom: 2rem;"></div>
+        
+        <!-- Scorecard Access Button -->
+        <button class="start-btn" onclick="openScorecardView()" style="background: var(--accent-blue); color: #fff; font-size: 1.1rem;">View Scorecard</button>
     </div>
 
     <!-- 2. Style Selection -->
@@ -139,6 +146,34 @@
         <button class="start-btn" onclick="location.reload()" style="margin-top: 1.5rem;">Restart Quiz</button>
     </div>
 
+    <!-- 5. Scorecard Screen -->
+    <div id="scorecard-ui" class="hidden">
+        <h2 style="color: var(--accent-blue); margin-bottom: 0.5rem;">Performance Scorecard</h2>
+        <p class="sub-text">Incorrect answer stats by Lesson</p>
+        <div style="margin-bottom: 2rem;">
+            <select id="scorecard-lesson-select" class="scorecard-select"></select>
+        </div>
+        <div class="final-results-wrap" style="max-height: 400px; overflow-x: auto;">
+            <table style="min-width: 800px;">
+                <thead>
+                    <tr>
+                        <th>Vocabulary</th>
+                        <th>Vocabulary-Reading</th>
+                        <th>Reading-Vocabulary</th>
+                        <th>Meaning-Vocabulary</th>
+                        <th>Vocabulary-Meaning</th>
+                        <th>Reading-Meaning</th>
+                        <th>Meaning-Reading</th>
+                    </tr>
+                </thead>
+                <tbody id="scorecard-tbody">
+                    <!-- Loaded dynamically -->
+                </tbody>
+            </table>
+        </div>
+        <button class="back-btn" onclick="showState('landing-page')" style="margin-top: 1.5rem;">← Back to Main</button>
+    </div>
+
     <!-- Global Footer -->
     <div class="persistent-nav">
         <a href="index.html" class="menu-link" id="global-menu-link">
@@ -161,10 +196,16 @@ let sessionLogs = [];
 let selectedStyles = new Set();
 
 /**
+ * In-Memory Scorecard Store
+ * Structure: { [LessonID]: { [VocabKey]: { [TestType]: Count } } }
+ */
+let scorecardData = {};
+
+/**
  * UI State Controller
  */
 function showState(stateId) {
-    ['landing-page', 'selection-screen', 'quiz-ui', 'results-ui', 'status-view'].forEach(id => {
+    ['landing-page', 'selection-screen', 'quiz-ui', 'results-ui', 'scorecard-ui', 'status-view'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('hidden');
     });
@@ -189,6 +230,13 @@ function showState(stateId) {
             menuLink.onclick = (e) => {
                 e.preventDefault();
                 showState('selection-screen');
+            };
+        } else if (stateId === 'scorecard-ui') {
+            menuButton.innerText = '← Back';
+            menuLink.href = '#';
+            menuLink.onclick = (e) => {
+                e.preventDefault();
+                showState('landing-page');
             };
         } else {
             menuButton.innerText = 'Main Menu';
@@ -221,7 +269,10 @@ async function loadRepository() {
         const response = await fetch(MANIFEST_PATH);
         if (!response.ok) throw new Error('Manifest not found in quizdata/');
         const manifest = await response.json();
+        
         renderSelector(manifest.lessons);
+        populateScorecardSelector(manifest.lessons);
+        
         showState('landing-page');
     } catch (err) {
         showError(`Init Error: ${err.message}`);
@@ -259,6 +310,82 @@ function renderSelector(lessons) {
 }
 
 /**
+ * Scorecard Screen Mechanics
+ */
+function populateScorecardSelector(lessons) {
+    const select = document.getElementById('scorecard-lesson-select');
+    select.innerHTML = '';
+    lessons.forEach(lesson => {
+        const opt = document.createElement('option');
+        opt.value = lesson.id;
+        opt.innerText = lesson.id;
+        select.appendChild(opt);
+    });
+    select.onchange = () => renderScorecardTable(select.value);
+}
+
+function openScorecardView() {
+    const select = document.getElementById('scorecard-lesson-select');
+    if (select.value) {
+        renderScorecardTable(select.value);
+    }
+    showState('scorecard-ui');
+}
+
+function renderScorecardTable(lessonId) {
+    const tbody = document.getElementById('scorecard-tbody');
+    tbody.innerHTML = '';
+
+    if (!lessonId) return;
+
+    const lessonStore = scorecardData[lessonId] || {};
+    const vocabs = Object.keys(lessonStore);
+
+    // If there are no incorrect tests, the table remains empty except for headers
+    if (vocabs.length === 0) return;
+
+    // Headings mappings to match exactly:
+    // "Vocab-Reading" -> Vocabulary-Reading
+    // "Reading-Vocab" -> Reading-Vocabulary
+    // "Meaning-Vocab" -> Meaning-Vocabulary
+    // "Vocab-Meaning" -> Vocabulary-Meaning
+    // "Reading-Meaning" -> Reading-Meaning
+    // "Meaning-Reading" -> Meaning-Reading
+    const columns = [
+        "Vocab-Reading",
+        "Reading-Vocab",
+        "Meaning-Vocab",
+        "Vocab-Meaning",
+        "Reading-Meaning",
+        "Meaning-Reading"
+    ];
+
+    vocabs.forEach(vocab => {
+        const tr = document.createElement('tr');
+        
+        // Col 1: Vocabulary
+        const tdVocab = document.createElement('td');
+        tdVocab.innerText = vocab;
+        tdVocab.style.fontWeight = 'bold';
+        tr.appendChild(tdVocab);
+
+        // Cols 2-7: Incorrect counters for each style
+        columns.forEach(col => {
+            const td = document.createElement('td');
+            const count = lessonStore[vocab][col] || 0;
+            td.innerText = count > 0 ? count : "";
+            if (count > 0) {
+                td.className = "row-wrong";
+                td.style.fontWeight = "bold";
+            }
+            tr.appendChild(td);
+        });
+
+        tbody.appendChild(tr);
+    });
+}
+
+/**
  * Selection Screen Logic
  */
 document.querySelectorAll('.style-btn').forEach(btn => {
@@ -290,15 +417,16 @@ function prepareQuestions() {
     vocabulary.forEach(item => {
         // v = Vocab, r = Reading, m = Meaning
         // dv = Distractor Vocab, dr = Distractor Reading, dm = Distractor Meaning
-        if (selectedStyles.has("Vocab-Meaning")) questions.push({ q: item.v, a: item.m, type: "Vocab-Meaning", dist: item.dm });
-        if (selectedStyles.has("Meaning-Vocab")) questions.push({ q: item.m, a: item.v, type: "Meaning-Vocab", dist: item.dv });
-        if (selectedStyles.has("Reading-Meaning")) questions.push({ q: item.r, a: item.m, type: "Reading-Meaning", dist: item.dm });
-        if (selectedStyles.has("Meaning-Reading")) questions.push({ q: item.m, a: item.r, type: "Meaning-Reading", dist: item.dr });
+        // Each question contains the original vocabulary token "vocab" for scorecard mapping
+        if (selectedStyles.has("Vocab-Meaning")) questions.push({ q: item.v, a: item.m, type: "Vocab-Meaning", dist: item.dm, vocab: item.v });
+        if (selectedStyles.has("Meaning-Vocab")) questions.push({ q: item.m, a: item.v, type: "Meaning-Vocab", dist: item.dv, vocab: item.v });
+        if (selectedStyles.has("Reading-Meaning")) questions.push({ q: item.r, a: item.m, type: "Reading-Meaning", dist: item.dm, vocab: item.v });
+        if (selectedStyles.has("Meaning-Reading")) questions.push({ q: item.m, a: item.r, type: "Meaning-Reading", dist: item.dr, vocab: item.v });
         
         // Rule: Do NOT include vocabulary with redundant readings in Vocabulary-Reading or Reading-Vocabulary quizzes
         if (!item.isReadingRedundant) {
-            if (selectedStyles.has("Vocab-Reading")) questions.push({ q: item.v, a: item.r, type: "Vocab-Reading", dist: item.dr });
-            if (selectedStyles.has("Reading-Vocab")) questions.push({ q: item.r, a: item.v, type: "Reading-Vocab", dist: item.dv });
+            if (selectedStyles.has("Vocab-Reading")) questions.push({ q: item.v, a: item.r, type: "Vocab-Reading", dist: item.dr, vocab: item.v });
+            if (selectedStyles.has("Reading-Vocab")) questions.push({ q: item.r, a: item.v, type: "Reading-Vocab", dist: item.dv, vocab: item.v });
         }
     });
 
@@ -342,6 +470,44 @@ function loadQuestion() {
             const isCorrect = (opt === q.a);
             sessionLogs.push({ type: q.type, word: q.q, response: opt, answer: q.a, correct: isCorrect });
             
+            // --- SCORECARD TRANSACTION LOGIC ---
+            const vocabToken = q.vocab;
+            const testType = q.type;
+
+            if (!isCorrect) {
+                // Initialize nested Lesson scorecard if non-existent
+                if (!scorecardData[currentLessonID]) {
+                    scorecardData[currentLessonID] = {};
+                }
+                // Initialize nested Vocab entry if non-existent
+                if (!scorecardData[currentLessonID][vocabToken]) {
+                    scorecardData[currentLessonID][vocabToken] = {
+                        "Vocab-Reading": 0,
+                        "Reading-Vocab": 0,
+                        "Meaning-Vocab": 0,
+                        "Vocab-Meaning": 0,
+                        "Reading-Meaning": 0,
+                        "Meaning-Reading": 0
+                    };
+                }
+                // Increment incorrect scorecard tracker by 1
+                scorecardData[currentLessonID][vocabToken][testType]++;
+            } else {
+                // Decrement scorecard tracker if answering correctly on a previously failed card
+                if (scorecardData[currentLessonID] && scorecardData[currentLessonID][vocabToken]) {
+                    if (scorecardData[currentLessonID][vocabToken][testType] > 0) {
+                        scorecardData[currentLessonID][vocabToken][testType]--;
+                        
+                        // Check if all test counters have returned to 0
+                        const activeErrors = Object.values(scorecardData[currentLessonID][vocabToken]).some(val => val > 0);
+                        if (!activeErrors) {
+                            delete scorecardData[currentLessonID][vocabToken];
+                        }
+                    }
+                }
+            }
+            // ------------------------------------
+
             if (isCorrect) {
                 score++; btn.classList.add('correct');
                 setTimeout(() => { currentIdx++; loadQuestion(); }, 800);
