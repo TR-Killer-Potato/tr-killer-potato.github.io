@@ -4,7 +4,7 @@
     {
       "v": "身長",
       "r": "しんちょう",
-      "m": "Height (of body), stature.",
+      "m": "Height",
       "dv": [
         "身張",
         "言長"
@@ -22,7 +22,7 @@
     {
       "v": "コンサート",
       "r": "-",
-      "m": "Concert.",
+      "m": "Concert",
       "dv": [
         "コソサート",
         "ゴンサート"
@@ -40,7 +40,7 @@
     {
       "v": "ハンカチ",
       "r": "-",
-      "m": "Handkerchief.",
+      "m": "Handkerchief",
       "dv": [
         "ハソカチ",
         "パンカチ"
@@ -58,7 +58,7 @@
     {
       "v": "シルバー",
       "r": "-",
-      "m": "Silver.",
+      "m": "Silver",
       "dv": [
         "ヅルバー",
         "シルパー"
@@ -76,7 +76,7 @@
     {
       "v": "デパート",
       "r": "-",
-      "m": "Department store.",
+      "m": "Department store",
       "dv": [
         "テパート",
         "デバート"
@@ -94,7 +94,7 @@
     {
       "v": "イギリス",
       "r": "-",
-      "m": "United Kingdom, Britain, Great Britain, England.",
+      "m": "United Kingdom",
       "dv": [
         "イキリス",
         "イギリヌ"
@@ -112,7 +112,7 @@
     {
       "v": "交番",
       "r": "こうばん",
-      "m": "Police box, small neighborhood police station.",
+      "m": "Police box",
       "dv": [
         "文番",
         "交香"
@@ -130,7 +130,7 @@
     {
       "v": "ラジオ",
       "r": "-",
-      "m": "Radio.",
+      "m": "Radio",
       "dv": [
         "ラヅオ",
         "ヲジオ"
@@ -148,7 +148,7 @@
     {
       "v": "お金持ち",
       "r": "おかねもち",
-      "m": "Rich person.",
+      "m": "Rich person",
       "dv": [
         "お全持ち",
         "お金特ち"
@@ -166,7 +166,7 @@
     {
       "v": "スカート",
       "r": "-",
-      "m": "Skirt.",
+      "m": "Skirt",
       "dv": [
         "ヌカート",
         "スガート"
@@ -184,7 +184,7 @@
     {
       "v": "骨折",
       "r": "こっせつ",
-      "m": "Bone fracture.",
+      "m": "Bone fracture",
       "dv": [
         "滑折",
         "骨析"
@@ -202,7 +202,7 @@
     {
       "v": "天ぷら",
       "r": "てんぷら",
-      "m": "Tempura, deep-fried fish and vegetables in a light batter.",
+      "m": "Tempura",
       "dv": [
         "夫ぷら",
         "天ぶら"
@@ -220,7 +220,7 @@
     {
       "v": "靴下",
       "r": "くつした",
-      "m": "Socks, sock, stockings, stocking.",
+      "m": "Socks",
       "dv": [
         "靴卜",
         "鞄下"
@@ -238,7 +238,7 @@
     {
       "v": "差す",
       "r": "さす",
-      "m": "To shine.",
+      "m": "To shine",
       "dv": [
         "着す",
         "差寸"
@@ -256,7 +256,7 @@
     {
       "v": "家事",
       "r": "かじ",
-      "m": "Housework, domestic chores.",
+      "m": "Housework",
       "dv": [
         "稼事",
         "家車"
@@ -274,7 +274,7 @@
     {
       "v": "オレンジ",
       "r": "-",
-      "m": "Orange (fruit, colour).",
+      "m": "Orange",
       "dv": [
         "オレソジ",
         "ォレンジ"
@@ -292,7 +292,7 @@
     {
       "v": "自動車",
       "r": "じどうしゃ",
-      "m": "Automobile.",
+      "m": "Automobile",
       "dv": [
         "目動車",
         "自働車"
@@ -310,7 +310,7 @@
     {
       "v": "お正月",
       "r": "おしょうがつ",
-      "m": "New Year (esp. first three days).",
+      "m": "New Year",
       "dv": [
         "お正日",
         "お止月"
@@ -328,7 +328,7 @@
     {
       "v": "スマホ",
       "r": "-",
-      "m": "Smartphone, smart phone.",
+      "m": "Smartphone",
       "dv": [
         "ヌマホ",
         "スヤホ"
@@ -346,7 +346,7 @@
     {
       "v": "正月",
       "r": "しょうがつ",
-      "m": "New Year (esp. first three days).",
+      "m": "New Year",
       "dv": [
         "正日",
         "止月"
@@ -364,7 +364,7 @@
     {
       "v": "有名人",
       "r": "ゆうめいじん",
-      "m": "Celebrity, famous person, public figure, big name.",
+      "m": "Celebrity",
       "dv": [
         "右名人",
         "有各人"
@@ -382,7 +382,7 @@
     {
       "v": "シャツ",
       "r": "-",
-      "m": "Shirt (underwear), undershirt, singlet.",
+      "m": "Shirt",
       "dv": [
         "シヤツ",
         "ツャツ"
@@ -400,7 +400,7 @@
     {
       "v": "Ｔシャツ",
       "r": "-",
-      "m": "T-shirt, tee shirt.",
+      "m": "T-shirt",
       "dv": [
         "Ｔシヤツ",
         "Ｔツャツ"
@@ -418,7 +418,7 @@
     {
       "v": "サラダ",
       "r": "-",
-      "m": "Salad.",
+      "m": "Salad",
       "dv": [
         "ザラダ",
         "サラタ"
@@ -436,7 +436,7 @@
     {
       "v": "受付",
       "r": "うけつけ",
-      "m": "Reception (desk), information desk.",
+      "m": "Reception",
       "dv": [
         "愛付",
         "受寸"
@@ -454,7 +454,7 @@
     {
       "v": "引き出し",
       "r": "ひきだし",
-      "m": "Drawer, withdrawal, variety of knowledge.",
+      "m": "Drawer",
       "dv": [
         "引キ出し",
         "弓き出し"
@@ -472,7 +472,7 @@
     {
       "v": "急行",
       "r": "きゅうこう",
-      "m": "Hurrying (to somewhere), rushing, hastening.",
+      "m": "Hurrying",
       "dv": [
         "忘行",
         "急彳"
@@ -490,7 +490,7 @@
     {
       "v": "朝ご飯",
       "r": "あさごはん",
-      "m": "Breakfast.",
+      "m": "Breakfast",
       "dv": [
         "期ご飯",
         "朝ご飲"
@@ -508,7 +508,7 @@
     {
       "v": "花見",
       "r": "はなみ",
-      "m": "Cherry blossom viewing, flower viewing.",
+      "m": "Cherry blossom",
       "dv": [
         "化見",
         "花貝"
@@ -526,7 +526,7 @@
     {
       "v": "文章",
       "r": "ぶんしょう",
-      "m": "Sentence, article, composition.",
+      "m": "Sentence",
       "dv": [
         "父章",
         "文草"
@@ -544,7 +544,7 @@
     {
       "v": "バーベキュー",
       "r": "-",
-      "m": "Barbecue, BBQ.",
+      "m": "Barbecue",
       "dv": [
         "パーベキュー",
         "バーペキュー"
@@ -562,7 +562,7 @@
     {
       "v": "フィルム",
       "r": "-",
-      "m": "Film.",
+      "m": "Film",
       "dv": [
         "フイルム",
         "フエルム"
@@ -580,7 +580,7 @@
     {
       "v": "漫画家",
       "r": "まんがか",
-      "m": "Cartoonist, comic book artist, manga artist, manga author, mangaka.",
+      "m": "Cartoonist",
       "dv": [
         "漫両家",
         "漫画室"
@@ -598,7 +598,7 @@
     {
       "v": "菓子",
       "r": "かし",
-      "m": "Confectionery, sweets, candy, cake.",
+      "m": "Confectionery",
       "dv": [
         "果子",
         "菓予"
@@ -616,7 +616,7 @@
     {
       "v": "注射",
       "r": "ちゅうしゃ",
-      "m": "Injection, jab, shot.",
+      "m": "Injection",
       "dv": [
         "柱射",
         "注謝"
@@ -634,7 +634,7 @@
     {
       "v": "ズボン",
       "r": "-",
-      "m": "Trousers, pants.",
+      "m": "Trousers",
       "dv": [
         "ヌボン",
         "スボン"
@@ -652,7 +652,7 @@
     {
       "v": "歌手",
       "r": "かしゅ",
-      "m": "Singer.",
+      "m": "Singer",
       "dv": [
         "歌毛",
         "欠手"
@@ -670,7 +670,7 @@
     {
       "v": "お巡りさん",
       "r": "おまわりさん",
-      "m": "Police officer.",
+      "m": "Police officer",
       "dv": [
         "お辺りさん",
         "お巡リさん"
@@ -688,7 +688,7 @@
     {
       "v": "サークル",
       "r": "-",
-      "m": "Group with a common interest (e.g. students), club (e.g. company sports club), circle.",
+      "m": "Group with",
       "dv": [
         "ザークル",
         "サーグルの"
@@ -706,7 +706,7 @@
     {
       "v": "ステーキ",
       "r": "-",
-      "m": "Steak.",
+      "m": "Steak",
       "dv": [
         "ヌテーキ",
         "スデーキ"
@@ -724,7 +724,7 @@
     {
       "v": "幾ら",
       "r": "いくら",
-      "m": "How much?, how many?.",
+      "m": "How much?",
       "dv": [
         "畿ら",
         "機ら"
@@ -742,7 +742,7 @@
     {
       "v": "黄色い",
       "r": "きいろい",
-      "m": "Yellow, shrill (high pitched) voice.",
+      "m": "Yellow",
       "dv": [
         "横色い",
         "黄金い"
@@ -760,7 +760,7 @@
     {
       "v": "大抵",
       "r": "たいてい",
-      "m": "Mostly, ordinarily, usually, generally.",
+      "m": "Mostly",
       "dv": [
         "太抵",
         "大底"
@@ -778,7 +778,7 @@
     {
       "v": "丈夫",
       "r": "じょうぶ",
-      "m": "Healthy, robust, strong, solid, durable.",
+      "m": "Healthy",
       "dv": [
         "丈失",
         "犬夫"
@@ -796,7 +796,7 @@
     {
       "v": "経済",
       "r": "けいざい",
-      "m": "Economy, economics.",
+      "m": "Economy",
       "dv": [
         "経剤",
         "軽済"
@@ -814,7 +814,7 @@
     {
       "v": "ボランティア",
       "r": "-",
-      "m": "Volunteer.",
+      "m": "Volunteer",
       "dv": [
         "ポランティア",
         "ボランテア"
@@ -832,7 +832,7 @@
     {
       "v": "締める",
       "r": "しめる",
-      "m": "To tie, to fasten.",
+      "m": "To tie",
       "dv": [
         "諦める",
         "締ゆる"
@@ -850,7 +850,7 @@
     {
       "v": "カーテン",
       "r": "-",
-      "m": "Curtain, curtains.",
+      "m": "Curtain",
       "dv": [
         "カ一テン",
         "ガーテン"
@@ -868,7 +868,7 @@
     {
       "v": "金色",
       "r": "きんいろ",
-      "m": "Golden (colour, color).",
+      "m": "Golden",
       "dv": [
         "全色",
         "金包"
@@ -886,7 +886,7 @@
     {
       "v": "歌舞伎",
       "r": "かぶき",
-      "m": "Kabuki, Japanese classical drama.",
+      "m": "Kabuki",
       "dv": [
         "歌無伎",
         "歌舞技"
