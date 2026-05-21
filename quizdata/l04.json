@@ -1,0 +1,905 @@
+{
+  "title": "Lesson 4",
+  "vocabulary": [
+    {
+      "v": "出かける",
+      "r": "でかける",
+      "m": "To go out (e.g. on an excursion or outing), to leave, to depart, to start, to set out.",
+      "dv": [
+        "凶かける",
+        "凹かける"
+      ],
+      "dr": [
+        "てかける",
+        "でがける"
+      ],
+      "dm": [
+        "To stay home",
+        "To enter"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "教える",
+      "r": "おしえる",
+      "m": "To teach, to inform, to instruct.",
+      "dv": [
+        "孝える",
+        "数える"
+      ],
+      "dr": [
+        "おじえる",
+        "ほしえる"
+      ],
+      "dm": [
+        "To learn",
+        "To forget"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "始める",
+      "r": "はじめる",
+      "m": "To start, to begin, to commence, to initiate, to originate.",
+      "dv": [
+        "治める",
+        "辞める"
+      ],
+      "dr": [
+        "ばじめる",
+        "はしめる"
+      ],
+      "dm": [
+        "To finish",
+        "To end"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "聞く",
+      "r": "きく",
+      "m": "To hear.",
+      "dv": [
+        "問く",
+        "開く"
+      ],
+      "dr": [
+        "ぎく",
+        "きぐ"
+      ],
+      "dm": [
+        "To speak",
+        "To look"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "座る",
+      "r": "すわる",
+      "m": "To sit, to squat.",
+      "dv": [
+        "庄る",
+        "庫る"
+      ],
+      "dr": [
+        "ずわる",
+        "すばる"
+      ],
+      "dm": [
+        "To stand",
+        "To jump"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "飲む",
+      "r": "のむ",
+      "m": "To drink, to gulp, to swallow, to take (medicine).",
+      "dv": [
+        "飯む",
+        "飢む"
+      ],
+      "dr": [
+        "めむ",
+        "ぬむ"
+      ],
+      "dm": [
+        "To eat",
+        "To cook"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "会う",
+      "r": "あう",
+      "m": "To meet, to encounter, to see.",
+      "dv": [
+        "合う",
+        "今う"
+      ],
+      "dr": [
+        "おう",
+        "あゆ"
+      ],
+      "dm": [
+        "To part",
+        "To avoid"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "飛ぶ",
+      "r": "とぶ",
+      "m": "To fly, to soar.",
+      "dv": [
+        "跳ぶ",
+        "非ぶ"
+      ],
+      "dr": [
+        "どぶ",
+        "とぷ"
+      ],
+      "dm": [
+        "To walk",
+        "To swim"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "行く",
+      "r": "いく",
+      "m": "To go, to move (in a direction or towards a specific location), to head (towards), to be transported (towards), to reach.",
+      "dv": [
+        "彳く",
+        "亍く"
+      ],
+      "dr": [
+        "いぐ",
+        "えく"
+      ],
+      "dm": [
+        "To return",
+        "To stay"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "泳ぐ",
+      "r": "およぐ",
+      "m": "To swim.",
+      "dv": [
+        "氷ぐ",
+        "永ぐ"
+      ],
+      "dr": [
+        "おゆぐ",
+        "およる"
+      ],
+      "dm": [
+        "To sink",
+        "To float"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "話す",
+      "r": "はなす",
+      "m": "To talk, to speak, to converse, to chat.",
+      "dv": [
+        "語す",
+        "括す"
+      ],
+      "dr": [
+        "ばなす",
+        "はねす"
+      ],
+      "dm": [
+        "To listen",
+        "To write"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "歩く",
+      "r": "あるく",
+      "m": "To walk.",
+      "dv": [
+        "止く",
+        "走く"
+      ],
+      "dr": [
+        "あろく",
+        "あぐく"
+      ],
+      "dm": [
+        "To run",
+        "To crawl"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "死ぬ",
+      "r": "しぬ",
+      "m": "To die, to pass away.",
+      "dv": [
+        "兆ぬ",
+        "叱ぬ"
+      ],
+      "dr": [
+        "じぬ",
+        "しめ"
+      ],
+      "dm": [
+        "To live",
+        "To survive"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "帰る",
+      "r": "かえる",
+      "m": "To return, to come home, to go home, to go back.",
+      "dv": [
+        "婦る",
+        "掃る"
+      ],
+      "dr": [
+        "がえる",
+        "かいる"
+      ],
+      "dm": [
+        "To depart",
+        "To stay"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "漢字",
+      "r": "かんじ",
+      "m": "Chinese characters, kanji.",
+      "dv": [
+        "漢宇",
+        "漢学"
+      ],
+      "dr": [
+        "がんじ",
+        "かんし"
+      ],
+      "dm": [
+        "Hiragana",
+        "Alphabet"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "スポーツ",
+      "r": "-",
+      "m": "Sport, sports.",
+      "dv": [
+        "ヌポーツ",
+        "スボーツ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Music",
+        "Reading"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "テレビ",
+      "r": "-",
+      "m": "Television, TV.",
+      "dv": [
+        "テレピ",
+        "テンビ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Radio",
+        "Newspaper"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "ドア",
+      "r": "-",
+      "m": "Door (Western-style).",
+      "dv": [
+        "トア",
+        "ドマ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Window",
+        "Roof"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "鶏肉",
+      "r": "とりにく",
+      "m": "Chicken meat.",
+      "dv": [
+        "鳴肉",
+        "鶴肉"
+      ],
+      "dr": [
+        "どりにく",
+        "とりねく"
+      ],
+      "dm": [
+        "Beef",
+        "Pork"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "ニュース",
+      "r": "-",
+      "m": "News.",
+      "dv": [
+        "ニュソス",
+        "二ュース"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Fiction",
+        "Novel"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "出る",
+      "r": "でる",
+      "m": "To leave, to exit, to go out, to come out, to get out.",
+      "dv": [
+        "凹る",
+        "凶る"
+      ],
+      "dr": [
+        "でろ",
+        "てる"
+      ],
+      "dm": [
+        "To enter",
+        "To stay"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "ホラー",
+      "r": "-",
+      "m": "Horror.",
+      "dv": [
+        "木ラー",
+        "ホラツ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Comedy",
+        "Romance"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "早く",
+      "r": "はやく",
+      "m": "Early, soon.",
+      "dv": [
+        "草く",
+        "旱く"
+      ],
+      "dr": [
+        "ばやく",
+        "はよく"
+      ],
+      "dm": [
+        "Late",
+        "Slow"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "忘れる",
+      "r": "わすれる",
+      "m": "To forget, to leave carelessly, to be forgetful of, to forget about, to forget (an article).",
+      "dv": [
+        "忙れる",
+        "妄れる"
+      ],
+      "dr": [
+        "ばすれる",
+        "わすれろ"
+      ],
+      "dm": [
+        "To remember",
+        "To recall"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "肉",
+      "r": "にく",
+      "m": "Flesh.",
+      "dv": [
+        "内",
+        "丙"
+      ],
+      "dr": [
+        "にぐ",
+        "ねく"
+      ],
+      "dm": [
+        "Bone",
+        "Vegetable"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "持つ",
+      "r": "もつ",
+      "m": "To hold (in one's hand), to take, to carry.",
+      "dv": [
+        "待つ",
+        "特つ"
+      ],
+      "dr": [
+        "ぼつ",
+        "もず"
+      ],
+      "dm": [
+        "To drop",
+        "To release"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "休む",
+      "r": "やすむ",
+      "m": "To be absent, to take a day off.",
+      "dv": [
+        "体む",
+        "本む"
+      ],
+      "dr": [
+        "やずむ",
+        "やそむ"
+      ],
+      "dm": [
+        "To attend",
+        "To work"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "知る",
+      "r": "しる",
+      "m": "To be aware of, to know, to be conscious of, to cognise.",
+      "dv": [
+        "智る",
+        "矢る"
+      ],
+      "dr": [
+        "じる",
+        "しろ"
+      ],
+      "dm": [
+        "To ignore",
+        "To misunderstand"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "魚",
+      "r": "さかな",
+      "m": "Fish.",
+      "dv": [
+        "漁",
+        "角"
+      ],
+      "dr": [
+        "ざかな",
+        "さがな"
+      ],
+      "dm": [
+        "Bird",
+        "Insect"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "大学生",
+      "r": "だいがくせい",
+      "m": "University student, college student.",
+      "dv": [
+        "犬学生",
+        "太学生"
+      ],
+      "dr": [
+        "たいがくせい",
+        "だいがぐせい"
+      ],
+      "dm": [
+        "High school student",
+        "Teacher"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "映画館",
+      "r": "えいがかん",
+      "m": "Movie theatre, movie theater, cinema.",
+      "dv": [
+        "映両館",
+        "映画管"
+      ],
+      "dr": [
+        "えいかかん",
+        "えいががん"
+      ],
+      "dm": [
+        "Hospital",
+        "Supermarket"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "コーヒー",
+      "r": "-",
+      "m": "Coffee.",
+      "dv": [
+        "コーピー",
+        "ゴーヒー"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Tea",
+        "Water"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "ここ",
+      "r": "-",
+      "m": "Here, this place.",
+      "dv": [
+        "こに",
+        "いこ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "There",
+        "Where"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "台所",
+      "r": "だいどころ",
+      "m": "Kitchen.",
+      "dv": [
+        "合所",
+        "占所"
+      ],
+      "dr": [
+        "たいどころ",
+        "だいとこ"
+      ],
+      "dm": [
+        "Bedroom",
+        "Bathroom"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "外",
+      "r": "そと",
+      "m": "Outside, exterior.",
+      "dv": [
+        "処",
+        "卜"
+      ],
+      "dr": [
+        "ぞと",
+        "そど"
+      ],
+      "dm": [
+        "Inside",
+        "Interior"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "店",
+      "r": "みせ",
+      "m": "Store, shop, establishment, restaurant.",
+      "dv": [
+        "庫",
+        "床"
+      ],
+      "dr": [
+        "びせ",
+        "みぜ"
+      ],
+      "dm": [
+        "House",
+        "Factory"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "食べ物",
+      "r": "たべもの",
+      "m": "Food.",
+      "dv": [
+        "食へ物",
+        "飲べ物"
+      ],
+      "dr": [
+        "だべもの",
+        "たぺもの"
+      ],
+      "dm": [
+        "Drink",
+        "Beverage"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "そこ",
+      "r": "-",
+      "m": "There (place relatively near listener).",
+      "dv": [
+        "てこ",
+        "そに"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Here",
+        "Over there"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "パソコン",
+      "r": "-",
+      "m": "Personal computer.",
+      "dv": [
+        "パソコソ",
+        "バソコン"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Smartphone",
+        "Television"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "明るい",
+      "r": "あかるい",
+      "m": "Bright, colourful.",
+      "dv": [
+        "朋るい",
+        "胆るい"
+      ],
+      "dr": [
+        "あがるい",
+        "あかるえ"
+      ],
+      "dm": [
+        "Dark",
+        "Gloomy"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "トイレ",
+      "r": "-",
+      "m": "Toilet, restroom, bathroom, lavatory.",
+      "dv": [
+        "卜イレ",
+        "トイシ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Kitchen",
+        "Bedroom"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "強い",
+      "r": "つよい",
+      "m": "Strong, powerful, mighty, potent.",
+      "dv": [
+        "弘い",
+        "粥い"
+      ],
+      "dr": [
+        "ずよい",
+        "つゆい"
+      ],
+      "dm": [
+        "Weak",
+        "Fragile"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "教室",
+      "r": "きょうしつ",
+      "m": "Classroom.",
+      "dv": [
+        "教至",
+        "孝室"
+      ],
+      "dr": [
+        "ぎょうしつ",
+        "きょしつ"
+      ],
+      "dm": [
+        "Gymnasium",
+        "Office"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "あそこ",
+      "r": "-",
+      "m": "There (place physically distant from both speaker and listener), over there, that place, yonder.",
+      "dv": [
+        "おそこ",
+        "あのこ"
+      ],
+      "dr": [
+        "-",
+        "-"
+      ],
+      "dm": [
+        "Here",
+        "Somewhere"
+      ],
+      "isReadingRedundant": true
+    },
+    {
+      "v": "文法",
+      "r": "ぶんぽう",
+      "m": "Grammar.",
+      "dv": [
+        "文去",
+        "父法"
+      ],
+      "dr": [
+        "ふんぽう",
+        "ぶんぼう"
+      ],
+      "dm": [
+        "Vocabulary",
+        "Pronunciation"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "習う",
+      "r": "ならう",
+      "m": "To take lessons in, to be taught, to learn (from a teacher), to study (under a teacher), to get training in.",
+      "dv": [
+        "羽う",
+        "扇う"
+      ],
+      "dr": [
+        "だらう",
+        "なろう"
+      ],
+      "dm": [
+        "To teach",
+        "To instruct"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "ご飯",
+      "r": "ごはん",
+      "m": "Cooked rice, food.",
+      "dv": [
+        "ご飲",
+        "ご館"
+      ],
+      "dr": [
+        "こはん",
+        "ごぱん"
+      ],
+      "dm": [
+        "Bread",
+        "Noodles"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "図書館",
+      "r": "としょかん",
+      "m": "Library.",
+      "dv": [
+        "囚書館",
+        "図書管"
+      ],
+      "dr": [
+        "どしょかん",
+        "とじょかん"
+      ],
+      "dm": [
+        "Bookstore",
+        "Museum"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "日本語",
+      "r": "にほんご",
+      "m": "Japanese (language).",
+      "dv": [
+        "日木語",
+        "旧本語"
+      ],
+      "dr": [
+        "にぽんご",
+        "にほんこ"
+      ],
+      "dm": [
+        "English",
+        "Mathematics"
+      ],
+      "isReadingRedundant": false
+    },
+    {
+      "v": "学校",
+      "r": "がっこう",
+      "m": "School.",
+      "dv": [
+        "学絞",
+        "学較"
+      ],
+      "dr": [
+        "かっこう",
+        "がこう"
+      ],
+      "dm": [
+        "Company",
+        "Hospital"
+      ],
+      "isReadingRedundant": false
+    }
+  ]
+}
