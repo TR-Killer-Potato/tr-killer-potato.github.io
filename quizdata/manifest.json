@@ -1,6 +1,10 @@
 {
     "lessons": [
         {
+            "id": "L04",
+            "file": "quizdata/l04.json"
+        },
+        {
             "id": "L17",
             "file": "quizdata/l17.json"
         },
